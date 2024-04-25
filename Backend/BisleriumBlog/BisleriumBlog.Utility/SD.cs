@@ -3,6 +3,6 @@
     public class SD
     {
         public const string RoleAdmin = "Admin";
-        public const string Role = "Blogger";
+        public const string RoleBlogger = "Blogger";
     }
 }
