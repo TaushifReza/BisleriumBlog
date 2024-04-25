@@ -1,6 +1,9 @@
 using BisleriumBlog.API;
 using BisleriumBlog.DataAccess.Data;
+using BisleriumBlog.DataAccess.Service;
+using BisleriumBlog.DataAccess.Service.IService;
 using BisleriumBlog.Models.EntityModels;
+using BisleriumBlog.Models.ServiceModel;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -21,6 +24,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 });
 
 builder.Services.AddAutoMapper(typeof(MappingConfig));
+builder.Services.Configure<EmailSetting>(builder.Configuration.GetSection("EmailSettings"));
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 //Add Identity & JWT authentication
 //Identity
