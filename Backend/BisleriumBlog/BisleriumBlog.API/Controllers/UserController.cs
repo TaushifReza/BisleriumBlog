@@ -30,7 +30,9 @@ namespace BisleriumBlog.API.Controllers
         private readonly IEmailService _emailService;
         private readonly SignInManager<User> _signInManager;
         private readonly IConfiguration _config;
-        public UserController(IMapper mapper, UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IEmailService emailService, SignInManager<User> signInManager, IConfiguration config)
+        private readonly IPhotoManager _photoManager;
+        public UserController(IMapper mapper, UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IEmailService emailService, SignInManager<User> signInManager, IConfiguration config, IPhotoManager photoManager)
+            // ReSharper disable once ConvertToPrimaryConstructor
         {
             this._response = new();
             _mapper = mapper;
@@ -39,13 +41,30 @@ namespace BisleriumBlog.API.Controllers
             _emailService = emailService;
             _signInManager = signInManager;
             _config = config;
+            _photoManager = photoManager;
         }
 
         [HttpPost("Register")]
-        public async Task<ActionResult<APIResponse>> Register(UserCreateDTO userCreateDto)
+        public async Task<ActionResult<APIResponse>> Register([FromForm] UserCreateDTO userCreateDto)
         {
             try
             {
+                // Image Upload and get image url
+                if (userCreateDto.ProfileImage!.Length > 0)
+                {
+                    var uploadResult = await _photoManager.UploadImageAsync(userCreateDto.ProfileImage);
+                    if (uploadResult.StatusCode != HttpStatusCode.OK)
+                    {
+                        _response.IsSuccess = false;
+                        _response.StatusCode = uploadResult.StatusCode;
+                        _response.ErrorMessage = new List<string?>
+                        {
+                            uploadResult.Error.ToString()
+                        };
+                        return BadRequest(_response);
+                    }
+                    userCreateDto.ProfileImageUrl = uploadResult.Url.ToString();
+                }
                 User user = _mapper.Map<User>(userCreateDto);
                 user.UserName = user.Email;
                 // Create user
