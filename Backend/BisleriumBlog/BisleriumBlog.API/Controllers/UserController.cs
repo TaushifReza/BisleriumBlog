@@ -1,4 +1,5 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
+using System.IO;
 using System.Net;
 using System.Security.Claims;
 using System.Text;
@@ -10,6 +11,7 @@ using BisleriumBlog.Models.DTOs;
 using BisleriumBlog.Models.EntityModels;
 using BisleriumBlog.Models.ServiceModel;
 using BisleriumBlog.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -52,6 +54,35 @@ namespace BisleriumBlog.API.Controllers
                 // Image Upload and get image url
                 if (userCreateDto.ProfileImage!.Length > 0)
                 {
+                    // Get the file extension
+                    string fileExtension = Path.GetExtension(userCreateDto.ProfileImage.FileName).ToLower();
+                    // Define the list of allowed image file extensions
+                    List<string> allowedExtensions = new List<string> { ".jpg", ".jpeg", ".png", ".gif", ".bmp" };
+                    // Check if the file extension is allowed
+                    if (!allowedExtensions.Contains(fileExtension))
+                    {
+                        var allowedExtensionsString = string.Join(", ", allowedExtensions);
+                        _response.IsSuccess = false;
+                        _response.StatusCode = HttpStatusCode.BadRequest;
+                        _response.ErrorMessage = new List<string?>
+                        {
+                            $"Only image files with extensions {allowedExtensionsString} are allowed. Please provide a valid image file."
+                        };
+                        return BadRequest(_response);
+                    }
+                    // Convert file size from bytes to megabytes
+                    double fileSizeInMegabytes = Math.Round((double)userCreateDto.ProfileImage.Length / (1024 * 1024), 2);
+                    if (fileSizeInMegabytes > 3)
+                    {
+                        // Throw error if file size is larger than 3 MB
+                        _response.IsSuccess = false;
+                        _response.StatusCode = HttpStatusCode.BadRequest;
+                        _response.ErrorMessage = new List<string?>
+                        {
+                            $"Image size cannot be larger than 3 MB. The provided file size is {fileSizeInMegabytes} MB."
+                        };
+                        return BadRequest(_response);
+                    }
                     var uploadResult = await _photoManager.UploadImageAsync(userCreateDto.ProfileImage);
                     if (uploadResult.StatusCode != HttpStatusCode.OK)
                     {
@@ -192,18 +223,102 @@ namespace BisleriumBlog.API.Controllers
                         token = jwtToken
                     };
                     return Ok(_response);
+                } if (result.RequiresTwoFactor)
+                {
+                    // Generate the code
+                    var securityCode = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
+                    // Send the code to email
+                    /*var mailRequest = new MailRequest
+                    {
+                        ToEmail = user.Email,
+                        Subject = "Two Factor Auth Code",
+                        Body = $"Please use this code as OTP {securityCode}"
+                    };
+                    await _emailService.SendEmailAsync(mailRequest);*/
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = false;
+                    _response.Result = $"Please use this code as OTP {securityCode}";
+                    return Ok(_response);
                 }
-                if (result.IsLockedOut)
+                else if (result.IsLockedOut)
                 {
                     _response.StatusCode = HttpStatusCode.BadRequest;
                     _response.IsSuccess = false;
                     _response.Result = "You are locked Out.";
                     return BadRequest(_response);
+                }else
+                {
+                    _response.StatusCode = HttpStatusCode.BadRequest;
+                    _response.IsSuccess = false;
+                    _response.Result = "Login Failed";
+                    return BadRequest(_response);
                 }
-                _response.StatusCode = HttpStatusCode.BadRequest;
-                _response.IsSuccess = false;
-                _response.Result = "Login Failed";
-                return BadRequest(_response);
+            }
+            catch (Exception e)
+            {
+                _response.ErrorMessage = new List<string?>() { e.ToString() };
+            }
+            return _response;
+        }
+
+        [HttpGet("EnableTwoFactorAuth")]
+        [Authorize]
+        public async Task<ActionResult<APIResponse>> EnableTwoFactorAuth()
+        {
+            try
+            {
+                // Retrieve user claims from JWT token
+                var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var user = await _userManager.FindByIdAsync(userId);
+
+                // Enable two-factor authentication for the user
+                await _userManager.SetTwoFactorEnabledAsync(user, true);
+
+                _response.StatusCode = HttpStatusCode.OK;
+                _response.IsSuccess = true;
+                _response.Result = new { message = "Two-factor authentication has been enabled." };
+
+            }
+            catch (Exception e)
+            {
+                _response.ErrorMessage = new List<string?>() { e.ToString() };
+            }
+            return _response;
+        }
+
+        [HttpPost("VerifyTwoFactorAuthCode")]
+        public async Task<ActionResult<APIResponse>> VerifyTwoFactorAuthCode(string code)
+        {
+            try
+            {
+                var result = await _signInManager.TwoFactorSignInAsync("Email", code, false, false);
+                if (result.Succeeded)
+                {
+                    // Get the authenticated user from context
+                    var user = await _userManager.GetUserAsync(HttpContext.User);
+
+                    var getUserRole = await _userManager.GetRolesAsync(user);
+                    var role = getUserRole.FirstOrDefault() ?? ""; // If no role is assigned, set an empty string
+                    var jwtToken = GenerateToken(user, role);
+
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = new
+                    {
+                        message = "Two-factor authentication successful",
+                        userData = _mapper.Map<UserDTO>(user, opts => opts.AfterMap((src, dest) =>
+                        {
+                            dest.Role = role; // Assign the retrieved role to the UserDTO object
+                        })),
+                        token = jwtToken
+                    };
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.BadRequest;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessage = new List<string?>() { "Invalid two-factor authentication code" };
+                }
             }
             catch (Exception e)
             {
