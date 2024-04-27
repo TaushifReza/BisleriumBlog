@@ -9,6 +9,7 @@ namespace BisleriumBlog.API
         public MappingConfig()
         {
             CreateMap<User, UserCreateDTO>().ReverseMap();
+            CreateMap<User, UserDTO>().ReverseMap();
         }
     }
 }
