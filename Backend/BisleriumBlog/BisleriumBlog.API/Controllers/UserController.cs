@@ -34,7 +34,7 @@ namespace BisleriumBlog.API.Controllers
         private readonly IConfiguration _config;
         private readonly IPhotoManager _photoManager;
         public UserController(IMapper mapper, UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IEmailService emailService, SignInManager<User> signInManager, IConfiguration config, IPhotoManager photoManager)
-            // ReSharper disable once ConvertToPrimaryConstructor
+        // ReSharper disable once ConvertToPrimaryConstructor
         {
             this._response = new();
             _mapper = mapper;
@@ -112,7 +112,7 @@ namespace BisleriumBlog.API.Controllers
                     // Assign role user
                     await _userManager.AddToRoleAsync(user, SD.RoleBlogger);
 
-                    var confirmationToken =  await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    var confirmationToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     // Encode the token
                     byte[] tokenGeneratedBytes = Encoding.UTF8.GetBytes(confirmationToken);
                     var tokenEncoded = WebEncoders.Base64UrlEncode(tokenGeneratedBytes);
@@ -210,7 +210,7 @@ namespace BisleriumBlog.API.Controllers
                     var getUserRole = await _userManager.GetRolesAsync(user);
                     var role = getUserRole.FirstOrDefault() ?? ""; // If no role is assigned, set an empty string
                     var jwtToken = GenerateToken(user, role);
-                    
+
                     _response.StatusCode = HttpStatusCode.OK;
                     _response.IsSuccess = true;
                     _response.Result = new
@@ -223,7 +223,8 @@ namespace BisleriumBlog.API.Controllers
                         token = jwtToken
                     };
                     return Ok(_response);
-                } if (result.RequiresTwoFactor)
+                }
+                if (result.RequiresTwoFactor)
                 {
                     // Generate the code
                     var securityCode = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
@@ -236,7 +237,7 @@ namespace BisleriumBlog.API.Controllers
                     };
                     await _emailService.SendEmailAsync(mailRequest);*/
                     _response.StatusCode = HttpStatusCode.OK;
-                    _response.IsSuccess = false;
+                    _response.IsSuccess = true;
                     _response.Result = $"Please use this code as OTP {securityCode}";
                     return Ok(_response);
                 }
@@ -246,7 +247,8 @@ namespace BisleriumBlog.API.Controllers
                     _response.IsSuccess = false;
                     _response.Result = "You are locked Out.";
                     return BadRequest(_response);
-                }else
+                }
+                else
                 {
                     _response.StatusCode = HttpStatusCode.BadRequest;
                     _response.IsSuccess = false;
@@ -272,7 +274,8 @@ namespace BisleriumBlog.API.Controllers
                 var user = await _userManager.FindByIdAsync(userId);
 
                 // Enable two-factor authentication for the user
-                await _userManager.SetTwoFactorEnabledAsync(user, true);
+                var securityCode = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
+
 
                 _response.StatusCode = HttpStatusCode.OK;
                 _response.IsSuccess = true;
@@ -327,23 +330,116 @@ namespace BisleriumBlog.API.Controllers
             return _response;
         }
 
+        [HttpPost("DisableTwoFactorAuth")]
+        [Authorize]
+        public async Task<ActionResult<APIResponse>> DisableTwoFactorAuth()
+        {
+            try
+            {
+                // Retrieve user claims from JWT token
+                var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var user = await _userManager.FindByIdAsync(userId);
+
+                var securityCode = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
+                // Send the code to email
+                /*var mailRequest = new MailRequest
+                {
+                    ToEmail = user.Email,
+                    Subject = "Two Factor Auth Code",
+                    Body = $"Please use this code as OTP {securityCode}"
+                };*/
+
+                // Enable two-factor authentication for the user
+                var result = await _userManager.FindByIdAsync(userId);
+
+                _response.StatusCode = HttpStatusCode.OK;
+                _response.IsSuccess = true;
+                _response.Result = $"Please use this code as OTP {securityCode}";
+                return Ok(_response);
+
+            }
+            catch (Exception e)
+            {
+                _response.ErrorMessage = new List<string?>() { e.ToString() };
+            } return _response;
+        }
+
+        [HttpPost("VerifyTwoFactorAuthCodeToDisable")]
+        [Authorize]
+        public async Task<ActionResult<APIResponse>> VerifyTwoFactorAuthCodeToDisable(string code)
+        {
+            try
+            {
+                // Retrieve user claims from JWT token
+                var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var user = await _userManager.FindByIdAsync(userId);
+                var result = await _signInManager.TwoFactorSignInAsync("Email", code, false, false);
+
+                if (result.Succeeded)
+                {
+                    // Enable two-factor authentication for the user
+                    var securityCode = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
+
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = new { message = "Two-factor authentication has been disable." };
+                    return Ok(_response);
+                }
+                _response.StatusCode = HttpStatusCode.BadGateway;
+                _response.IsSuccess = true;
+                _response.Result = new { error = "Invalid Code" };
+                return BadRequest(_response);
+            }
+            catch (Exception e)
+            {
+                _response.ErrorMessage = new List<string?>() { e.ToString() };
+            } return _response;
+        }
+
+        [HttpPost("AuthenticateWithMFA")]
+        [Authorize]
+        public async Task<ActionResult<APIResponse>> AuthenticateWithMFA()
+        {
+            try
+            {
+                // Retrieve user claims from JWT token
+                var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var user = await _userManager.GetUserAsync(base.User);
+                var key = await _userManager.GetAuthenticatorKeyAsync(user);
+
+                _response.StatusCode = HttpStatusCode.OK;
+                _response.IsSuccess = true;
+                _response.Result = new
+                {
+                    key = key
+                };
+                return Ok(_response);
+
+            }
+            catch (Exception e)
+            {
+                _response.ErrorMessage = new List<string?>() { e.ToString() };
+            }
+            return _response;
+        }
+
         private string GenerateToken(User user, string role)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
             var userClaims = new[]
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Id),
-                new Claim(ClaimTypes.Name, user.FullName),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, role)
-            };
+new Claim(ClaimTypes.NameIdentifier, user.Id),
+new Claim(ClaimTypes.Name, user.FullName),
+new Claim(ClaimTypes.Email, user.Email),
+new Claim(ClaimTypes.Role, role)
+};
             var token = new JwtSecurityToken(
-                issuer: _config["Jwt:Issuer"],
-                audience: _config["Jwt:Audience"],
-                claims: userClaims,
-                expires: DateTime.Now.AddDays(1),
-                signingCredentials: credentials
+            issuer: _config["Jwt:Issuer"],
+            audience: _config["Jwt:Audience"],
+            claims: userClaims,
+            expires: DateTime.Now.AddDays(1),
+            signingCredentials: credentials
             );
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
