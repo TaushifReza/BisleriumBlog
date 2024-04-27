@@ -1,4 +1,6 @@
-﻿using System.Net;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Net;
+using System.Security.Claims;
 using System.Text;
 using AutoMapper;
 using BisleriumBlog.DataAccess.Service;
@@ -12,6 +14,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.IdentityModel.Tokens;
 using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 
 namespace BisleriumBlog.API.Controllers
@@ -26,7 +29,8 @@ namespace BisleriumBlog.API.Controllers
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IEmailService _emailService;
         private readonly SignInManager<User> _signInManager;
-        public UserController(IMapper mapper, UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IEmailService emailService, SignInManager<User> signInManager)
+        private readonly IConfiguration _config;
+        public UserController(IMapper mapper, UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IEmailService emailService, SignInManager<User> signInManager, IConfiguration config)
         {
             this._response = new();
             _mapper = mapper;
@@ -34,6 +38,7 @@ namespace BisleriumBlog.API.Controllers
             _roleManager = roleManager;
             _emailService = emailService;
             _signInManager = signInManager;
+            _config = config;
         }
 
         [HttpPost("Register")]
@@ -58,6 +63,7 @@ namespace BisleriumBlog.API.Controllers
                     await _userManager.AddToRoleAsync(user, SD.RoleBlogger);
 
                     var confirmationToken =  await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    // Encode the token
                     byte[] tokenGeneratedBytes = Encoding.UTF8.GetBytes(confirmationToken);
                     var tokenEncoded = WebEncoders.Base64UrlEncode(tokenGeneratedBytes);
                     string emailConfirmationLink =
@@ -82,15 +88,9 @@ namespace BisleriumBlog.API.Controllers
                         Console.WriteLine(e);
                         throw;
                     }*/
-                    // return Redirect($"/ConfirmEmail/{user.Id}/{confirmationToken}");
                     _response.StatusCode = HttpStatusCode.OK;
                     _response.IsSuccess = true;
-                    _response.Result = new
-                    {
-                        id = user.Id,
-                        token = tokenEncoded,
-                        message = "User Register successfully"
-                    };
+                    _response.Result = "User Register successfully";
                     return Ok(_response);
                 }
                 _response.StatusCode = HttpStatusCode.BadRequest;
@@ -118,6 +118,7 @@ namespace BisleriumBlog.API.Controllers
                     _response.Result = "User Not Found";
                     return BadRequest(_response);
                 }
+                // Decode the token
                 var tokenDecodedBytes = WebEncoders.Base64UrlDecode(token);
                 var tokenDecoded = Encoding.UTF8.GetString(tokenDecodedBytes);
                 var result = await _userManager.ConfirmEmailAsync(user, tokenDecoded);
@@ -141,7 +142,7 @@ namespace BisleriumBlog.API.Controllers
         }
 
         [HttpPost("Login")]
-        public async Task<ActionResult<APIResponse>> Login(LoginDTO loginDto)
+        public async Task<ActionResult<APIResponse>> Login([FromForm] LoginDTO loginDto)
         {
             try
             {
@@ -156,9 +157,21 @@ namespace BisleriumBlog.API.Controllers
                 var result = await _signInManager.PasswordSignInAsync(user, loginDto.Password, false, false);
                 if (result.Succeeded)
                 {
+                    var getUserRole = await _userManager.GetRolesAsync(user);
+                    var role = getUserRole.FirstOrDefault() ?? ""; // If no role is assigned, set an empty string
+                    var jwtToken = GenerateToken(user, role);
+                    
                     _response.StatusCode = HttpStatusCode.OK;
-                    _response.IsSuccess = false;
-                    _response.Result = "Login Success";
+                    _response.IsSuccess = true;
+                    _response.Result = new
+                    {
+                        message = "Login Success",
+                        userData = _mapper.Map<UserDTO>(user, opts => opts.AfterMap((src, dest) =>
+                        {
+                            dest.Role = role; // Assign the retrieved role to the UserDTO object
+                        })),
+                        token = jwtToken
+                    };
                     return Ok(_response);
                 }
                 if (result.IsLockedOut)
@@ -178,6 +191,27 @@ namespace BisleriumBlog.API.Controllers
                 _response.ErrorMessage = new List<string?>() { e.ToString() };
             }
             return _response;
+        }
+
+        private string GenerateToken(User user, string role)
+        {
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+            var userClaims = new[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.Name, user.FullName),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Role, role)
+            };
+            var token = new JwtSecurityToken(
+                issuer: _config["Jwt:Issuer"],
+                audience: _config["Jwt:Audience"],
+                claims: userClaims,
+                expires: DateTime.Now.AddDays(1),
+                signingCredentials: credentials
+            );
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }
