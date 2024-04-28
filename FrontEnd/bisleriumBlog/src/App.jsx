@@ -10,8 +10,10 @@ import Login from "../Components/Login";
 import Signup from '../Components/Signup';
 import Signin from '../Components/Signin';
 import Emailtemp from '../Components/Emailtemp';
+import Forget from '../Components/forget';
+import TwoFactor from '../Components/Twofactor';
+import Verifyemail from '../Components/Verifyemail';
 function App() {
-  // const [user, setUser] = useState(undefined);
   return (
     <Router>
       <div>
@@ -21,6 +23,9 @@ function App() {
           <Route exact path="/signup" element={<Signup />} />
           <Route exact path="/signin" element={<Signin />} />
           <Route exact path="/emailtemp" element={<Emailtemp />} />
+          <Route exact path="/forget" element={<Forget />} />
+          <Route exact path="/twofactor" element={<TwoFactor />} />
+          <Route exact path="/verifyemail" element={<Verifyemail />} />
 
         </Routes>
 
