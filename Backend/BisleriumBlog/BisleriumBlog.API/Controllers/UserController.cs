@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json.Linq;
 using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 
 namespace BisleriumBlog.API.Controllers
@@ -54,33 +55,13 @@ namespace BisleriumBlog.API.Controllers
                 // Image Upload and get image url
                 if (userCreateDto.ProfileImage!.Length > 0)
                 {
-                    // Get the file extension
-                    string fileExtension = Path.GetExtension(userCreateDto.ProfileImage.FileName).ToLower();
-                    // Define the list of allowed image file extensions
-                    List<string> allowedExtensions = new List<string> { ".jpg", ".jpeg", ".png", ".gif", ".bmp" };
-                    // Check if the file extension is allowed
-                    if (!allowedExtensions.Contains(fileExtension))
+                    // Validate the image file
+                    bool isValidFile = ValidateImageFile(userCreateDto.ProfileImage, out var errorMessage,3);
+                    if (!isValidFile)
                     {
-                        var allowedExtensionsString = string.Join(", ", allowedExtensions);
                         _response.IsSuccess = false;
                         _response.StatusCode = HttpStatusCode.BadRequest;
-                        _response.ErrorMessage = new List<string?>
-                        {
-                            $"Only image files with extensions {allowedExtensionsString} are allowed. Please provide a valid image file."
-                        };
-                        return BadRequest(_response);
-                    }
-                    // Convert file size from bytes to megabytes
-                    double fileSizeInMegabytes = Math.Round((double)userCreateDto.ProfileImage.Length / (1024 * 1024), 2);
-                    if (fileSizeInMegabytes > 3)
-                    {
-                        // Throw error if file size is larger than 3 MB
-                        _response.IsSuccess = false;
-                        _response.StatusCode = HttpStatusCode.BadRequest;
-                        _response.ErrorMessage = new List<string?>
-                        {
-                            $"Image size cannot be larger than 3 MB. The provided file size is {fileSizeInMegabytes} MB."
-                        };
+                        _response.ErrorMessage = new List<string> { errorMessage }!;
                         return BadRequest(_response);
                     }
                     var uploadResult = await _photoManager.UploadImageAsync(userCreateDto.ProfileImage);
@@ -140,7 +121,12 @@ namespace BisleriumBlog.API.Controllers
                     }*/
                     _response.StatusCode = HttpStatusCode.OK;
                     _response.IsSuccess = true;
-                    _response.Result = "User Register successfully";
+                    _response.Result = new
+                    {
+                        message = "User Register successfully",
+                        userId = user.Id,
+                        token = tokenEncoded
+                    };
                     return Ok(_response);
                 }
                 _response.StatusCode = HttpStatusCode.BadRequest;
@@ -274,7 +260,7 @@ namespace BisleriumBlog.API.Controllers
                 var user = await _userManager.FindByIdAsync(userId);
 
                 // Enable two-factor authentication for the user
-                var securityCode = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
+                var result = await _userManager.SetTwoFactorEnabledAsync(user, true);
 
 
                 _response.StatusCode = HttpStatusCode.OK;
@@ -349,9 +335,6 @@ namespace BisleriumBlog.API.Controllers
                     Body = $"Please use this code as OTP {securityCode}"
                 };*/
 
-                // Enable two-factor authentication for the user
-                var result = await _userManager.FindByIdAsync(userId);
-
                 _response.StatusCode = HttpStatusCode.OK;
                 _response.IsSuccess = true;
                 _response.Result = $"Please use this code as OTP {securityCode}";
@@ -377,17 +360,101 @@ namespace BisleriumBlog.API.Controllers
 
                 if (result.Succeeded)
                 {
-                    // Enable two-factor authentication for the user
-                    var securityCode = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
-
-                    _response.StatusCode = HttpStatusCode.OK;
-                    _response.IsSuccess = true;
-                    _response.Result = new { message = "Two-factor authentication has been disable." };
+                    // Disable two-factor authentication for the user
+                    var hasDisable = await _userManager.SetTwoFactorEnabledAsync(user, true);
+                    if (hasDisable.Succeeded)
+                    {
+                        _response.StatusCode = HttpStatusCode.OK;
+                        _response.IsSuccess = true;
+                        _response.Result = new { message = "Two-factor authentication has been disable." };
+                        return Ok(_response);
+                    }
+                    _response.StatusCode = HttpStatusCode.InternalServerError;
+                    _response.IsSuccess = false;
+                    _response.Result = new { error = hasDisable.Errors };
                     return Ok(_response);
                 }
                 _response.StatusCode = HttpStatusCode.BadGateway;
                 _response.IsSuccess = true;
                 _response.Result = new { error = "Invalid Code" };
+                return BadRequest(_response);
+            }
+            catch (Exception e)
+            {
+                _response.ErrorMessage = new List<string?>() { e.ToString() };
+            } return _response;
+        }
+
+        [HttpPost("SendOtpForForgotPassword")]
+        public async Task<ActionResult<APIResponse>> SendOtpForForgotPassword(string email)
+        {
+            try
+            {
+                var user = await _userManager.FindByEmailAsync(email);
+                if (user != null)
+                {
+                    var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+                    byte[] tokenGeneratedBytes = Encoding.UTF8.GetBytes(email);
+                    var emailEncoded = WebEncoders.Base64UrlEncode(tokenGeneratedBytes);
+                    // Send the code to email
+                    /*var mailRequest = new MailRequest
+                    {
+                        ToEmail = user.Email,
+                        Subject = "Two Factor Auth Code",
+                        Body = $"Please use this code as OTP {securityCode}"
+                    };*/
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = false;
+                    _response.Result = new
+                    {
+                        message = "OTP has been Send to email.",
+                        OTP = code,
+                        Email = emailEncoded
+                    };
+                    return Ok(_response);
+                }
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                _response.IsSuccess = false;
+                _response.Result = new { error = "User not Found!!!" };
+                return BadRequest(_response);
+            }
+            catch (Exception e)
+            {
+                _response.ErrorMessage = new List<string?>() { e.ToString() };
+            } return _response;
+        }
+
+        [HttpPost("VerifyOtpForForgotPassword")]
+        public async Task<ActionResult<APIResponse>> VerifyOtpForForgotPassword([FromForm] ResetPasswordDTO resetPasswordDto)
+        {
+            try
+            {
+                var emailDecodedBytes = WebEncoders.Base64UrlDecode(resetPasswordDto.Email);
+                var emailDecoded = Encoding.UTF8.GetString(emailDecodedBytes);
+
+                var user = await _userManager.FindByEmailAsync(resetPasswordDto.Email);
+                if (user != null)
+                {
+                    var result =
+                        await _userManager.ResetPasswordAsync(user, resetPasswordDto.Token, resetPasswordDto.Password);
+                    if (result.Succeeded) {
+                        _response.StatusCode = HttpStatusCode.OK;
+                        _response.IsSuccess = true;
+                        _response.Result = new { message = "Password Reset Successful" };
+                        return Ok(_response);
+                    }
+                    _response.StatusCode = HttpStatusCode.BadRequest;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessage = new List<string>()!;
+                    foreach (var error in result.Errors)
+                    {
+                        _response.ErrorMessage.Add(error.Description);
+                    }
+                    return BadRequest(_response);
+                }
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                _response.IsSuccess = false;
+                _response.Result = new { error = "User not Found!!!" };
                 return BadRequest(_response);
             }
             catch (Exception e)
@@ -419,8 +486,96 @@ namespace BisleriumBlog.API.Controllers
             catch (Exception e)
             {
                 _response.ErrorMessage = new List<string?>() { e.ToString() };
+            } return _response;
+        }
+
+        [HttpPost("UpdateUserProfile")]
+        [Authorize]
+        public async Task<ActionResult<APIResponse>> UpdateUserProfile([FromForm] UserProfileUpdateDTO userProfileUpdateDto)
+        {
+            try
+            {
+                // Check if both Bio and FullName are empty or null
+                if (string.IsNullOrWhiteSpace(userProfileUpdateDto.Bio) && string.IsNullOrWhiteSpace(userProfileUpdateDto.FullName)) {
+                    _response.StatusCode = HttpStatusCode.BadRequest;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessage = new List<string> { "At least one field (Bio or FullName) must be provided" }!;
+                    return BadRequest(_response);
+                }
+                // Retrieve user claims from JWT token
+                var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var user = await _userManager.FindByIdAsync(userId);
+
+                if (user == null)
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessage = new List<string> { "User not found" }!;
+                    return NotFound(_response);
+                }
+                // Update user properties
+                if (!string.IsNullOrWhiteSpace(userProfileUpdateDto.FullName)) {
+                    user.FullName = userProfileUpdateDto.FullName;
+                } if (!string.IsNullOrWhiteSpace(userProfileUpdateDto.Bio)) {
+                    user.Bio = userProfileUpdateDto.Bio;
+                }
+
+                // Update user in the database
+                var result = await _userManager.UpdateAsync(user);
+                var getUserRole = await _userManager.GetRolesAsync(user);
+                var role = getUserRole.FirstOrDefault() ?? ""; // If no role is assigned, set an empty string
+
+                if (result.Succeeded)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = new
+                    {
+                        message = "User Profile Updated Successful",
+                        userData = _mapper.Map<UserDTO>(user, opts => opts.AfterMap((src, dest) =>
+                        {
+                            dest.Role = role; // Assign the retrieved role to the UserDTO object
+                        }))
+                    };
+                    return Ok(_response);
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.BadRequest;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessage = new List<string>(result.Errors.Select(e => e.Description))!;
+                    return BadRequest(_response);
+                }
             }
-            return _response;
+            catch (Exception e)
+            {
+                _response.ErrorMessage = new List<string?>() { e.ToString() };
+            } return _response;
+        }
+
+        [HttpPost("ChangeProfileImage")]
+        [Authorize]
+        public async Task<ActionResult<APIResponse>> ChangeProfileImage([FromForm] IFormFile file)
+        {
+            try
+            {
+                if (file.Length > 0)
+                {
+                    // Validate the image file
+                    bool isValidFile = ValidateImageFile(file, out var errorMessage, 3);
+                    if (!isValidFile) {
+                        _response.IsSuccess = false;
+                        _response.StatusCode = HttpStatusCode.BadRequest;
+                        _response.ErrorMessage = new List<string> { errorMessage }!;
+                        return BadRequest(_response);
+                    }
+                    // Logic to delete previous image from Claudinary and add new image
+                }
+            }
+            catch (Exception e)
+            {
+                _response.ErrorMessage = new List<string?>() { e.ToString() };
+            } return _response;
         }
 
         private string GenerateToken(User user, string role)
@@ -429,11 +584,14 @@ namespace BisleriumBlog.API.Controllers
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
             var userClaims = new[]
             {
-new Claim(ClaimTypes.NameIdentifier, user.Id),
-new Claim(ClaimTypes.Name, user.FullName),
-new Claim(ClaimTypes.Email, user.Email),
-new Claim(ClaimTypes.Role, role)
-};
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.Name, user.FullName),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Role, role)
+                };
             var token = new JwtSecurityToken(
             issuer: _config["Jwt:Issuer"],
             audience: _config["Jwt:Audience"],
@@ -442,6 +600,34 @@ new Claim(ClaimTypes.Role, role)
             signingCredentials: credentials
             );
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        private bool ValidateImageFile(IFormFile file, out string errorMessage, double maxSizeInMegabytes = 3)
+        {
+            errorMessage = string.Empty;
+            // Get the file extension
+            string fileExtension = Path.GetExtension(file.FileName).ToLower();
+
+            // Define the list of allowed image file extensions
+            List<string> allowedExtensions = new List<string> { ".jpg", ".jpeg", ".png", ".gif", ".bmp" };
+
+            // Check if the file extension is allowed
+            if (!allowedExtensions.Contains(fileExtension)) {
+                var allowedExtensionsString = string.Join(", ", allowedExtensions);
+                errorMessage = $"Only image files with extensions {allowedExtensionsString} are allowed. Please provide a valid image file.";
+                return false;
+            }
+
+            // Convert file size from bytes to megabytes
+            double fileSizeInMegabytes = Math.Round((double)file.Length / (1024 * 1024), 2);
+
+            if (fileSizeInMegabytes > maxSizeInMegabytes) {
+                // Throw error if file size is larger than the specified maximum size
+                errorMessage = $"Image size cannot be larger than {maxSizeInMegabytes} MB. The provided file size is {fileSizeInMegabytes} MB.";
+                return false;
+            }
+
+            return true;
         }
     }
 }
