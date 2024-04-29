@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Linq;
 using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
@@ -191,8 +192,7 @@ namespace BisleriumBlog.API.Controllers
                     return BadRequest(_response);
                 }
                 var result = await _signInManager.PasswordSignInAsync(user, loginDto.Password, false, false);
-                if (result.Succeeded)
-                {
+                if (result.Succeeded) {
                     var getUserRole = await _userManager.GetRolesAsync(user);
                     var role = getUserRole.FirstOrDefault() ?? ""; // If no role is assigned, set an empty string
                     var jwtToken = GenerateToken(user, role);
@@ -210,179 +210,28 @@ namespace BisleriumBlog.API.Controllers
                     };
                     return Ok(_response);
                 }
-                if (result.RequiresTwoFactor)
-                {
-                    // Generate the code
-                    var securityCode = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
-                    // Send the code to email
-                    /*var mailRequest = new MailRequest
-                    {
-                        ToEmail = user.Email,
-                        Subject = "Two Factor Auth Code",
-                        Body = $"Please use this code as OTP {securityCode}"
-                    };
-                    await _emailService.SendEmailAsync(mailRequest);*/
+                if (result.RequiresTwoFactor) {
                     _response.StatusCode = HttpStatusCode.OK;
                     _response.IsSuccess = true;
-                    _response.Result = $"Please use this code as OTP {securityCode}";
+                    _response.Result = "Login Success enter code from Authenticator app.";
                     return Ok(_response);
                 }
-                else if (result.IsLockedOut)
-                {
+                if (result.IsLockedOut) {
                     _response.StatusCode = HttpStatusCode.BadRequest;
                     _response.IsSuccess = false;
                     _response.Result = "You are locked Out.";
                     return BadRequest(_response);
                 }
-                else
-                {
-                    _response.StatusCode = HttpStatusCode.BadRequest;
-                    _response.IsSuccess = false;
-                    _response.Result = "Login Failed";
-                    return BadRequest(_response);
-                }
-            }
-            catch (Exception e)
-            {
-                _response.ErrorMessage = new List<string?>() { e.ToString() };
-            }
-            return _response;
-        }
-
-        [HttpGet("EnableTwoFactorAuth")]
-        [Authorize]
-        public async Task<ActionResult<APIResponse>> EnableTwoFactorAuth()
-        {
-            try
-            {
-                // Retrieve user claims from JWT token
-                var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var user = await _userManager.FindByIdAsync(userId);
-
-                // Enable two-factor authentication for the user
-                var result = await _userManager.SetTwoFactorEnabledAsync(user, true);
-
-
-                _response.StatusCode = HttpStatusCode.OK;
-                _response.IsSuccess = true;
-                _response.Result = new { message = "Two-factor authentication has been enabled." };
-
-            }
-            catch (Exception e)
-            {
-                _response.ErrorMessage = new List<string?>() { e.ToString() };
-            }
-            return _response;
-        }
-
-        [HttpPost("VerifyTwoFactorAuthCode")]
-        public async Task<ActionResult<APIResponse>> VerifyTwoFactorAuthCode(string code)
-        {
-            try
-            {
-                var result = await _signInManager.TwoFactorSignInAsync("Email", code, false, false);
-                if (result.Succeeded)
-                {
-                    // Get the authenticated user from context
-                    var user = await _userManager.GetUserAsync(HttpContext.User);
-
-                    var getUserRole = await _userManager.GetRolesAsync(user);
-                    var role = getUserRole.FirstOrDefault() ?? ""; // If no role is assigned, set an empty string
-                    var jwtToken = GenerateToken(user, role);
-
-                    _response.StatusCode = HttpStatusCode.OK;
-                    _response.IsSuccess = true;
-                    _response.Result = new
-                    {
-                        message = "Two-factor authentication successful",
-                        userData = _mapper.Map<UserDTO>(user, opts => opts.AfterMap((src, dest) =>
-                        {
-                            dest.Role = role; // Assign the retrieved role to the UserDTO object
-                        })),
-                        token = jwtToken
-                    };
-                }
-                else
-                {
-                    _response.StatusCode = HttpStatusCode.BadRequest;
-                    _response.IsSuccess = false;
-                    _response.ErrorMessage = new List<string?>() { "Invalid two-factor authentication code" };
-                }
-            }
-            catch (Exception e)
-            {
-                _response.ErrorMessage = new List<string?>() { e.ToString() };
-            }
-            return _response;
-        }
-
-        [HttpPost("DisableTwoFactorAuth")]
-        [Authorize]
-        public async Task<ActionResult<APIResponse>> DisableTwoFactorAuth()
-        {
-            try
-            {
-                // Retrieve user claims from JWT token
-                var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var user = await _userManager.FindByIdAsync(userId);
-
-                var securityCode = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
-                // Send the code to email
-                /*var mailRequest = new MailRequest
-                {
-                    ToEmail = user.Email,
-                    Subject = "Two Factor Auth Code",
-                    Body = $"Please use this code as OTP {securityCode}"
-                };*/
-
-                _response.StatusCode = HttpStatusCode.OK;
-                _response.IsSuccess = true;
-                _response.Result = $"Please use this code as OTP {securityCode}";
-                return Ok(_response);
-
-            }
-            catch (Exception e)
-            {
-                _response.ErrorMessage = new List<string?>() { e.ToString() };
-            } return _response;
-        }
-
-        [HttpPost("VerifyTwoFactorAuthCodeToDisable")]
-        [Authorize]
-        public async Task<ActionResult<APIResponse>> VerifyTwoFactorAuthCodeToDisable(string code)
-        {
-            try
-            {
-                // Retrieve user claims from JWT token
-                var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var user = await _userManager.FindByIdAsync(userId);
-                var result = await _signInManager.TwoFactorSignInAsync("Email", code, false, false);
-
-                if (result.Succeeded)
-                {
-                    // Disable two-factor authentication for the user
-                    var hasDisable = await _userManager.SetTwoFactorEnabledAsync(user, true);
-                    if (hasDisable.Succeeded)
-                    {
-                        _response.StatusCode = HttpStatusCode.OK;
-                        _response.IsSuccess = true;
-                        _response.Result = new { message = "Two-factor authentication has been disable." };
-                        return Ok(_response);
-                    }
-                    _response.StatusCode = HttpStatusCode.InternalServerError;
-                    _response.IsSuccess = false;
-                    _response.Result = new { error = hasDisable.Errors };
-                    return Ok(_response);
-                }
-                _response.StatusCode = HttpStatusCode.BadGateway;
-                _response.IsSuccess = true;
-                _response.Result = new { error = "Invalid Code" };
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                _response.IsSuccess = false;
+                _response.Result = "Login Failed";
                 return BadRequest(_response);
             }
             catch (Exception e)
             {
                 _response.ErrorMessage = new List<string?>() { e.ToString() };
-            } return _response;
+            }
+            return _response;
         }
 
         [HttpPost("SendOtpForForgotPassword")]
@@ -463,29 +312,107 @@ namespace BisleriumBlog.API.Controllers
             } return _response;
         }
 
-        [HttpPost("AuthenticateWithMFA")]
+        [HttpPost("AuthenticateWithMFASetup")]
         [Authorize]
-        public async Task<ActionResult<APIResponse>> AuthenticateWithMFA()
+        public async Task<ActionResult<APIResponse>> AuthenticateWithMFASetup()
         {
             try
             {
                 // Retrieve user claims from JWT token
                 var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var user = await _userManager.GetUserAsync(base.User);
-                var key = await _userManager.GetAuthenticatorKeyAsync(user);
+                var user = await _userManager.FindByIdAsync(userId!);
 
-                _response.StatusCode = HttpStatusCode.OK;
-                _response.IsSuccess = true;
-                _response.Result = new
+                if (user != null)
                 {
-                    key = key
-                };
-                return Ok(_response);
-
+                    await _userManager.ResetAuthenticatorKeyAsync(user);
+                    var key = await _userManager.GetAuthenticatorKeyAsync(user);
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = new
+                    {
+                        key = key
+                    };
+                    return Ok(_response);
+                }
             }
             catch (Exception e)
             {
                 _response.ErrorMessage = new List<string?>() { e.ToString() };
+            } return _response;
+        }
+
+        [HttpPost("VerifyAuthenticateWithMFASetup")]
+        [Authorize]
+        public async Task<ActionResult<APIResponse>> VerifyAuthenticateWithMFASetup(string token)
+        {
+            try
+            {
+                // Retrieve user claims from JWT token
+                var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var user = await _userManager.FindByIdAsync(userId!);
+
+                var result = await _userManager.VerifyTwoFactorTokenAsync(user,
+                    _userManager.Options.Tokens.AuthenticatorTokenProvider, token);
+
+                if (user != null && result)
+                {
+                    await _userManager.SetTwoFactorEnabledAsync(user, true);
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = new
+                    {
+                        message = "Authenticate With MFA Setup Successful"
+                    };
+                    return Ok(_response);
+                }
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                _response.IsSuccess = false;
+                _response.Result = new
+                {
+                    error = "Authenticate With MFA Setup Failed. Check Your token."
+                };
+                return Ok(_response);
+            }
+            catch (Exception e)
+            {
+                _response.ErrorMessage = new List<string?>() { e.ToString() };
+            } return _response;
+        }
+
+        [HttpPost("LoginWithMFACode")]
+        public async Task<ActionResult<APIResponse>> LoginWithMFACode(string code)
+        {
+            try
+            {
+                var result = await _signInManager.TwoFactorAuthenticatorSignInAsync(code, false, false);
+                if (result.Succeeded) {
+                    // Get the authenticated user from context
+                    var user = await _userManager.GetUserAsync(HttpContext.User);
+                    var getUserRole = await _userManager.GetRolesAsync(user);
+                    var role = getUserRole.FirstOrDefault() ?? ""; // If no role is assigned, set an empty string
+                    var jwtToken = GenerateToken(user, role);
+
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = new
+                    {
+                        message = "Two-factor authentication successful",
+                        userData = _mapper.Map<UserDTO>(user, opts => opts.AfterMap((src, dest) =>
+                        {
+                            dest.Role = role; // Assign the retrieved role to the UserDTO object
+                        })),
+                        token = jwtToken
+                    };
+                    return Ok(_response);
+                }
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                _response.IsSuccess = false;
+                _response.ErrorMessage = new List<string?>() { "Invalid authentication code" }!;
+                return BadRequest(_response);
+            }
+            catch (Exception e)
+            {
+                _response.ErrorMessage = new List<string?>() { e.ToString() }!;
             } return _response;
         }
 
@@ -555,7 +482,7 @@ namespace BisleriumBlog.API.Controllers
 
         [HttpPost("ChangeProfileImage")]
         [Authorize]
-        public async Task<ActionResult<APIResponse>> ChangeProfileImage([FromForm] IFormFile file)
+        public async Task<ActionResult<APIResponse>> ChangeProfileImage(IFormFile file)
         {
             try
             {
@@ -569,7 +496,43 @@ namespace BisleriumBlog.API.Controllers
                         _response.ErrorMessage = new List<string> { errorMessage }!;
                         return BadRequest(_response);
                     }
+                    // Retrieve user claims from JWT token
+                    var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    var user = await _userManager.GetUserAsync(base.User);
+                    var currentImgUrl = user!.ProfileImageUrl;
                     // Logic to delete previous image from Claudinary and add new image
+                    // delete image
+                    var hasDeleted = await _photoManager.DeleteImageAsync(currentImgUrl!);
+                    if (!hasDeleted) {
+                        _response.IsSuccess = false;
+                        _response.StatusCode = HttpStatusCode.InternalServerError;
+                        _response.ErrorMessage = new List<string> { "Something went wrong" };
+                        return BadRequest(_response);
+                    }
+                    // upload new image and save image url to db
+                    var uploadResult = await _photoManager.UploadImageAsync(file);
+                    if (uploadResult.StatusCode != HttpStatusCode.OK)
+                    {
+                        _response.IsSuccess = false;
+                        _response.StatusCode = uploadResult.StatusCode;
+                        _response.ErrorMessage = new List<string?>
+                        {
+                            uploadResult.Error.ToString()
+                        };
+                        return BadRequest(_response);
+                    }
+                    user.ProfileImageUrl = uploadResult.Url.ToString();
+                    var result = await _userManager.UpdateAsync(user);
+                    if (!result.Succeeded) {
+                        _response.IsSuccess = false;
+                        _response.StatusCode = HttpStatusCode.InternalServerError;
+                        _response.ErrorMessage = new List<string> { "Failed to update user profile image" };
+                        return BadRequest(_response);
+                    }
+                    _response.IsSuccess = true;
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.Result = user.ProfileImageUrl;
+                    return Ok(_response);
                 }
             }
             catch (Exception e)
