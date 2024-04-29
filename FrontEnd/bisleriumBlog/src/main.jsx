@@ -12,6 +12,7 @@ import Emailtemp from "../Components/Emailtemp";
 import Forget from "../Components/forget";
 import TwoFactor from "../Components/Twofactor";
 import Verifyemail from "../Components/Verifyemail";
+import MFA from "../Components/MFA.jsx";
 
 const router = createBrowserRouter([
   {
@@ -41,6 +42,10 @@ const router = createBrowserRouter([
   {
     path: "/verifyemail",
     element: <Verifyemail />,
+  },
+  {
+    path: "/mfa",
+    element: <MFA />,
   },
 ]);
 
