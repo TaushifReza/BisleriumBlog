@@ -1,8 +1,8 @@
 import React from 'react';
 import '../style/TwoFactorAuth.css';
 // If you have an image you want to use, import it here
-import emailImage from '../assets/envelope1.png';
 
+import emailImage from '../assets/envelope1.png';
 const EmailVerify = () => {
   return (
     <section className="email-verify-section bg-custom">
