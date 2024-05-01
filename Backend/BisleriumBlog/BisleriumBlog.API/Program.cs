@@ -11,6 +11,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
+using BisleriumBlog.DataAccess.Repository;
+using BisleriumBlog.DataAccess.Repository.IRepository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,6 +33,7 @@ builder.Services.Configure<EmailSetting>(builder.Configuration.GetSection("Email
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 builder.Services.AddScoped<IPhotoManager, PhotoManager>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 //Add Identity & JWT authentication
 //Identity
