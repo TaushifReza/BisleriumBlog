@@ -13,6 +13,8 @@ namespace BisleriumBlog.DataAccess.Data
         }
 
         public DbSet<Category> Categories { get; set; }
+        public DbSet<Blog> Blogs { get; set; }
+        public DbSet<BlogSection> BlogsSections { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

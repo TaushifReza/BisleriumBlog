@@ -3,6 +3,8 @@
     public interface IUnitOfWork
     {
         ICategoryRepository Category { get; }
+        IBlogRepository Blog { get; }
+        IBlogSectionRepository BlogSection { get; }
         Task SaveAsync();
     }
 }

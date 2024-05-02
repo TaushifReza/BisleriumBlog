@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using BisleriumBlog.DataAccess.Data;
 using BisleriumBlog.DataAccess.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;

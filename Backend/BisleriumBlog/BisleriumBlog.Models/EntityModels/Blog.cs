@@ -12,14 +12,12 @@ namespace BisleriumBlog.Models.EntityModels
         [StringLength(50)]
         public string Title { get; set; } = string.Empty;
         [Required]
-        public string Body { get; set; } = string.Empty;
-        [Required]
         [ForeignKey(nameof(User))]
         public string UserId { get; set; }
         public User? User { get; set; }
         [Required]
         [ForeignKey(nameof(Category))]
-        public string CategoryId { get; set; }
+        public int CategoryId { get; set; }
         public Category? Category { get; set; }
         [Required]
         public DateTime CreatedAt { get; set; } = DateTime.Now;
