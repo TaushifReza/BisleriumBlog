@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace BisleriumBlog.Models.DTOs
+﻿namespace BisleriumBlog.Models.DTOs
 {
     public class UserProfileUpdateDTO
     {
