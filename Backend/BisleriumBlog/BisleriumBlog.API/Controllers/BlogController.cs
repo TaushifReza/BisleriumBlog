@@ -36,6 +36,7 @@ namespace BisleriumBlog.API.Controllers
         }
 
         [HttpGet("GetAllBlog")]
+        [AllowAnonymous]
         public async Task<ActionResult<APIResponse>> GetAllBlog()
         {
             try
@@ -51,6 +52,34 @@ namespace BisleriumBlog.API.Controllers
             {
                 _response.ErrorMessage = new List<string>() { e.Message };
             } return StatusCode(StatusCodes.Status500InternalServerError, _response);
+        }
+
+        [HttpGet("GetBlog/{id:int}")]
+        [AllowAnonymous]
+        public async Task<ActionResult<APIResponse>> GetBlog(int id)
+        {
+            try
+            {
+                var blog = await _unitOfWork.Blog.GetAsync(u=>u.Id==id);
+                if (blog == null) {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = true;
+                    _response.Result = new
+                    {
+                        error = $"Blog with ID {id} Not Found!"
+                    };
+                    return StatusCode(StatusCodes.Status404NotFound, _response);
+                }
+                _response.StatusCode = HttpStatusCode.OK;
+                _response.IsSuccess = true;
+                _response.Result = blog;
+                return StatusCode(StatusCodes.Status200OK, _response);
+            }
+            catch (Exception e)
+            {
+                _response.ErrorMessage = new List<string>() { e.Message };
+            }
+            return StatusCode(StatusCodes.Status500InternalServerError, _response);
         }
 
         [HttpPost("CreateBlog")]
@@ -115,6 +144,75 @@ namespace BisleriumBlog.API.Controllers
                     blog = _mapper.Map<BlogDTO>(blog)
                 };
                 return StatusCode(StatusCodes.Status201Created, _response);
+            }
+            catch (Exception e)
+            {
+                _response.ErrorMessage = new List<string>() { e.Message };
+            } return StatusCode(StatusCodes.Status500InternalServerError, _response);
+        }
+
+        [HttpPut("UpdateBlog/{id:int}")]
+        public async Task<ActionResult<APIResponse>> UpdateBlog(int id, [FromForm] BlogUpdateDTO blogUpdateDTO)
+        {
+            try
+            {
+                // Check if at least one property is provided
+                var isBodyProvided = !string.IsNullOrEmpty(blogUpdateDTO.Body);
+                var isImageProvided = blogUpdateDTO.BlogImage != null;
+
+                // Check if either Body or BlogImage is provided
+                if (!isBodyProvided && !isImageProvided)
+                {
+                    _response.ErrorMessage = new List<string> { "At least one property (Body or BlogImage) must be provided" };
+                    return StatusCode(StatusCodes.Status400BadRequest, _response);
+                }
+
+                // Check if the blog exists
+                var blog = await _unitOfWork.Blog.GetAsync(b => b.Id == id);
+                if (blog == null) {
+                    _response.ErrorMessage = new List<string> { "Blog not found" };
+                    return StatusCode(StatusCodes.Status404NotFound, _response);
+                }
+
+                // Update the blog properties
+                blog.Body = (isBodyProvided ? blogUpdateDTO.Body : blog.Body)!;
+                blog.UpdatedAt = DateTime.Now;
+
+                if(blogUpdateDTO.BlogImage != null) { 
+                    var currentImgUrl = blog.ImageUrl;
+
+                    // delete image
+                    var hasDeleted = await _photoManager.DeleteImageAsync(currentImgUrl!);
+                    if (!hasDeleted) {
+                        _response.IsSuccess = false;
+                        _response.StatusCode = HttpStatusCode.InternalServerError;
+                        _response.ErrorMessage = new List<string> { "Something went wrong" };
+                        return BadRequest(_response);
+                    }
+                    // upload new image and save image url to db
+                    var uploadResult = await _photoManager.UploadImageAsync(blogUpdateDTO.BlogImage!);
+                    if (uploadResult.StatusCode != HttpStatusCode.OK) {
+                        _response.IsSuccess = false;
+                        _response.StatusCode = uploadResult.StatusCode;
+                        _response.ErrorMessage = new List<string?>
+                        {
+                            uploadResult.Error.ToString()
+                        };
+                        return BadRequest(_response);
+                    }
+                    blog.ImageUrl = uploadResult.Url.ToString();
+                    blog.UpdatedAt = DateTime.Now;
+                }
+
+                // Save the changes
+                _unitOfWork.Blog.Update(blog);
+                await _unitOfWork.SaveAsync();
+
+                _response.StatusCode = HttpStatusCode.ResetContent;
+                _response.IsSuccess = true;
+                _response.Result = _mapper.Map<BlogDTO>(blog);
+
+                return StatusCode(StatusCodes.Status205ResetContent, _response);
             }
             catch (Exception e)
             {

@@ -14,6 +14,7 @@ namespace BisleriumBlog.API
             CreateMap<Category, CategoryDTO>().ReverseMap();
             CreateMap<Blog,  BlogCreateDTO>().ReverseMap();
             CreateMap<Blog, BlogDTO>().ReverseMap();
+            CreateMap<Blog, BlogUpdateDTO>().ReverseMap();
         }
     }
 }
