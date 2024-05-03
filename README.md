@@ -2,8 +2,7 @@
 
 ## Flow Chart of the Project
 
-![FinalERD](https://github.com/TaushifReza/BisleriumBlog/assets/112973122/4d20101c-59ee-4f94-a521-a9ee3f879175)
-
+![FinalERD](https://github.com/TaushifReza/BisleriumBlog/assets/112973122/12b3c8b5-a545-47c6-bf41-49f0bebbc000)
 
 To run Backend all u need to do is change connection string
 
