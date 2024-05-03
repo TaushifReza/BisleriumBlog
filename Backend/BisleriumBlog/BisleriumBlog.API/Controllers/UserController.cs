@@ -57,7 +57,7 @@ namespace BisleriumBlog.API.Controllers
                 if (userCreateDto.ProfileImage!.Length > 0)
                 {
                     // Validate the image file
-                    bool isValidFile = ValidateImageFile(userCreateDto.ProfileImage, out var errorMessage,3);
+                    bool isValidFile = Validator.ValidateImageFile(userCreateDto.ProfileImage, out var errorMessage,3);
                     if (!isValidFile)
                     {
                         _response.IsSuccess = false;
@@ -489,7 +489,7 @@ namespace BisleriumBlog.API.Controllers
                 if (file.Length > 0)
                 {
                     // Validate the image file
-                    bool isValidFile = ValidateImageFile(file, out var errorMessage, 3);
+                    var isValidFile = Validator.ValidateImageFile(file, out var errorMessage, 3);
                     if (!isValidFile) {
                         _response.IsSuccess = false;
                         _response.StatusCode = HttpStatusCode.BadRequest;
@@ -550,9 +550,6 @@ namespace BisleriumBlog.API.Controllers
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
                 new Claim(ClaimTypes.Name, user.FullName),
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Role, role)
                 };
             var token = new JwtSecurityToken(
@@ -563,34 +560,6 @@ namespace BisleriumBlog.API.Controllers
             signingCredentials: credentials
             );
             return new JwtSecurityTokenHandler().WriteToken(token);
-        }
-
-        private bool ValidateImageFile(IFormFile file, out string errorMessage, double maxSizeInMegabytes = 3)
-        {
-            errorMessage = string.Empty;
-            // Get the file extension
-            string fileExtension = Path.GetExtension(file.FileName).ToLower();
-
-            // Define the list of allowed image file extensions
-            List<string> allowedExtensions = new List<string> { ".jpg", ".jpeg", ".png", ".gif", ".bmp" };
-
-            // Check if the file extension is allowed
-            if (!allowedExtensions.Contains(fileExtension)) {
-                var allowedExtensionsString = string.Join(", ", allowedExtensions);
-                errorMessage = $"Only image files with extensions {allowedExtensionsString} are allowed. Please provide a valid image file.";
-                return false;
-            }
-
-            // Convert file size from bytes to megabytes
-            double fileSizeInMegabytes = Math.Round((double)file.Length / (1024 * 1024), 2);
-
-            if (fileSizeInMegabytes > maxSizeInMegabytes) {
-                // Throw error if file size is larger than the specified maximum size
-                errorMessage = $"Image size cannot be larger than {maxSizeInMegabytes} MB. The provided file size is {fileSizeInMegabytes} MB.";
-                return false;
-            }
-
-            return true;
         }
     }
 }

@@ -12,6 +12,9 @@ namespace BisleriumBlog.Models.EntityModels
         [StringLength(50)]
         public string Title { get; set; } = string.Empty;
         [Required]
+        public string Body { get; set; } = string.Empty;
+        public string? ImageUrl { get; set; }
+        [Required]
         [ForeignKey(nameof(User))]
         public string UserId { get; set; }
         public User? User { get; set; }
