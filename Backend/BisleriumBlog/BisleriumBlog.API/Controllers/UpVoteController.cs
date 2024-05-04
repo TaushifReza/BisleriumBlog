@@ -37,7 +37,7 @@ namespace BisleriumBlog.API.Controllers
 
         [HttpGet("GetAllUpVoteForBlog/{id:int}")]
         [AllowAnonymous]
-        public async Task<ActionResult<APIResponse>> GetAllUpVoteForBlog(int id)
+        public async Task<ActionResult<APIResponse>> GetAllUpVoteForBlog(int id, int pageSize = 3, int pageNumber = 1)
         {
             try
             {
@@ -55,7 +55,8 @@ namespace BisleriumBlog.API.Controllers
                 // Retrieve user claims from JWT token
                 var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-                var upVote = await _unitOfWork.UpVote.GetAllAsync(u=>u.BlogId==id);
+                var upVote = await _unitOfWork.UpVote.GetAllAsync(u=>u.BlogId==id, pageSize: pageSize, 
+                    pageNumber: pageNumber);
 
                 _response.StatusCode = HttpStatusCode.OK;
                 _response.IsSuccess = true;
@@ -126,7 +127,7 @@ namespace BisleriumBlog.API.Controllers
                     {
                         message = "Successful UpVote the Blog."
                     };
-                    return StatusCode(StatusCodes.Status201Created);
+                    return StatusCode(StatusCodes.Status201Created, _response);
                 }
                 else
                 {
@@ -143,7 +144,7 @@ namespace BisleriumBlog.API.Controllers
                     {
                         message = "Successful Remove UpVote the Blog."
                     };
-                    return StatusCode(StatusCodes.Status204NoContent);
+                    return StatusCode(StatusCodes.Status204NoContent, _response);
                 }
 
             }
