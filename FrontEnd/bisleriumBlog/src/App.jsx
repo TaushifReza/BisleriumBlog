@@ -1,4 +1,4 @@
-import Category from "../Components/Category";
+import Category from "../Components/CategoryApiTesting";
 function App() {
   return (
     <>
