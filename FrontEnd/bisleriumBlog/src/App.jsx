@@ -1,10 +1,15 @@
+import React from "react";
+import { Toaster } from "react-hot-toast";
+import MyState from "../context/myState";
 
-function App() {
+function App({ children }) {
   return (
-    <>
-
-      <h1 className="text-4xl text-center mt-10">Under Construction</h1>
-    </>
+    <MyState>
+      <div>
+        {children}  {/* Child components will be the routed pages */}
+        <Toaster />
+      </div>
+    </MyState>
   );
 }
 

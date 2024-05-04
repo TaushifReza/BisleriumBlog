@@ -35,3 +35,19 @@ a {
 h1,h2,h3,h4,h5,h6 {
     @apply font-bold;
 }
+.auth-button1 {
+    padding: 10px;
+    background-color: #30336b;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    float: right;
+    justify-self: end;
+
+
+  }
+  
+  .auth-button:hover1 {
+    background-color: #30336b;
+  }

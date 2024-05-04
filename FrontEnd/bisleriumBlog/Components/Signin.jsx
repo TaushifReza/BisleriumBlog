@@ -120,7 +120,7 @@ const Signin = () => {
                   </Link>
 
                   <button
-                    className="bg-sky-600 text-white font-medium text-sm rounded-full px-14 py-3"
+                    className=" text-white font-medium text-sm rounded-full px-14 py-3"
                     onClick={signinHandler}
                   >
                     Sign In
