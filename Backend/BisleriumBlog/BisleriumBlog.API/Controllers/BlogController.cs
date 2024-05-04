@@ -10,6 +10,8 @@ using System.Net;
 using BisleriumBlog.DataAccess.Service.IService;
 using BisleriumBlog.Utility;
 using System.Security.Claims;
+using BisleriumBlog.Models.ServiceModel;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace BisleriumBlog.API.Controllers
 {
@@ -37,11 +39,15 @@ namespace BisleriumBlog.API.Controllers
 
         [HttpGet("GetAllBlog")]
         [AllowAnonymous]
-        public async Task<ActionResult<APIResponse>> GetAllBlog()
+        public async Task<ActionResult<APIResponse>> GetAllBlog(int pageSize = 3, int pageNumber = 1)
         {
             try
             {
-                var blogs = await _unitOfWork.Blog.GetAllAsync();
+                var blogs = await _unitOfWork.Blog.GetAllAsync(pageSize:pageSize, pageNumber:pageNumber);
+
+                Pagination pagination = new() {PageNumber = pageNumber, PageSize = pageSize};
+
+                Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagination));
 
                 _response.StatusCode = HttpStatusCode.OK;
                 _response.IsSuccess = true;
@@ -156,6 +162,7 @@ namespace BisleriumBlog.API.Controllers
         {
             try
             {
+
                 // Check if at least one property is provided
                 var isBodyProvided = !string.IsNullOrEmpty(blogUpdateDTO.Body);
                 var isImageProvided = blogUpdateDTO.BlogImage != null;
@@ -172,6 +179,16 @@ namespace BisleriumBlog.API.Controllers
                 if (blog == null) {
                     _response.ErrorMessage = new List<string> { "Blog not found" };
                     return StatusCode(StatusCodes.Status404NotFound, _response);
+                }
+
+                // Retrieve user claims from JWT token
+                var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                // Check if user is the owner of the blog
+                if (blog.UserId != userId) {
+                    _response.StatusCode = HttpStatusCode.Forbidden;
+                    _response.ErrorMessage = new List<string> { "You are not authorized to update this blog" };
+                    return StatusCode(StatusCodes.Status403Forbidden, _response);
                 }
 
                 // Update the blog properties
