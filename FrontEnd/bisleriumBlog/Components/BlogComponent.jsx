@@ -9,6 +9,7 @@ const BlogComponent = () => {
       title: "This achieves official Instagram Marketing Partner status",
       date: "Feb 15, 2021",
       category: "Development",
+      viewcount: "Views: 100",
       image: "https://source.unsplash.com/random/400x300?food",
       description: "Welcome to Blogza, where digital innovation intersects with strategic excellence. As a dynamic force in the realm of digital marketing, we are committed.",
       likes: 120,
@@ -20,6 +21,7 @@ const BlogComponent = () => {
       title: "Introducing a complimentary plan tailored for small teams",
       date: "March 24, 2023",
       category: "Graphic Design",
+      viewcount: "Views: 100",
       image: "https://source.unsplash.com/random/400x300?nature",
       description: "Welcome to Blogza, where digital innovation intersects with strategic excellence. As a dynamic force in the realm of digital marketing, we are committed.",
       likes: 95,
@@ -31,6 +33,7 @@ const BlogComponent = () => {
       title: "Google Assistant now aids in recording stories",
       date: "April 18, 2021",
       category: "Creative",
+      viewcount: "Views: 100",
       image: "https://source.unsplash.com/random/400x300?animal",
       description: "Welcome to Blogza, where digital innovation intersects with strategic excellence. As a dynamic force in the realm of digital marketing, we are committed.",
       likes: 200,
@@ -42,6 +45,7 @@ const BlogComponent = () => {
       title: "Front accounts - let's collaborate and create the world's best design",
       date: "June 14, 2022",
       category: "Technology",
+      viewcount: "Views: 100",
       image: "https://source.unsplash.com/random/400x300?house",
       description: "Welcome to Blogza, where digital innovation intersects with strategic excellence. As a dynamic force in the realm of digital marketing, we are committed.",
       likes: 150,
@@ -82,6 +86,7 @@ const BlogGrid = ({ blogs }) => {
             title={blog.title}
             date={blog.date}
             category={blog.category}
+            viewcount={blog.viewcount}
             image={blog.image}
             description={blog.description}
             likes={blog.likes}
@@ -94,7 +99,7 @@ const BlogGrid = ({ blogs }) => {
   );
 };
 
-const BlogCard = ({ title, date, category, image, description, likes, dislikes, comments }) => {
+const BlogCard = ({ title, date, category,viewcount, image, description, likes, dislikes, comments }) => {
   return (
     <div className="group sm:flex rounded-xl">
       <div className="flex-shrink-0 relative rounded-xl overflow-hidden h-[200px] sm:w-[500px] sm:h-[300px] group">
@@ -105,6 +110,7 @@ const BlogCard = ({ title, date, category, image, description, likes, dislikes, 
           <div className="mb-3 flex items-center">
             <p className="inline-flex items-center gap-1.5 py-1.5 rounded-md text-sm font-medium text-dark me-7 underline ">{category}</p>
             <p className="text-sm text-gray-500 ms-7">{date}</p>
+            <p className="text-sm text-gray-500 ms-7">{viewcount}</p>
           </div>
           <a href="#" className="text-lg sm:text-3xl font-semibold text-dark hover:text-primary transition-all duration-500">{title}</a>
           <p className="mt-4 mb-6 text-gray-500 text-base leading-7 font-medium">{description}</p>
