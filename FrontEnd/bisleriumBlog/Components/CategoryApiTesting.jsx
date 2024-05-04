@@ -31,7 +31,6 @@ const Category = () => {
   const addcategory = async (e) => {
     const formData = new FormData();
     formData.append("Name", Name.trim());
-    console.log(Name)
     const Requestoptions = {
       method: "POST",
       headers: {
@@ -44,8 +43,8 @@ const Category = () => {
       Requestoptions
     );
      const data = await response.json();
-     if (response.status == 200) {
-       console.log(data)
+     if (response.status == 200) {  
+
      }
   };
 
@@ -57,8 +56,8 @@ const Category = () => {
       {categorydata.length == 0 ? (
         <p>Please Click to see data</p>
       ) : (
-        categorydata.map((category,index) => (
-          <div key={index}>
+        categorydata.map((category) => (
+          <div key={category.id}>
             <h1>{category.name}</h1>
           </div>
         ))
