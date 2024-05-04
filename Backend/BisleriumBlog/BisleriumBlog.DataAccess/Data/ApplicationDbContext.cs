@@ -14,6 +14,8 @@ namespace BisleriumBlog.DataAccess.Data
 
         public DbSet<Category> Categories { get; set; }
         public DbSet<Blog> Blogs { get; set; }
+        public DbSet<UpVote> UpVotes { get; set; }
+        public DbSet<DownVote> DownVotes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

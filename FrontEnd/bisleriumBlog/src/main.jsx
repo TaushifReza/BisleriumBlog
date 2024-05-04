@@ -1,11 +1,20 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App.jsx";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import "./index.css";
 import { Provider } from "react-redux";
 import { store } from "../GlobalStorage/store.js";
+import App from "./App.jsx";
+import Home from "./Home";
+import { ThemeProvider } from "@material-tailwind/react";
 
+// import Blog from "./pages/blog/Blog";
+import AllBlogs from "../Components/Allblogs";
+// import BlogInfo from "./pages/blogInfo/BlogInfo";
+// import NoPage from "./pages/nopage/NoPage";
+import AdminLogin from "../Components/Adminlogin";
+import AdminDashboard from "../Components/AdminDashboard";
+import CreateBlog from "../Components/CreateBlog";
 import Signup from "../Components/Signup";
 import Signin from "../Components/Signin";
 import Emailtemp from "../Components/Emailtemp";
@@ -13,46 +22,81 @@ import Forget from "../Components/forget";
 import TwoFactor from "../Components/Twofactor";
 import Verifyemail from "../Components/Verifyemail";
 import MFA from "../Components/MFA.jsx";
-
+import BlogComponent from "../Components/BlogComponent.jsx";
 const router = createBrowserRouter([
   {
-    path:"/",
-    element:<App/>
+    path: "/",
+    element: <App><Home /></App>,
+  },
+  // {
+  //   path: "/blog",
+  //   element: <App><Blog /></App>,
+  // },
+  {
+    path: "/allblogs",
+    element: <App><AllBlogs /></App>,
+  },
+  {
+    path: "/blogs",
+    element: <App><BlogComponent /></App>,
+  },
+  // {
+  //   path: "/bloginfo/:id",
+  //   element: <App><BlogInfo /></App>,
+  // },
+  {
+    path: "/adminlogin",
+    element: <App><AdminLogin /></App>,
+  },
+  {
+    path: "/dashboard",
+    element: <App><AdminDashboard /></App>,
+  },
+  {
+    path: "/createblog",
+    element: <App><CreateBlog /></App>,
   },
   {
     path: "/signin",
-    element: <Signin />,
+    element: <App><Signin /></App>,
   },
   {
     path: "/signup",
-    element: <Signup />,
+    element: <App><Signup /></App>,
   },
   {
     path: "/emailtemp",
-    element: <Emailtemp />,
+    element: <App><Emailtemp /></App>,
   },
   {
     path: "/forget",
-    element: <Forget />,
+    element: <App><Forget /></App>,
   },
   {
     path: "/twofactor",
-    element: <TwoFactor />,
+    element: <App><TwoFactor /></App>,
   },
   {
     path: "/verifyemail",
-    element: <Verifyemail />,
+    element: <App><Verifyemail /></App>,
   },
   {
     path: "/mfa",
-    element: <MFA />,
+    element: <App><MFA /></App>,
   },
+  // {
+  //   path: "/*",
+  //   element: <App><NoPage /></App>,
+  // },
 ]);
 
-ReactDOM.createRoot(document.getElementById("root")).render(
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <RouterProvider router={router} />
+    <ThemeProvider> {/* Add this line, include the theme prop if you have a custom theme */}
+        <RouterProvider router={router} />
+      </ThemeProvider>
     </Provider>
   </React.StrictMode>
 );

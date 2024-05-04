@@ -4,6 +4,8 @@
     {
         ICategoryRepository Category { get; }
         IBlogRepository Blog { get; }
+        IUpVoteRepository UpVote { get; }
+        IDownVoteRepository DownVote { get; }
         Task SaveAsync();
     }
 }

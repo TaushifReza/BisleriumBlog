@@ -1,12 +1,19 @@
-import Category from "../Components/CategoryApiTesting";
-function App() {
-  return (
-    <>
 
-      <h1 className="text-4xl text-center mt-10">Under Construction</h1>
-      <Category></Category>
-    </>
-  );
+import React from "react";
+import { Toaster } from "react-hot-toast";
+import MyState from "../context/myState";
+import Category from "../Components/CategoryApiTesting";
+
+function App({ children }) {
+  return (
+    <MyState>
+      <div>
+        {children}  {/* Child components will be the routed pages */}
+        <Category></Category>
+        <Toaster />
+      </div>
+    </MyState>
+  )
 }
 
 export default App;
