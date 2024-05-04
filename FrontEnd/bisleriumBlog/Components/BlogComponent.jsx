@@ -5,6 +5,7 @@ import { AiFillHeart, AiFillDislike, AiOutlineComment } from "react-icons/ai";
 
 const BlogComponent = () => {
 
+
 const [blogs, setBlogs] = useState([])
   useEffect(() => {
     const Requestoptions = {
@@ -20,6 +21,7 @@ const [blogs, setBlogs] = useState([])
    
   });
  
+
 
   return (
     <section id="demo" className="py-28">
@@ -50,6 +52,7 @@ const BlogGrid = ({ blogs }) => {
           <BlogCard
             key={blog.id}
             title={blog.title}
+
             date={new Date(blog.createdAt).toLocaleDateString()}
             category={blog.categoryID}
             image={blog.imageUrl}
@@ -57,6 +60,7 @@ const BlogGrid = ({ blogs }) => {
             likes={blog.upVoteCount}
             dislikes={blog.downVoteCount}
             comments={blog.commentCount}
+
           />
         ))}
       </div>
@@ -90,6 +94,7 @@ const BlogCard = ({
               {category}
             </p>
             <p className="text-sm text-gray-500 ms-7">{date}</p>
+            <p className="text-sm text-gray-500 ms-7">{viewcount}</p>
           </div>
           <a
             href="#"
