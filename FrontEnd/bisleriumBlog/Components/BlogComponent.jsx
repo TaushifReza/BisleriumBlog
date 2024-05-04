@@ -52,7 +52,7 @@ const BlogGrid = ({ blogs }) => {
           <BlogCard
             key={blog.id}
             title={blog.title}
-
+            viewcount = {blog.viewcount}
             date={new Date(blog.createdAt).toLocaleDateString()}
             category={blog.categoryID}
             image={blog.imageUrl}
@@ -77,6 +77,7 @@ const BlogCard = ({
   likes,
   dislikes,
   comments,
+  viewcount
 }) => {
   return (
     <div className="group sm:flex rounded-xl">
