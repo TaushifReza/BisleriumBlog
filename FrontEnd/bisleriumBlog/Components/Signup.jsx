@@ -1,9 +1,8 @@
 import React,{useState} from 'react';
 import '../style/signup.css';
 import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch } from "react-redux";
 import  Userurl  from '../src';
-import { signup } from '../Features/Register/SignupSlice';
+
 
 const Signup = () => {
 
@@ -15,7 +14,6 @@ const Signup = () => {
       const [profileImg, setProfileImg] = useState(null);
       const navigate = useNavigate();
       
-      const dispatch = useDispatch();
 
       const signupHandler = async(e) => {
         const formData = new FormData();
@@ -37,8 +35,7 @@ const Signup = () => {
         
          
          if (response.status == 200){ 
-            const TokenandId = { token:data.result.token, id:data.result.userId };
-            dispatch(signup(TokenandId))
+
             navigate("/verifyemail");
 
          }

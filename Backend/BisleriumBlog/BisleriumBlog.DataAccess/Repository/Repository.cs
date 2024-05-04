@@ -16,13 +16,25 @@ namespace BisleriumBlog.DataAccess.Repository
             this.DbSet = _db.Set<T>();
             //_db.Categories == dbSet
         }
-        public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null)
+        public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, int pageSize = 3, int pageNumber = 1)
         {
             IQueryable<T> query = DbSet;
 
             if (filter != null)
             {
                 query = query.Where(filter);
+            }
+
+            if (pageSize > 0)
+            {
+                if (pageSize > 100)
+                {
+                    pageSize = 100;
+                }
+                // skip0.take(5)
+                // page number- 2 || page size -5
+                // skip(5*(1)) take(5)
+                query = query.Skip(pageSize * (pageNumber - 1)).Take(pageSize);
             }
 
             return await query.ToListAsync();
