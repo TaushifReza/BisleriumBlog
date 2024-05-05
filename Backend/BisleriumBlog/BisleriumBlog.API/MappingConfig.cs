@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BisleriumBlog.Models.DTOs;
+using BisleriumBlog.Models.DTOs.UpVote;
 using BisleriumBlog.Models.EntityModels;
 
 namespace BisleriumBlog.API
@@ -15,6 +16,8 @@ namespace BisleriumBlog.API
             CreateMap<Blog,  BlogCreateDTO>().ReverseMap();
             CreateMap<Blog, BlogDTO>().ReverseMap();
             CreateMap<Blog, BlogUpdateDTO>().ReverseMap();
+            CreateMap<UpVote, UpVoteDTO>().ReverseMap();
+            CreateMap<UpVote, UpVoteCreateDTO>().ReverseMap();
         }
     }
 }

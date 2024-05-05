@@ -6,7 +6,7 @@ import Userurl from "../src";
 const Forget = () => {
   const [email, setEmail] = useState("");
 
-  const forgetPasswordhandler = async () => {
+  const forgetPasswordhandler = async (e) => {
     const Requestoptions = {
       method: "POST",
       headers: {
