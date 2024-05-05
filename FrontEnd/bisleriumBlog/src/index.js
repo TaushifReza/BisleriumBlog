@@ -1,4 +1,5 @@
 const Userurl = "https://localhost:7094/api/User/"; 
 const Categoryurl = "https://localhost:7094/api/Category/";
-export {Categoryurl}
+const Blogurl = "https://localhost:7094/api/Blog/";
+export {Categoryurl, Blogurl}
 export default Userurl
