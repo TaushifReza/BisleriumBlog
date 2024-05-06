@@ -1,0 +1,61 @@
+.profile-page {
+    font-family: 'Arial', sans-serif;
+}
+
+.containerprofile {
+    max-width: 1200px;
+    margin: 0 auto; /* Centers the container */
+    padding: 0 15px; /* Adds padding on the sides */
+}
+
+.item-spacing {
+    margin-right: 40px; /* Adjust the right margin as needed */
+    white-space: nowrap; /* Keeps the label and number on the same line */
+}
+
+.item-spacing:last-child {
+    margin-right: 0; /* Removes margin from the last item */
+}
+
+.auth-button1 {
+    background-color: #30336b;
+; /* Sample button color */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.auth-button1:hover {
+    background-color: #3548a8; /* Darkens the button on hover */
+}
+
+.rounded-full {
+    border-radius: 50%;
+}
+
+.shadow-lg {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.border-white {
+    border-color: white;
+}
+
+@media (max-width: 768px) {
+    .flex {
+        flex-direction: column; /* Stacks flex children vertically on small screens */
+    }
+
+    .item-spacing {
+        margin-right: 0;
+        margin-bottom: 20px; /* Adds space between items when stacked */
+    }
+
+    .container {
+        padding: 0 10px;
+    }
+}

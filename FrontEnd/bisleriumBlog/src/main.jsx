@@ -23,8 +23,11 @@ import TwoFactor from "../Components/Twofactor";
 import Verifyemail from "../Components/Verifyemail";
 import MFA from "../Components/MFA.jsx";
 import BlogComponent from "../Components/BlogComponent.jsx";
-import ForgetVerify from "../Components/fotgetVerify.jsx";
+
+import ProfilePage from "../Components/Profilepage.jsx";
+import FotgetVerify from "../Components/fotgetVerify.jsx";
 import ResetPassword from "../Components/ResetPassword.jsx";
+import ProfilePage from "../Components/profile.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -142,7 +145,7 @@ const router = createBrowserRouter([
     path: "/forgetverify",
     element: (
       <App>
-        <ForgetVerify></ForgetVerify>
+        <FotgetVerify></FotgetVerify>
       </App>
     ),
   },
@@ -153,6 +156,10 @@ const router = createBrowserRouter([
         <ResetPassword></ResetPassword>
       </App>
     ),
+  },
+  {
+    path: "/profile",
+    element: <App><ProfilePage /></App>,
   },
   // {
   //   path: "/*",
