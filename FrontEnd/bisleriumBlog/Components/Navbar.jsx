@@ -26,7 +26,7 @@ export default function Nav() {
                 <Link to={'/'}>Home</Link>
             </li>
             <li className="text-white p-1">
-                <Link to={'/blogs'}>Blogs</Link>
+                <Link to={'/allblogs'}>Blogs</Link>
             </li>
             <li className="text-white p-1">
                 <Link to={'/adminlogin'}>Admin Login</Link>

@@ -9,7 +9,6 @@ function App({ children }) {
     <MyState>
       <div>
         {children}  {/* Child components will be the routed pages */}
-        <Category></Category>
         <Toaster />
       </div>
     </MyState>
