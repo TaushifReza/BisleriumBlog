@@ -132,7 +132,7 @@ namespace BisleriumBlog.API.Controllers
                 else
                 {
                     // remove a UpVote and decrees UpVote count for blog
-                    _unitOfWork.UpVote.Remove(alreadyUpVoteBlog!);
+                    _unitOfWork.UpVote.Remove(alreadyUpVoteBlog);
                     await _unitOfWork.SaveAsync();
 
                     blog.UpVoteCount -= 1;

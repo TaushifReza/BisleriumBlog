@@ -1,11 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
-using System.IO;
 using System.Net;
 using System.Security.Claims;
 using System.Text;
 using AutoMapper;
-using BisleriumBlog.DataAccess.Service;
 using BisleriumBlog.DataAccess.Service.IService;
 using BisleriumBlog.Models;
 using BisleriumBlog.Models.DTOs;
@@ -14,14 +12,10 @@ using BisleriumBlog.Models.EntityModels;
 using BisleriumBlog.Models.ServiceModel;
 using BisleriumBlog.Utility;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json.Linq;
-using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 using Validator = BisleriumBlog.Utility.Validator;
 
 namespace BisleriumBlog.API.Controllers
@@ -130,9 +124,7 @@ namespace BisleriumBlog.API.Controllers
                     _response.IsSuccess = true;
                     _response.Result = new
                     {
-                        message = "User Register successfully",
-                        userId = user.Id,
-                        token = tokenEncoded
+                        message = "User Register successfully"
                     };
                     return Ok(_response);
                 }

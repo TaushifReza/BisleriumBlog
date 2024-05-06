@@ -20,6 +20,7 @@ namespace BisleriumBlog.API
             CreateMap<UpVote, UpVoteDTO>().ReverseMap();
             CreateMap<UpVote, UpVoteCreateDTO>().ReverseMap();
             CreateMap<DownVote, DownVoteDTO>().ReverseMap();
+            CreateMap<DownVote, DownVoteCreateDTO>().ReverseMap();
         }
     }
 }
