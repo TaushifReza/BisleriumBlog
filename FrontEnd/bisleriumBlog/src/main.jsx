@@ -23,7 +23,7 @@ import TwoFactor from "../Components/Twofactor";
 import Verifyemail from "../Components/Verifyemail";
 import MFA from "../Components/MFA.jsx";
 import BlogComponent from "../Components/BlogComponent.jsx";
-import ForgetVerify from "../Components/fotgetVerify.jsx";
+import ForgetVerify from "../Components/fortgetVerify.jsx";
 import ResetPassword from "../Components/ResetPassword.jsx";
 const router = createBrowserRouter([
   {
