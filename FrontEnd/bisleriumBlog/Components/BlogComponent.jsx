@@ -103,7 +103,7 @@ const BlogCard = ({
           >
             {title}
           </a>
-          <p className="mt-4 mb-6 text-gray-500 text-base leading-7 font-medium">
+          <p className=" line-clamp-3 mt-4 mb-6 text-gray-500 text-base leading-7 font-medium ">
             {description}
           </p>
           <div className="flex items-center flex-wrap">
