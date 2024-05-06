@@ -101,11 +101,14 @@ namespace BisleriumBlog.API.Controllers
                     // Encode the token
                     byte[] tokenGeneratedBytes = Encoding.UTF8.GetBytes(confirmationToken);
                     var tokenEncoded = WebEncoders.Base64UrlEncode(tokenGeneratedBytes);
+                    // Encode the userId
+                    byte[] userIdGeneratedBytes = Encoding.UTF8.GetBytes(user.Id);
+                    var userIdEncoded = WebEncoders.Base64UrlEncode(userIdGeneratedBytes);
                     string emailConfirmationLink =
-                        $"https://localhost:7094/api/User/ConfirmEmail?id={user.Id}&token={tokenEncoded}";
+                        $"https://localhost:7094/api/User/ConfirmEmail?id={userIdEncoded}&token={tokenEncoded}";
                     // Send Email Confirmation Link to Email
                     // email = taushif1teza@gmail.com
-                    /*try
+                    try
                     {
                         if (user.Email != null)
                         {
@@ -113,7 +116,7 @@ namespace BisleriumBlog.API.Controllers
                             {
                                 ToEmail = user.Email,
                                 Subject = "Verify Your Email",
-                                Body = $"<a href=\"{emailConfirmationLink}\">Email Confirmation Link</a>"
+                                Body = $"Email Confirm Link {emailConfirmationLink}"
                             };
                             await _emailService.SendEmailAsync(mailRequest);
                         }
@@ -122,7 +125,7 @@ namespace BisleriumBlog.API.Controllers
                     {
                         Console.WriteLine(e);
                         throw;
-                    }*/
+                    }
                     _response.StatusCode = HttpStatusCode.OK;
                     _response.IsSuccess = true;
                     _response.Result = new
@@ -150,7 +153,10 @@ namespace BisleriumBlog.API.Controllers
         {
             try
             {
-                var user = await _userManager.FindByIdAsync(id);
+                // Decode the userId
+                var userIdDecodedBytes = WebEncoders.Base64UrlDecode(id);
+                var userIdDecoded = Encoding.UTF8.GetString(userIdDecodedBytes);
+                var user = await _userManager.FindByIdAsync(userIdDecoded);
                 if (user == null)
                 {
                     _response.StatusCode = HttpStatusCode.BadRequest;
