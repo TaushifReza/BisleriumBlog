@@ -8,6 +8,7 @@ using BisleriumBlog.DataAccess.Service;
 using BisleriumBlog.DataAccess.Service.IService;
 using BisleriumBlog.Models;
 using BisleriumBlog.Models.DTOs;
+using BisleriumBlog.Models.DTOs.User;
 using BisleriumBlog.Models.EntityModels;
 using BisleriumBlog.Models.ServiceModel;
 using BisleriumBlog.Utility;
@@ -539,6 +540,45 @@ namespace BisleriumBlog.API.Controllers
             {
                 _response.ErrorMessage = new List<string?>() { e.ToString() };
             } return _response;
+        }
+
+        [HttpPost("ChangePassword")]
+        [Authorize]
+        public async Task<ActionResult<APIResponse>> ChangePassword([FromForm] UserChangePasswordDTO userChangePasswordDTO)
+        {
+            try 
+            {
+                // Retrieve user claims from JWT token
+                var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var user = await _userManager.GetUserAsync(base.User);
+
+                if(user != null)
+                {
+                    var result = await _userManager.ChangePasswordAsync(user, userChangePasswordDTO.CurrentPassword, userChangePasswordDTO.NewPassword);
+
+                    if (result.Succeeded)
+                    {
+                        _response.IsSuccess = true;
+                        _response.StatusCode = HttpStatusCode.OK;
+                        _response.Result = new
+                        {
+                            mesage = "Password change Successfuly"
+                        };
+                        return StatusCode(StatusCodes.Status200OK, _response);
+                    }
+                    _response.IsSuccess = false;
+                    _response.StatusCode = HttpStatusCode.InternalServerError;
+                    _response.Result = new
+                    {
+                        mesage = result.Errors
+                    };
+                    return StatusCode(StatusCodes.Status500InternalServerError, _response);
+                }
+            }
+            catch (Exception e)
+            {
+                _response.ErrorMessage = new List<string?>() { e.ToString() };
+            } return StatusCode(StatusCodes.Status500InternalServerError, _response);
         }
 
         private string GenerateToken(User user, string role)
