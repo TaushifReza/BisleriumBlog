@@ -15,12 +15,63 @@ const BlogComponent = () => {
         setBlogs(data.result);
       });
   });
+  const blogs = [
+    {
+      id: 1,
+      title: "This achieves official Instagram Marketing Partner status",
+      date: "Feb 15, 2021",
+      category: "Development",
+      image: "https://source.unsplash.com/random/400x300?food",
+      description:
+        "Welcome to Blogza, where digital innovation intersects with strategic excellence. As a dynamic force in the realm of digital marketing, we are committed.",
+      likes: 120,
+      dislikes: 3,
+      comments: 15,
+    },
+    {
+      id: 2,
+      title: "Introducing a complimentary plan tailored for small teams",
+      date: "March 24, 2023",
+      category: "Graphic Design",
+      image: "https://source.unsplash.com/random/400x300?nature",
+      description:
+        "Welcome to Blogza, where digital innovation intersects with strategic excellence. As a dynamic force in the realm of digital marketing, we are committed.",
+      likes: 95,
+      dislikes: 5,
+      comments: 7,
+    },
+    {
+      id: 3,
+      title: "Google Assistant now aids in recording stories",
+      date: "April 18, 2021",
+      category: "Creative",
+      image: "https://source.unsplash.com/random/400x300?animal",
+      description:
+        "Welcome to Blogza, where digital innovation intersects with strategic excellence. As a dynamic force in the realm of digital marketing, we are committed.",
+      likes: 200,
+      dislikes: 1,
+      comments: 30,
+    },
+    {
+      id: 4,
+      title:
+        "Front accounts - let's collaborate and create the world's best design",
+      date: "June 14, 2022",
+      category: "Technology",
+      image: "https://source.unsplash.com/random/400x300?house",
+      description:
+        "Welcome to Blogza, where digital innovation intersects with strategic excellence. As a dynamic force in the realm of digital marketing, we are committed.",
+      likes: 150,
+      dislikes: 2,
+      comments: 12,
+    },
+  ];
 
   return (
     <section id="demo" className="py-28">
       <div className="container1">
-        <BlogGrid blogs={blogs} />
         {/* <Header /> */}
+        <BlogGrid blogs={blogs} />
       </div>
     </section>
   );
@@ -28,10 +79,10 @@ const BlogComponent = () => {
 
 // const Header = () => {
 //   return (
-//     <div className="max-w-xl mx-auto text-center bg-blue-gray-50 mt-10">
-//       <h2 className="text-4xl font-bold text-dark">Popular stories</h2>
+//     <div className="max-w-xl mx-auto text-center">
+//       <h2 className="text-4xl font-bold text-dark">Customer stories</h2>
 //       <p className="text-base font-medium text-gray-500 mt-6">
-// Check out the most popular stories and blogs.
+//         Lorem Ipsum is simply dummy text of the printing and typesetting industry.
 //       </p>
 //     </div>
 //   );
@@ -53,6 +104,13 @@ const BlogGrid = ({ blogs }) => {
             likes={blog.upVoteCount}
             dislikes={blog.downVoteCount}
             comments={blog.commentCount}
+            date={blog.date}
+            category={blog.category}
+            image={blog.image}
+            description={blog.description}
+            likes={blog.likes}
+            dislikes={blog.dislikes}
+            comments={blog.comments}
           />
         ))}
       </div>
@@ -87,7 +145,6 @@ const BlogCard = ({
               {category}
             </p>
             <p className="text-sm text-gray-500 ms-7">{date}</p>
-            <p className="text-sm text-gray-500 ms-7">{viewcount}</p>
           </div>
           <a
             href="#"
