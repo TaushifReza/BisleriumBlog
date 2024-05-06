@@ -143,7 +143,7 @@ const router = createBrowserRouter([
     path: "/forgetverify",
     element: (
       <App>
-        <FotgetVerify></FotgetVerify>
+        <ForgetVerify></ForgetVerify>
       </App>
     ),
   },
