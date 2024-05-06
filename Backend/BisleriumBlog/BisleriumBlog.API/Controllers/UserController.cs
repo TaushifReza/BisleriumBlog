@@ -246,9 +246,11 @@ namespace BisleriumBlog.API.Controllers
                 if (user != null)
                 {
                     var code = await _userManager.GeneratePasswordResetTokenAsync(user);
-                    byte[] tokenGeneratedBytes = Encoding.UTF8.GetBytes(email);
-                    var emailEncoded = WebEncoders.Base64UrlEncode(tokenGeneratedBytes);
-                    var link = $"http://localhost:5173/resetpassword?email={emailEncoded}&token={code}";
+                    byte[] emailGeneratedBytes = Encoding.UTF8.GetBytes(email);
+                    var emailEncoded = WebEncoders.Base64UrlEncode(emailGeneratedBytes);
+                    byte[] tokenGeneratedBytes = Encoding.UTF8.GetBytes(code);
+                    var tokenEncoded = WebEncoders.Base64UrlEncode(tokenGeneratedBytes);
+                    var link = $"http://localhost:5173/resetpassword?email={emailEncoded}&token={tokenEncoded}";
                     // Send the code to email
                     var mailRequest = new MailRequest
                     {
@@ -284,11 +286,14 @@ namespace BisleriumBlog.API.Controllers
                 var emailDecodedBytes = WebEncoders.Base64UrlDecode(resetPasswordDto.Email);
                 var emailDecoded = Encoding.UTF8.GetString(emailDecodedBytes);
 
+                var tokenDecodedBytes = WebEncoders.Base64UrlDecode(resetPasswordDto.Token);
+                var tokenDecoded = Encoding.UTF8.GetString(tokenDecodedBytes);
+
                 var user = await _userManager.FindByEmailAsync(emailDecoded);
                 if (user != null)
                 {
                     var result =
-                        await _userManager.ResetPasswordAsync(user, resetPasswordDto.Token, resetPasswordDto.Password);
+                        await _userManager.ResetPasswordAsync(user, tokenDecoded, resetPasswordDto.Password);
                     if (result.Succeeded) {
                         _response.StatusCode = HttpStatusCode.OK;
                         _response.IsSuccess = true;
