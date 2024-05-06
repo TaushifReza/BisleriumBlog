@@ -1,0 +1,95 @@
+/* Blogdetail.css */
+
+/* Global styles */
+body {
+    font-family: 'Fira Sans Condensed', sans-serif;
+    color: #374151; /* text-gray-700 */
+    background-color: #ffffff; /* bg-white */
+  }
+  
+  /* Utility classes */
+  .uppercase {
+    text-transform: uppercase;
+  }
+  
+  .tracking-widest {
+    letter-spacing: 0.2em;
+  }
+  
+  /* Header styles */
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem; /* text-2xl */
+    line-height: 2rem; /* md:text-3xl */
+    color: #111827; /* text-gray-900 */
+    margin-top: 1rem; /* mt-4 */
+  }
+  
+  /* Date styles */
+  h2 {
+    font-size: 0.75rem; /* text-xs */
+    color: #4b5563; /* text-gray-600 */
+    margin-top: 0.5rem; /* mt-4 */
+  }
+  
+  /* Content styles */
+  .prose {
+    font-size: 0.875rem; /* prose-sm */
+    line-height: 1.5; /* sm:prose */
+    max-width: 65ch; /* lg:prose-lg */
+    margin-top: 1.5rem; /* mt-6 */
+  }
+  
+  /* Image container styles */
+  .relative {
+    position: relative;
+  }
+  
+  /* Image styles */
+  .w-full {
+    width: 100%;
+  }
+  
+  .h-96 {
+    height: 24rem; /* h-96 */
+  }
+  
+  .object-cover {
+    object-fit: cover;
+  }
+  
+  /* Container styles */
+  .max-w-4xl {
+    max-width: 64rem; /* max-w-4xl */
+  }
+  
+  .mx-auto {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .py-12 {
+    padding-top: 3rem; /* py-12 */
+    padding-bottom: 3rem; /* py-12 */
+  }
+  
+  .px-12 {
+    padding-left: 3rem; /* px-12 */
+    padding-right: 3rem; /* px-12 */
+  }
+  
+  .lg\:px-24 {
+    padding-left: 6rem; /* lg:px-24 */
+    padding-right: 6rem; /* lg:px-24 */
+  }
+  
+  .mt-32 {
+    margin-top: 8rem; /* -mt-32 */
+  }
+  
+  /* Z-index styles */
+  .z-10 {
+    z-index: 10;
+  }
+
+  
