@@ -54,13 +54,6 @@ const BlogGrid = ({ blogs }) => {
             likes={blog.upVoteCount}
             dislikes={blog.downVoteCount}
             comments={blog.commentCount}
-            date={blog.date}
-            category={blog.category}
-            image={blog.image}
-            description={blog.description}
-            likes={blog.likes}
-            dislikes={blog.dislikes}
-            comments={blog.comments}
           />
         ))}
       </div>
@@ -105,7 +98,7 @@ const BlogCard = ({
           <p className=" line-clamp-3 mt-4 mb-6 text-gray-500 text-base leading-7 font-medium ">
             {description}
           </p>
-          =======
+        
           <a
             href="#"
             className="text-lg sm:text-3xl font-semibold text-dark hover:text-primary transition-all duration-500"
@@ -115,7 +108,7 @@ const BlogCard = ({
           <p className="mt-4 mb-6 text-gray-500 text-base leading-7 font-medium">
             {description}
           </p>
-          >>>>>>> 4ee76a32245544c3ee64559f570050f8427d0891
+         
           <div className="flex items-center flex-wrap">
             <AiFillHeart className="text-red-500" />{" "}
             <span className="ml-2 text-gray-600">{likes}</span>
