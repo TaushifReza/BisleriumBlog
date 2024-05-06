@@ -23,6 +23,7 @@ import TwoFactor from "../Components/Twofactor";
 import Verifyemail from "../Components/Verifyemail";
 import MFA from "../Components/MFA.jsx";
 import BlogComponent from "../Components/BlogComponent.jsx";
+import ProfilePage from "../Components/Profilepage.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -83,6 +84,10 @@ const router = createBrowserRouter([
   {
     path: "/mfa",
     element: <App><MFA /></App>,
+  },
+  {
+    path: "/profile",
+    element: <App><ProfilePage /></App>,
   },
   // {
   //   path: "/*",
