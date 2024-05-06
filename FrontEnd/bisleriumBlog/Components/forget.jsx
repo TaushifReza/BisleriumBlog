@@ -12,11 +12,11 @@ const Forget = () => {
       headers: {
         "Content-Type": "text/plain",
       },
-      body: email,
+     
     };
 
     const response = await fetch(
-      Userurl + "SendOtpForForgotPassword",
+      Userurl + `SendOtpForForgotPassword?email=${email}`,
       Requestoptions
     );
 
