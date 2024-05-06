@@ -99,15 +99,7 @@ const BlogCard = ({
             {description}
           </p>
         
-          <a
-            href="#"
-            className="text-lg sm:text-3xl font-semibold text-dark hover:text-primary transition-all duration-500"
-          >
-            {title}
-          </a>
-          <p className="mt-4 mb-6 text-gray-500 text-base leading-7 font-medium">
-            {description}
-          </p>
+         
          
           <div className="flex items-center flex-wrap">
             <AiFillHeart className="text-red-500" />{" "}
