@@ -262,6 +262,7 @@ namespace BisleriumBlog.API.Controllers
                     {
                         message = "Forgot Password Link has been Send to email."
                     };
+                    await _emailService.SendEmailAsync(mailRequest);
                     return Ok(_response);
                 }
                 _response.StatusCode = HttpStatusCode.BadRequest;
