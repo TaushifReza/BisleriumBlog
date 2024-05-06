@@ -15,57 +15,7 @@ const BlogComponent = () => {
         setBlogs(data.result);
       });
   });
-  const blogs = [
-    {
-      id: 1,
-      title: "This achieves official Instagram Marketing Partner status",
-      date: "Feb 15, 2021",
-      category: "Development",
-      image: "https://source.unsplash.com/random/400x300?food",
-      description:
-        "Welcome to Blogza, where digital innovation intersects with strategic excellence. As a dynamic force in the realm of digital marketing, we are committed.",
-      likes: 120,
-      dislikes: 3,
-      comments: 15,
-    },
-    {
-      id: 2,
-      title: "Introducing a complimentary plan tailored for small teams",
-      date: "March 24, 2023",
-      category: "Graphic Design",
-      image: "https://source.unsplash.com/random/400x300?nature",
-      description:
-        "Welcome to Blogza, where digital innovation intersects with strategic excellence. As a dynamic force in the realm of digital marketing, we are committed.",
-      likes: 95,
-      dislikes: 5,
-      comments: 7,
-    },
-    {
-      id: 3,
-      title: "Google Assistant now aids in recording stories",
-      date: "April 18, 2021",
-      category: "Creative",
-      image: "https://source.unsplash.com/random/400x300?animal",
-      description:
-        "Welcome to Blogza, where digital innovation intersects with strategic excellence. As a dynamic force in the realm of digital marketing, we are committed.",
-      likes: 200,
-      dislikes: 1,
-      comments: 30,
-    },
-    {
-      id: 4,
-      title:
-        "Front accounts - let's collaborate and create the world's best design",
-      date: "June 14, 2022",
-      category: "Technology",
-      image: "https://source.unsplash.com/random/400x300?house",
-      description:
-        "Welcome to Blogza, where digital innovation intersects with strategic excellence. As a dynamic force in the realm of digital marketing, we are committed.",
-      likes: 150,
-      dislikes: 2,
-      comments: 12,
-    },
-  ];
+  
 
   return (
     <section id="demo" className="py-28">
