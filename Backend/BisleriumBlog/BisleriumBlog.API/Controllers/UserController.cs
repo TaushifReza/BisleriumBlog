@@ -284,7 +284,7 @@ namespace BisleriumBlog.API.Controllers
                 var emailDecodedBytes = WebEncoders.Base64UrlDecode(resetPasswordDto.Email);
                 var emailDecoded = Encoding.UTF8.GetString(emailDecodedBytes);
 
-                var user = await _userManager.FindByEmailAsync(resetPasswordDto.Email);
+                var user = await _userManager.FindByEmailAsync(emailDecoded);
                 if (user != null)
                 {
                     var result =
