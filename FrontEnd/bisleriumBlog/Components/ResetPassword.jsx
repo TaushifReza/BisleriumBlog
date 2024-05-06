@@ -14,7 +14,8 @@ const ResetPassword = () => {
 
   const resetHandler = async (e) => {
     const formData = new FormData();
-    formData.append("Password", password);formData = new FormData();
+    formData.append("Password", password);
+    
     formData.append("ConfirmPassword", Conformpassword);
     formData.append("Email", email);
     formData.append("Token", token);
