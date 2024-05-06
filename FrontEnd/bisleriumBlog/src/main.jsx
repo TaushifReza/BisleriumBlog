@@ -23,6 +23,7 @@ import TwoFactor from "../Components/Twofactor";
 import Verifyemail from "../Components/Verifyemail";
 import MFA from "../Components/MFA.jsx";
 import BlogComponent from "../Components/BlogComponent.jsx";
+import ForgetVerify from "../Components/fotgetVerify.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -84,6 +85,11 @@ const router = createBrowserRouter([
     path: "/mfa",
     element: <App><MFA /></App>,
   },
+  {
+    path: "/forgetverify",
+    element: <App><ForgetVerify></ForgetVerify></App>,
+  },
+  
   // {
   //   path: "/*",
   //   element: <App><NoPage /></App>,

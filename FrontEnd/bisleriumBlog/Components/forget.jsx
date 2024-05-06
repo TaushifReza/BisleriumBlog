@@ -1,18 +1,17 @@
 import React, { useState } from "react";
 import "../style/signup.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Userurl from "../src";
 
 const Forget = () => {
   const [email, setEmail] = useState("");
-
+  const navigate = useNavigate();
   const forgetPasswordhandler = async (e) => {
     const Requestoptions = {
       method: "POST",
       headers: {
         "Content-Type": "text/plain",
       },
-     
     };
 
     const response = await fetch(
@@ -20,11 +19,11 @@ const Forget = () => {
       Requestoptions
     );
 
-    const data = await response.json();
-    console.log(response);
-    console.log(data);
     if (response.status == 200) {
-      console.log(data);
+      navigate("/forgetverify");
+      setInterval(() => {
+        navigate("/signin");
+      }, 3000);
     }
   };
 
