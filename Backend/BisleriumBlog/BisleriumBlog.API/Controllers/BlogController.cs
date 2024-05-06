@@ -2,7 +2,6 @@
 using BisleriumBlog.DataAccess.Repository.IRepository;
 using BisleriumBlog.Models.EntityModels;
 using BisleriumBlog.Models;
-using BisleriumBlog.Models.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +11,7 @@ using BisleriumBlog.Utility;
 using System.Security.Claims;
 using BisleriumBlog.Models.ServiceModel;
 using JsonSerializer = System.Text.Json.JsonSerializer;
+using BisleriumBlog.Models.DTOs.Blog;
 
 namespace BisleriumBlog.API.Controllers
 {

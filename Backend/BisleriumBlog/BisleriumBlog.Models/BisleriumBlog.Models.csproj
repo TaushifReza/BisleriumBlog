@@ -21,4 +21,9 @@
     </Reference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DTOs\CommentLike\" />
+    <Folder Include="DTOs\CommentDisLike\" />
+  </ItemGroup>
+
 </Project>

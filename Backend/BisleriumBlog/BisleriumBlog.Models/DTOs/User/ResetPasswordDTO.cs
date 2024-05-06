@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BisleriumBlog.Models.DTOs
+namespace BisleriumBlog.Models.DTOs.User
 {
     public class ResetPasswordDTO
     {

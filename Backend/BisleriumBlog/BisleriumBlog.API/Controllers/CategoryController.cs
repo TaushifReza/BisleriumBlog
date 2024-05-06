@@ -3,7 +3,7 @@ using System.Security.Claims;
 using AutoMapper;
 using BisleriumBlog.DataAccess.Repository.IRepository;
 using BisleriumBlog.Models;
-using BisleriumBlog.Models.DTOs;
+using BisleriumBlog.Models.DTOs.Category;
 using BisleriumBlog.Models.EntityModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

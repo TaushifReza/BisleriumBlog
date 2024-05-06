@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Http;
 
-namespace BisleriumBlog.Models.DTOs
+namespace BisleriumBlog.Models.DTOs.Blog
 {
     public class BlogCreateDTO
     {
