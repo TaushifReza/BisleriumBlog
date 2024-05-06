@@ -1,0 +1,140 @@
+// 
+// _header.scss
+// 
+
+.header-border {
+    background: #f7f9fa;
+    height: 3px;
+    background-image: linear-gradient(to right, $purple, $purple 15%, $info 15%, $info 30%, $teal 30%, $teal 45%, $gray-800 45%, $gray-800 55%, $warning 55%, $warning 65%, $teal 65%, $teal 75%, $danger 75%, $danger 85%, $orange 85%, $orange 100%);
+    background-size: 100% 6px;
+    background-position: 50% 100%;
+    background-repeat: no-repeat;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    right: 0;
+}
+
+#page-topbar {
+    position: fixed;
+    top: 3px;
+    right: 0;
+    left: 0;
+    z-index: 1002;
+}
+
+.navbar-header {
+    display: flex;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 auto;
+    height: $header-height;
+    background-color: $header-bg;
+    padding: 0 20px;
+    box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.05);
+    margin-left: $sidebar-width;
+
+    .dropdown.show {
+        .header-item {
+            background-color: rgba($dark, 0.04);
+        }
+    }
+}
+
+.navbar-brand-box {
+    text-align: center;
+}
+
+.logo {
+    line-height: 70px;
+    color: $gray-700 !important;
+    font-size: 20px;
+    text-transform: uppercase;
+    font-weight: 700;
+
+    span {
+        vertical-align: middle;
+    }
+
+    i {
+        color: $info;
+        font-size: 21px;
+    }
+}
+
+.page-title-box {
+    padding-bottom: $grid-gutter-width;
+
+    .breadcrumb {
+        background-color: transparent;
+        padding: 0;
+    }
+}
+
+@media (max-width: 992px) {
+    .navbar-brand-box {
+        padding-left: 0;
+    }
+
+    .navbar-header {
+        margin-left: 0;
+    }
+
+    .logo {
+        padding-right: 15px;
+
+        span {
+            display: none;
+        }
+
+        i {
+            display: inline-block;
+        }
+    }
+}
+
+.page-content {
+    padding: calc(#{$header-height} + #{$grid-gutter-width}) calc(#{$grid-gutter-width} / 2) $footer-height calc(#{$grid-gutter-width} / 2);
+}
+
+.header-item {
+    height: $header-height;
+    box-shadow: none !important;
+    color: $header-item-color;
+    border: 0;
+
+    &:hover {
+        color: $header-item-color;
+    }
+}
+
+.header-profile-user {
+    height: 36px;
+    width: 36px;
+    background-color: rgba($white, 0.5);
+    padding: 3px;
+}
+
+.noti-icon {
+    i {
+        font-size: 24px;
+        color: $header-item-color;
+    }
+
+    .badge {
+        position: absolute;
+        top: 12px;
+    }
+}
+
+.notification-item {
+    .media {
+        padding: 0.75rem 1rem;
+
+        &:hover {
+            background-color: $gray-100;
+        }
+    }
+}

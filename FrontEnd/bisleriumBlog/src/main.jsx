@@ -26,7 +26,6 @@ import BlogComponent from "../Components/BlogComponent.jsx";
 import ForgetVerify from "../Components/fortgetVerify.jsx";
 import ResetPassword from "../Components/ResetPassword.jsx";
 import ProfilePage from "../Components/profile.jsx";
-import ProfilePage from "../Components/profile.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -156,23 +155,7 @@ const router = createBrowserRouter([
       </App>
     ),
   },
-  {
-    path: "/profile",
-    element: (
-      <App>
-        <ProfilePage/>
-      </App>
-    ),
-  },
-  {
-    path: "/blogdetail",
-    element: (
-      <App>
-        <Blogdetail/>
-      </App>
-    ),
-  },
-  
+ 
   {
     path: "/profile",
     element: <App><ProfilePage /></App>,
