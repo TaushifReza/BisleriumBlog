@@ -1,4 +1,5 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+﻿using System.ComponentModel.DataAnnotations;
+using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Net;
 using System.Security.Claims;
@@ -20,11 +21,12 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Linq;
 using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
+using Validator = BisleriumBlog.Utility.Validator;
 
 namespace BisleriumBlog.API.Controllers
 {
     [Route("api/User")]
-    [ApiController]
+    [ApiController] 
     public class UserController : ControllerBase
     {
         protected APIResponse _response;
@@ -235,7 +237,7 @@ namespace BisleriumBlog.API.Controllers
         }
 
         [HttpPost("SendOtpForForgotPassword")]
-        public async Task<ActionResult<APIResponse>> SendOtpForForgotPassword(string email)
+        public async Task<ActionResult<APIResponse>> SendOtpForForgotPassword( [Required] string email)
         {
             try
             {
