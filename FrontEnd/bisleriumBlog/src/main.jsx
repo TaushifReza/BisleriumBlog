@@ -25,7 +25,9 @@ import MFA from "../Components/MFA.jsx";
 import BlogComponent from "../Components/BlogComponent.jsx";
 import ForgetVerify from "../Components/fortgetVerify.jsx";
 import ResetPassword from "../Components/ResetPassword.jsx";
-import ProfilePage from "../Components/profile.jsx";
+import ProfilePage from "../Components/Profilepage.jsx";
+import ConfirmEmail from "../Components/ConfirmEmail.jsx";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -155,10 +157,22 @@ const router = createBrowserRouter([
       </App>
     ),
   },
- 
+  {
+    path: "/confirmEmail",
+    element: (
+      <App>
+        <ConfirmEmail></ConfirmEmail>
+      </App>
+    ),
+  },
+
   {
     path: "/profile",
-    element: <App><ProfilePage /></App>,
+    element: (
+      <App>
+        <ProfilePage />
+      </App>
+    ),
   },
   // {
   //   path: "/*",

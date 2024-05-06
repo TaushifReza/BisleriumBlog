@@ -3,35 +3,35 @@ import "../style/signup.css";
 import { Link, useNavigate } from "react-router-dom";
 import Userurl from "../src";
 
-
-
-
 const ResetPassword = () => {
   const navigate = useNavigate();
   const [password, setPassword] = useState("");
-  const [Conformpassword, setConformPassword] = useState("");
+  const [Confirmpassword, setConfirmPassword] = useState("");
   const searchParams = new URLSearchParams(window.location.search);
-  const email = searchParams.get('email');
-  const token = searchParams.get('token')
+  const email = searchParams.get("email");
+  const token = searchParams.get("token");
 
   const resetHandler = async (e) => {
     const formData = new FormData();
     formData.append("Password", password);
-    formData.append("ConfirmPassword", Conformpassword);
+    formData.append("ConfirmPassword", Confirmpassword);
     formData.append("Email", email);
     formData.append("Token", token);
 
     const Requestoptions = {
       method: "POST",
+      type: "cors",
       body: formData,
     };
+
     const response = await fetch(
       Userurl + "VerifyOtpForForgotPassword",
       Requestoptions
     );
-
+    console.log(await response.json());
+    console.log(response);
     if (response.status == 200) {
-      navigate("/");
+      navigate("/signin");
     }
   };
   return (
@@ -76,8 +76,8 @@ const ResetPassword = () => {
                       id="pwd2"
                       name="pwd"
                       placeholder=" Confirm Password"
-                      value={Conformpassword}
-                      onInput={(e) => setConformPassword(e.target.value)}
+                      value={Confirmpassword}
+                      onInput={(e) => setConfirmPassword(e.target.value)}
                     />
                     <button
                       type="button"
@@ -89,7 +89,7 @@ const ResetPassword = () => {
                   </div>
 
                   <button
-                    className="bg-sky-600 text-white font-medium text-sm rounded-full px-14 py-3"
+                    className="bg-sky-600 text-white font-medium text-sm rounded-lg px-14 py-3"
                     onClick={resetHandler}
                   >
                     Reset
