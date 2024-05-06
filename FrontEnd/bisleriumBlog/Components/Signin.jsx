@@ -104,7 +104,8 @@ const Signin = () => {
                  <div className="relative">
   <input
     className="text-gray-500 border-gray-300 focus:ring-0 focus:border-gray-400 text-sm rounded-lg py-2.5 px-4 w-full"
-    type={showPassword ? "text" : "password"}
+    // type={showPassword ? "text" : "password"}
+    type="password"
     id="pwd"
     name="pwd"
     placeholder="Password"
@@ -113,10 +114,10 @@ const Signin = () => {
   />
   <button
     type="button"
-    onClick={togglePasswordVisibility}
+    // onClick={togglePasswordVisibility}
     className="absolute inset-y-0 right-3 pr-3 flex items-center text-sm leading-5" // Adjusted right padding here
   >
-    {showPassword ? <i className="fa fa-eye-slash" aria-hidden="true"></i> : <i className="fa fa-eye" aria-hidden="true"></i>}
+    {/* {showPassword ? <i className="fa fa-eye-slash" aria-hidden="true"></i> : <i className="fa fa-eye" aria-hidden="true"></i>} */}
   </button>
 </div>
 

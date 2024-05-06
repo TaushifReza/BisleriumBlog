@@ -9,7 +9,7 @@ namespace BisleriumBlog.Models.DTOs
         public string Body { get; set; } = string.Empty;
         public string? ImageUrl { get; set; }
         public string UserId { get; set; }
-        public User User { get; set; }
+        //blic User User { get; set; }
         public int CategoryId { get; set; }
         public Category Category { get; set; }
         public DateTime CreatedAt { get; set; }
