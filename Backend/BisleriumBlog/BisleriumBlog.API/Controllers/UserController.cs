@@ -260,9 +260,7 @@ namespace BisleriumBlog.API.Controllers
                     _response.IsSuccess = false;
                     _response.Result = new
                     {
-                        message = "OTP has been Send to email.",
-                        OTP = code,
-                        Email = emailEncoded
+                        message = "Forgot Password Link has been Send to email."
                     };
                     return Ok(_response);
                 }
