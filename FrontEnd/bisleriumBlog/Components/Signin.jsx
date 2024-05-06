@@ -9,8 +9,13 @@ const Signin = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // State for password visibility
+
   const dispatch = useDispatch();
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword); // Toggle the visibility of the password
+  };
   const signinHandler = async (e) => {
     const formData = new FormData();
     formData.append("Email", email.trim());
@@ -145,3 +150,5 @@ const Signin = () => {
 };
 
 export default Signin;
+
+

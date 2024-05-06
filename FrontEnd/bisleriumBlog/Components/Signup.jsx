@@ -1,3 +1,5 @@
+
+
 import React,{useState} from 'react';
 import '../style/signup.css';
 import { Link, useNavigate } from 'react-router-dom';
@@ -14,7 +16,13 @@ const Signup = () => {
       const [profileImg, setProfileImg] = useState(null);
       const navigate = useNavigate();
       
+      const [showPassword, setShowPassword] = useState(false); // State for password visibility
 
+   
+    
+      const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword); // Toggle the visibility of the password
+      };
       const signupHandler = async(e) => {
         const formData = new FormData();
         formData.append("FullName", fullName.trim());
@@ -123,6 +131,8 @@ const Signup = () => {
                       onInput={(e) => setEmail(e.target.value)}
                       required
                     />
+                                     <div className="relative">
+
                     <input
                       className="text-gray-500 border-gray-300 focus:ring-0 focus:bonpm initrder-gray-400 text-sm rounded-lg py-2 px-4 w-full"
                       type="password"
@@ -130,11 +140,17 @@ const Signup = () => {
                       name="password"
                       placeholder="Password"
                       value={password}
-                      onInput={(e) => {
-                        setPassword(e.target.value);
-                      }}
-                      required
-                    />
+                      onInput={(e) => setPassword(e.target.value)}
+                      />
+                      <button
+                        type="button"
+                        onClick={togglePasswordVisibility}
+                        className="absolute inset-y-0 right-3 pr-3 flex items-center text-sm leading-5" // Adjusted right padding here
+                      >
+                        {showPassword ? <i className="fa fa-eye-slash" aria-hidden="true"></i> : <i className="fa fa-eye" aria-hidden="true"></i>}
+                      </button>
+                      </div>
+                      <div className="relative">
                     <input
                       className="text-gray-500 border-gray-300 focus:ring-0 focus:border-gray-400 text-sm rounded-lg py-2 px-4 w-full"
                       type="password"
@@ -146,7 +162,15 @@ const Signup = () => {
                         setConfirmPassword(e.target.value);
                       }}
                       required
-                    />
+                    /> 
+                      <button
+                        type="button"
+                        onClick={togglePasswordVisibility}
+                        className="absolute inset-y-0 right-3 pr-3 flex items-center text-sm leading-5" // Adjusted right padding here
+                      >
+                        {showPassword ? <i className="fa fa-eye-slash" aria-hidden="true"></i> : <i className="fa fa-eye" aria-hidden="true"></i>}
+                      </button>
+                      </div>
                     <input
                       className="text-gray-500 border-gray-300 focus:ring-0 focus:border-gray-400 text-sm rounded-lg py-3 px-4 w-full"
                       type="text"
