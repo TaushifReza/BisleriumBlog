@@ -105,7 +105,7 @@ namespace BisleriumBlog.API.Controllers
                     byte[] userIdGeneratedBytes = Encoding.UTF8.GetBytes(user.Id);
                     var userIdEncoded = WebEncoders.Base64UrlEncode(userIdGeneratedBytes);
                     string emailConfirmationLink =
-                        $"https://localhost:7094/api/User/ConfirmEmail?id={userIdEncoded}&token={tokenEncoded}";
+                        $"http://localhost:5173/confirmEmail?id={userIdEncoded}&token={tokenEncoded}";
                     // Send Email Confirmation Link to Email
                     // email = taushif1teza@gmail.com
                     try
