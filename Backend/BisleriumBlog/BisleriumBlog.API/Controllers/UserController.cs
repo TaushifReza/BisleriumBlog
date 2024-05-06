@@ -248,13 +248,14 @@ namespace BisleriumBlog.API.Controllers
                     var code = await _userManager.GeneratePasswordResetTokenAsync(user);
                     byte[] tokenGeneratedBytes = Encoding.UTF8.GetBytes(email);
                     var emailEncoded = WebEncoders.Base64UrlEncode(tokenGeneratedBytes);
+                    var link = $"http://localhost:5173/resetpassword?email={emailEncoded}&token={code}";
                     // Send the code to email
-                    /*var mailRequest = new MailRequest
+                    var mailRequest = new MailRequest
                     {
                         ToEmail = user.Email,
                         Subject = "Two Factor Auth Code",
-                        Body = $"Please use this code as OTP {securityCode}"
-                    };*/
+                        Body = $"Please use this code as OTP {link}"
+                    };
                     _response.StatusCode = HttpStatusCode.OK;
                     _response.IsSuccess = false;
                     _response.Result = new
