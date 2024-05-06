@@ -4,24 +4,17 @@ import { Blogurl } from "../src/index";
 import { AiFillHeart, AiFillDislike, AiOutlineComment } from "react-icons/ai";
 
 const BlogComponent = () => {
-
-
-const [blogs, setBlogs] = useState([])
+  const [blogs, setBlogs] = useState([]);
   useEffect(() => {
     const Requestoptions = {
       method: "GET",
     };
     fetch(Blogurl + "GetAllBlog", Requestoptions)
-    .then((response) =>
-      response.json()
-    ).then((data) => {
-      setBlogs(data.result)
-    })
-
-   
+      .then((response) => response.json())
+      .then((data) => {
+        setBlogs(data.result);
+      });
   });
- 
-
 
   return (
     <section id="demo" className="py-28">
@@ -52,7 +45,7 @@ const BlogGrid = ({ blogs }) => {
           <BlogCard
             key={blog.id}
             title={blog.title}
-            viewcount = {blog.viewcount}
+            viewcount={blog.viewcount}
             date={new Date(blog.createdAt).toLocaleDateString()}
             category={blog.categoryID}
             image={blog.imageUrl}
@@ -60,7 +53,6 @@ const BlogGrid = ({ blogs }) => {
             likes={blog.upVoteCount}
             dislikes={blog.downVoteCount}
             comments={blog.commentCount}
-
           />
         ))}
       </div>
@@ -77,7 +69,7 @@ const BlogCard = ({
   likes,
   dislikes,
   comments,
-  viewcount
+  viewcount,
 }) => {
   return (
     <div className="group sm:flex rounded-xl">
@@ -103,9 +95,20 @@ const BlogCard = ({
           >
             {title}
           </a>
+          <p className=" line-clamp-3 mt-4 mb-6 text-gray-500 text-base leading-7 font-medium ">
+            {description}
+          </p>
+          =======
+          <a
+            href="#"
+            className="text-lg sm:text-3xl font-semibold text-dark hover:text-primary transition-all duration-500"
+          >
+            {title}
+          </a>
           <p className="mt-4 mb-6 text-gray-500 text-base leading-7 font-medium">
             {description}
           </p>
+          >>>>>>> 4ee76a32245544c3ee64559f570050f8427d0891
           <div className="flex items-center flex-wrap">
             <AiFillHeart className="text-red-500" />{" "}
             <span className="ml-2 text-gray-600">{likes}</span>
