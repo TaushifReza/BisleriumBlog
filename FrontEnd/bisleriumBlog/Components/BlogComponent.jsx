@@ -105,20 +105,9 @@ const BlogCard = ({ title, date, category, image, description, likes, dislikes, 
             <p className="inline-flex items-center gap-1.5 py-1.5 rounded-md text-sm font-medium text-dark me-7 underline">{category}</p>
             <p className="text-sm text-gray-500 ms-7">{date}</p>
           </div>
-<<<<<<< HEAD
-          <a
-            href="#"
-            className="text-lg sm:text-3xl font-semibold text-dark hover:text-primary transition-all duration-500"
-          >
-            {title}
-          </a>
-          <p className=" line-clamp-3 mt-4 mb-6 text-gray-500 text-base leading-7 font-medium ">
-            {description}
-          </p>
-=======
           <a href="#" className="text-lg sm:text-3xl font-semibold text-dark hover:text-primary transition-all duration-500">{title}</a>
           <p className="mt-4 mb-6 text-gray-500 text-base leading-7 font-medium">{description}</p>
->>>>>>> 4ee76a32245544c3ee64559f570050f8427d0891
+ 
           <div className="flex items-center flex-wrap">
             <AiFillHeart className="text-red-500" /> <span className="ml-2 text-gray-600">{likes}</span>
             <AiFillDislike className="ml-4 text-gray-600" /> <span className="ml-2 text-gray-600">{dislikes}</span>
