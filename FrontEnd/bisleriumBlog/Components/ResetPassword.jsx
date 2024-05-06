@@ -10,23 +10,27 @@ const ResetPassword = () => {
   const navigate = useNavigate();
   const [password, setPassword] = useState("");
   const [Conformpassword, setConformPassword] = useState("");
-  
+  const searchParams = new URLSearchParams(window.location.search);
+  const email = searchParams.get('email');
+  const token = searchParams.get('token')
 
   const resetHandler = async (e) => {
     const formData = new FormData();
-    formData.append("Password", password);formData = new FormData();
+    formData.append("Password", password);
     formData.append("ConfirmPassword", Conformpassword);
     formData.append("Email", email);
     formData.append("Token", token);
-    
+
     const Requestoptions = {
       method: "POST",
       body: formData,
     };
-    const response = await fetch(Userurl + "VerifyOtpForForgotPassword", Requestoptions);
-    
+    const response = await fetch(
+      Userurl + "VerifyOtpForForgotPassword",
+      Requestoptions
+    );
+
     if (response.status == 200) {
-      
       navigate("/");
     }
   };
@@ -40,11 +44,8 @@ const ResetPassword = () => {
           <div className="grid xl:grid-cols-5 lg:grid-cols-3 md:grid-cols-2 gap-6">
             <div className="xl:col-span-2 lg:col-span-1">
               <div className="bg-sky-600 text-white gap-10 h-full w-full p-7 space-y-6 lg:space-y-0">
-                
-
                 <div className="flex flex-col justify-center text-center h-full">
                   <h1 className="text-4xl mb-4"> BISLERIUM BLOG</h1>
-
                 </div>
               </div>
             </div>
@@ -62,7 +63,7 @@ const ResetPassword = () => {
                     type="password"
                     id="pwd"
                     name="pwd"
-                    placeholder="Password"
+                    placeholder="New Password"
                     value={password}
                     onInput={(e) => setPassword(e.target.value)}
                   />
@@ -74,7 +75,7 @@ const ResetPassword = () => {
                       type="password"
                       id="pwd2"
                       name="pwd"
-                      placeholder="Password"
+                      placeholder=" Confirm Password"
                       value={Conformpassword}
                       onInput={(e) => setConformPassword(e.target.value)}
                     />
