@@ -24,11 +24,15 @@ import Verifyemail from "../Components/Verifyemail";
 import MFA from "../Components/MFA.jsx";
 import BlogComponent from "../Components/BlogComponent.jsx";
 import ForgetVerify from "../Components/fotgetVerify.jsx";
-import ProfilePage from "../Components/profile.jsx";
+import ResetPassword from "../Components/ResetPassword.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App><Home /></App>,
+    element: (
+      <App>
+        <Home />
+      </App>
+    ),
   },
   // {
   //   path: "/blog",
@@ -36,11 +40,19 @@ const router = createBrowserRouter([
   // },
   {
     path: "/allblogs",
-    element: <App><AllBlogs /></App>,
+    element: (
+      <App>
+        <AllBlogs />
+      </App>
+    ),
   },
   {
     path: "/blogs",
-    element: <App><BlogComponent /></App>,
+    element: (
+      <App>
+        <BlogComponent />
+      </App>
+    ),
   },
   // {
   //   path: "/bloginfo/:id",
@@ -48,53 +60,100 @@ const router = createBrowserRouter([
   // },
   {
     path: "/adminlogin",
-    element: <App><AdminLogin /></App>,
+    element: (
+      <App>
+        <AdminLogin />
+      </App>
+    ),
   },
   {
     path: "/dashboard",
-    element: <App><AdminDashboard /></App>,
+    element: (
+      <App>
+        <AdminDashboard />
+      </App>
+    ),
   },
   {
     path: "/createblog",
-    element: <App><CreateBlog /></App>,
+    element: (
+      <App>
+        <CreateBlog />
+      </App>
+    ),
   },
   {
     path: "/signin",
-    element: <App><Signin /></App>,
+    element: (
+      <App>
+        <Signin />
+      </App>
+    ),
   },
   {
     path: "/signup",
-    element: <App><Signup /></App>,
+    element: (
+      <App>
+        <Signup />
+      </App>
+    ),
   },
   {
     path: "/emailtemp",
-    element: <App><Emailtemp /></App>,
+    element: (
+      <App>
+        <Emailtemp />
+      </App>
+    ),
   },
   {
     path: "/forget",
-    element: <App><Forget /></App>,
+    element: (
+      <App>
+        <Forget />
+      </App>
+    ),
   },
   {
     path: "/twofactor",
-    element: <App><TwoFactor /></App>,
+    element: (
+      <App>
+        <TwoFactor />
+      </App>
+    ),
   },
   {
     path: "/verifyemail",
-    element: <App><Verifyemail /></App>,
+    element: (
+      <App>
+        <Verifyemail />
+      </App>
+    ),
   },
   {
     path: "/mfa",
-    element: <App><MFA /></App>,
+    element: (
+      <App>
+        <MFA />
+      </App>
+    ),
   },
   {
     path: "/forgetverify",
-    element: <App><ForgetVerify></ForgetVerify></App>,
+    element: (
+      <App>
+        <ForgetVerify></ForgetVerify>
+      </App>
+    ),
   },
   {
-    path: "/profile",
-    element: <App><ProfilePage/></App>,
+    path: "/resetpassword",
+    element: (
+      <App>
+        <ResetPassword></ResetPassword>
+      </App>
+    ),
   },
-  
   // {
   //   path: "/*",
   //   element: <App><NoPage /></App>,
