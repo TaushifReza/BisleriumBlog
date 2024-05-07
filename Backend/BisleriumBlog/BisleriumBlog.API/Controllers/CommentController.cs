@@ -53,8 +53,38 @@ namespace BisleriumBlog.API.Controllers
 
                 // Retrieve user claims from JWT token
                 var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                commentCreateDto.UserId = userId;
 
+                // Check if the user has already made a comment on this blog
+                var existingComment = await _unitOfWork.Comment.GetAsync(c => c.BlogId == commentCreateDto.BlogId 
+                                                                              && c.UserId == userId && c.ParentCommentId == null);
+                if (existingComment != null && commentCreateDto.ParentCommentId == null)
+                {
+                    _response.StatusCode = HttpStatusCode.BadRequest;
+                    _response.IsSuccess = false;
+                    _response.Result = new
+                    {
+                        error = "You have already made a comment on this blog."
+                    };
+                    return StatusCode(StatusCodes.Status400BadRequest, _response);
+                }
 
+                var comment = _mapper.Map<Comment>(commentCreateDto);
+                // Create a Comment
+                await _unitOfWork.Comment.CreateAsync(comment);
+                await _unitOfWork.SaveAsync();
+                // Increase Comment count for Blog
+                blog.CommentCount += 1;
+                await _unitOfWork.SaveAsync();
+
+                _response.StatusCode = HttpStatusCode.OK;
+                _response.IsSuccess = true;
+                _response.Result = new
+                {
+                    message = "Comment add successful to blog",
+                    commentData = _mapper.Map<CommentDTO>(comment)
+                };
+                return StatusCode(StatusCodes.Status201Created, _response);
             }
             catch (Exception e)
             {
