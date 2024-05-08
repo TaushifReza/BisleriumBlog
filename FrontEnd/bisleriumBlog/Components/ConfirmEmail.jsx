@@ -10,10 +10,12 @@ const ConfirmEmail = () => {
     method: "GET",
   };
   useEffect(async () => {
-    fetch(Userurl + `ConfirmEmail/${id}/${token}`, Requestoptions);
-  }).then((response) => {
-    if (response.status == 200) {
-        navigate("/signin");
+   const response = await fetch(
+     Userurl + `ConfirmEmail/${id}/${token}`,
+     Requestoptions
+   );
+    if (response.status === 200) {
+      navigate("/signin");
     }
   });
 };

@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import "../style/signup.css";
 import { Link, useNavigate } from "react-router-dom";
 import Userurl from "../src";
+import Nav from './Navbar';
+import Footer from './Footer';
 
 const ResetPassword = () => {
   const navigate = useNavigate();
@@ -35,6 +37,8 @@ const ResetPassword = () => {
     }
   };
   return (
+    <div>
+        <Nav />
     <section className="h-screen flex items-center justify-center inset-0 bg-custom">
       <div className="container 2xl:px-80 xl:px-52">
         <div
@@ -101,6 +105,8 @@ const ResetPassword = () => {
         </div>
       </div>
     </section>
+    <Footer />
+    </div>
   );
 };
 

@@ -17,6 +17,8 @@ import AdminDashboard from "../Components/AdminDashboard";
 import CreateBlog from "../Components/CreateBlog";
 import Signup from "../Components/Signup";
 import Signin from "../Components/Signin";
+import EditProfile from "../Components/EditProfile";
+import  Changepassword from "../Components/Changepassword";
 import Emailtemp from "../Components/Emailtemp";
 import Forget from "../Components/forget";
 import TwoFactor from "../Components/Twofactor";
@@ -27,13 +29,14 @@ import ForgetVerify from "../Components/fortgetVerify.jsx";
 import ResetPassword from "../Components/ResetPassword.jsx";
 import ProfilePage from "../Components/Profilepage.jsx";
 import ConfirmEmail from "../Components/ConfirmEmail.jsx";
+import Blogdetail from "../Components/Blogdetail.jsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: (
       <App>
-        <Home />
+        <Home /> 
       </App>
     ),
   },
@@ -174,6 +177,31 @@ const router = createBrowserRouter([
       </App>
     ),
   },
+  {
+    path: "/blogdetail",
+    element: (
+      <App>
+        <Blogdetail />
+      </App>
+    ),
+  },
+  // Other routes...
+  {
+    path: "/editprofile", // Route for Edit Profile page
+    element: (
+      <App>
+        < EditProfile />
+      </App>
+    ),
+  },
+  {
+    path: "/changepassword", // Route for Edit Profile page
+    element: (
+      <App>
+        < Changepassword  />
+      </App>
+    ),
+  },
   // {
   //   path: "/*",
   //   element: <App><NoPage /></App>,
@@ -184,7 +212,9 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-    <ThemeProvider> {/* Add this line, include the theme prop if you have a custom theme */}
+      <ThemeProvider>
+        {" "}
+        {/* Add this line, include the theme prop if you have a custom theme */}
         <RouterProvider router={router} />
       </ThemeProvider>
     </Provider>
