@@ -1,63 +1,188 @@
-import React, { useContext, useState } from 'react';
-import "../style/Blogdetail.css"
-import myContext from '../context/myContext';
+import React, { useState } from 'react';
+import "../style/Blogdetail.css";
+import { AiFillHeart, AiOutlineComment, AiFillEye } from 'react-icons/ai';
+import Nav from './Navbar';
+import { Navbar } from '@material-tailwind/react';
+import Footer from './Footer';
 
-import { AiFillHeart, AiFillDislike, AiOutlineComment } from 'react-icons/ai';
-
+const initialComments = [
+  { id: 1, text: "This is a great post!", likes: 0, replies: [], replyOpen: false },
+  // Add more comments as needed
+];
 function Blogdetail() {
-   // State for storing comments
-   const [comments, setComments] = useState([]);
+  const [comments, setComments] = useState(initialComments);
 
-   // Function to handle adding new comment
-   const handleAddComment = (comment) => {
-     setComments([...comments, comment]);
-   };
-  const context = useContext(myContext);
-  const { mode } = context;
+  const handleAddComment = (commentText) => {
+    setComments([...comments, { id: comments.length + 1, text: commentText, likes: 0, replies: [], replyOpen: false }]);
+  };
+
+  const handleLikeComment = (commentId) => {
+    const updatedComments = comments.map(comment => {
+      if (comment.id === commentId) {
+        return { ...comment, likes: comment.likes + 1 };
+      }
+      return comment;
+    });
+    setComments(updatedComments);
+  };
+
+  const handleReplyToComment = (commentId) => {
+    const updatedComments = comments.map(comment => {
+      if (comment.id === commentId) {
+        return { ...comment, replyOpen: !comment.replyOpen };
+      }
+      return comment;
+    });
+    setComments(updatedComments);
+  };
+
+  const handleAddReply = (commentId, replyText) => {
+    const updatedComments = comments.map(comment => {
+      if (comment.id === commentId) {
+        const newReply = { id: comment.replies.length + 1, text: replyText }; // Modified this line
+        return { ...comment, replies: [...comment.replies, newReply], replyOpen: false };
+      }
+      return comment;
+    });
+    setComments(updatedComments);
+  };
+
 
   return (
-    <body className="font-sans text-gray-700 antialiased bg-white ">
-      <div className="relative h-96">
-        <img src="https://images.unsplash.com/photo-1501631259223-89d4e246ed23?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&amp;ixlib=rb-1.2.1&amp;auto=format&amp;fit=crop&amp;w=1960&amp;q=80" className="w-full h-full object-cover" alt="post" />
-      </div>
-      <div className="max-w-4xl mx-auto bg-white py-12 px-12 lg:px-24 -mt-32 relative z-10">
-        <h2 className="mt-4 uppercase tracking-widest text-xs text-gray-600">23 Sep 2020</h2>
-        <h1 className="font-display text-2xl md:text-3xl text-gray-900 mt-4">This is my third &amp;latest post</h1>
-        <div className="flex items-center flex-wrap">
-          <AiFillHeart className="text-red-500" /> <span className="ml-2 text-gray-600">likes</span>
-          <AiFillDislike className="ml-4 text-gray-600" /> <span className="ml-2 text-gray-600">dislikes</span>
-          <AiOutlineComment className="ml-4 text-blue-500" /> <span className="ml-2 text-gray-600">comment</span>
-        </div>
-        <div className="prose prose-sm sm:prose lg:prose-lg mt-6">
-          <p>Leverage agile frameworks to provide a robust synopsis for high level overviews. Iterative approaches to corporate strategy foster collaborative thinking to further the overall value proposition. Organically grow the holistic world view of disruptive innovation via workplace diversity and empowerment.</p>
-          <p>Bring to the table win-win survival strategies to ensure proactive domination. At the end of the day, going forward, a new normal that has evolved from generation X is on the runway heading towards a streamlined cloud solution. User generated content in real-time will have multiple touchpoints for offshoring.</p>
-          <h2>Section Header</h2>
-          <p>Capitalize on low hanging fruit to identify a ballpark value added activity to beta test. Override the digital divide with additional clickthroughs from DevOps. Nanotechnology immersion along the information highway will close the loop on focusing solely on the bottom line.</p>
-        </div>
-        {/* Comment section */}
-        <div className="comment-section mt-8">
-          <h2 className="text-xl font-semibold mb-4">Comments</h2>
-          {/* Display existing comments */}
-          {comments.map((comment, index) => (
-            <div key={index} className="bg-gray-100 rounded p-4 mb-2">
-              <p>{comment}</p>
+    <div>
+      <Nav />
+      <section className="flex items-center justify-center bg-custom">
+        <body className="text-gray-900 antialiased">
+          <div className="max-w-4xl mx-auto py-12 px-12 lg:px-24 -mt-32 relative z-10">
+            <div className="flex justify-between items-center">
+              <div>
+                <h2 className="uppercase text-gray-600">23 Sep 2020</h2>
+                <h1 className="font-display text-4xl md:text-3xl text-gray-900 mt-2">This is my third & latest post</h1>
+                <p className="text-sm text-gray-600 mt-4 mb-2">by Himani Acharya</p>
+                <p className="text-sm text-gray-600 mt-3 mb-2"><b>Category: Technology and education</b></p>
+              </div>
             </div>
-          ))}
-          {/* Form for adding new comment */}
-          <form onSubmit={(e) => {
-            e.preventDefault();
-            const newComment = e.target.comment.value;
-            if (newComment.trim() !== '') {
-              handleAddComment(newComment);
-              e.target.comment.value = '';
-            }
-          }}>
-            <textarea name="comment" className="w-full rounded p-2 mb-2" placeholder="Write your comment here..." rows="4"></textarea>
-            <button type="submit" style={{ backgroundColor: '#3182ce', color: 'white', padding: '8px 16px', borderRadius: '4px', border: 'none', cursor: 'pointer' }}>Post Comment</button>
-          </form>
-        </div>
-      </div>
-    </body>
+            <hr />
+            <div className="mt-4 mb-4">
+              <div className="flex items-center ">
+                <AiFillHeart className="text-red-500 cursor-pointer" />
+                <span className="ml-3 mt-3 text-gray-600">Likes</span>
+                <AiOutlineComment className="ml-4 text-blue-500 cursor-pointer" />
+                <span className="ml-3 mt-3 text-gray-600">Comment</span>
+                <AiFillEye className="text-red-500 cursor-pointer" />
+                <span className="ml-3 mt-3 text-gray-600">Views</span>
+              </div>
+              <hr />
+            </div>
+            <div className="relative h-96">
+              <img src="https://images.unsplash.com/photo-1501631259223-89d4e246ed23?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&amp;ixlib=rb-1.2.1&amp;auto=format&amp;fit=crop&amp;w=1960&amp;q=80" className="w-full h-full object-cover" alt="post" />
+            </div>
+            <div className="mt-6">
+              <p>Today, I met a young girl from India who'd recently come to the UK.
+
+                She'd worked in hotels before, but her resume had a gap – she'd taken time off to care for her sick father. Her English was excellent, but there was sadness in her voice when she explained.
+
+                She told me about putting her schooling on hold, running her family's business…the dreams she had to put aside.
+                It reminded me how often women make those sacrifices, especially in some cultures.
+
+                "But you made it here," I pointed out, "That takes strength."💪
+
+                Her smile told me she wasn't used to hearing that.
+                I saw a spark in her.
+
+                "Did you ever want to study further?" I asked.
+                "What's the point of studying that way just for the sake of a certificate if it's not to study to learn something?"  She replied back with a smile.
+
+                "If you could have done anything, if nothing stood in your way, what would you be?" I asked.
+
+                "A doctor," she said quickly,  "It was always my dream... but,"  she paused,
+                "I don't just dream about things beyond my reach."
+
+                Though everyone has the luxury to dream more than what they can achieve in the present.
+                That hit me hard!!
+                I thought of all the chances I'd had, the doors that opened for me.
+
+                We didn't have the perfect job for her yet. "But I know people..." I began, "There might be a way to get you an internship somewhere, to learn the system, and to get back into the work world"
+                Her face lit up – that hope was the same in any language.
+                As she left, I couldn't help but think about the unseen struggles people face. Opportunity isn't equal for everyone.
+
+                It's a luxury to DREAM, it's a luxury to choose a CAREER, it's a luxury to be LAZY.
+                Today, that hit me harder than usual !!!!
+
+                Tell me below: Do you think you're privileged? What does privilege mean to you?
+              </p>
+            </div>
+            <div className="container mx-auto mt-8 px-4 sm:px-6 lg:px-8">
+              <div className="comment-section">
+                <h2 className="text-2xl font-bold text-gray-900 mb-5">Comments</h2>
+                {comments.map((comment, index) => (
+                  <div key={index} className="bg-white rounded-lg p-6 mb-4 shadow-lg">
+                    <p className="text-gray-800 leading-relaxed">{comment.text}</p>
+                    <div className="flex items-center justify-start space-x-4 mt-4">
+                      <button
+                        className="text-indigo-500 hover:text-indigo-600 transition-colors ease-in-out duration-150"
+                        onClick={() => handleLikeComment(comment.id)}
+                      >
+                        Like {comment.likes} ❤️
+                      </button>
+                      <button
+                        className="text-indigo-500 hover:text-indigo-600 transition-colors ease-in-out duration-150"
+                        onClick={() => handleReplyToComment(comment.id)}
+                      >
+                        {comment.replyOpen ? "Cancel" : "Reply"} 💬
+                      </button>
+                    </div>
+                    {comment.replies.map((reply, idx) => (
+                      <div key={idx} className="bg-gray-50 rounded-lg p-3 ml-8 mt-3">
+                        <p className="text-gray-600">{reply.text}</p>
+                      </div>
+                    ))}
+                    {comment.replyOpen && (
+                      <form onSubmit={(e) => {
+                        e.preventDefault();
+                        handleAddReply(comment.id, e.target.reply.value);
+                        e.target.reply.value = '';
+                      }}>
+                        <textarea
+                          name="reply"
+                          className="w-full rounded-lg p-4 mt-4 border-gray-300 focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50"
+                          placeholder="Reply to this comment..."
+                          rows="2"
+                        ></textarea>
+                        <button className="w-full text-white bg-indigo-500 hover:bg-indigo-600 rounded-md py-3 mt-4 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50">
+                          Send Reply
+                        </button>
+                      </form>
+                    )}
+                  </div>
+                ))}
+
+                <form onSubmit={(e) => {
+                  e.preventDefault();
+                  handleAddComment(e.target.comment.value);
+                  e.target.comment.value = '';
+                }}>
+                  <textarea
+                    name="comment"
+                    className="w-full rounded-lg p-4 mt-4 border-gray-300 focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50"
+                    placeholder="Write your comment here..."
+                    rows="4"
+                  ></textarea>
+                  <button
+                    className="w-full text-white bg-indigo-500 hover:bg-indigo-600 rounded-md py-3 mt-4 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50"
+                  >
+                    Post Comment
+                  </button>
+                </form>
+
+              </div>
+            </div>
+
+          </div>
+        </body>
+      </section>
+      <Footer />
+    </div>
   );
 }
 
