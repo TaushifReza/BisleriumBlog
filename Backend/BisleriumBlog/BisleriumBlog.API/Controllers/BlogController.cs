@@ -177,7 +177,9 @@ namespace BisleriumBlog.API.Controllers
                 // Check if the blog exists
                 var blog = await _unitOfWork.Blog.GetAsync(b => b.Id == id);
                 if (blog == null) {
-                    _response.ErrorMessage = new List<string> { "Blog not found" };
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessage = new List<string> { $"Blog with ID {id} not found" };
                     return StatusCode(StatusCodes.Status404NotFound, _response);
                 }
 

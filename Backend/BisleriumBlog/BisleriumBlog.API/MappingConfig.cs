@@ -2,6 +2,8 @@
 using BisleriumBlog.Models.DTOs.Blog;
 using BisleriumBlog.Models.DTOs.Category;
 using BisleriumBlog.Models.DTOs.Comment;
+using BisleriumBlog.Models.DTOs.CommentDisLike;
+using BisleriumBlog.Models.DTOs.CommentLike;
 using BisleriumBlog.Models.DTOs.DownVote;
 using BisleriumBlog.Models.DTOs.UpVote;
 using BisleriumBlog.Models.DTOs.User;
@@ -26,6 +28,10 @@ namespace BisleriumBlog.API
             CreateMap<DownVote, DownVoteCreateDTO>().ReverseMap();
             CreateMap<Comment, CommentCreateDTO>().ReverseMap();
             CreateMap<Comment, CommentDTO>().ReverseMap();
+            CreateMap<CommentLike , CommentLikeCreateDTO>().ReverseMap();
+            CreateMap<CommentLike , CommentLikeDTO>().ReverseMap();
+            CreateMap<CommentDisLike , CommentDisLikeDTO>().ReverseMap();
+            CreateMap<CommentDisLike , CommentDisLikeCreateDTO>().ReverseMap();
         }
     }
 }
