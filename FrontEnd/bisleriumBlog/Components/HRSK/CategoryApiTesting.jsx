@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { Categoryurl } from "../src/index";
+import { Categoryurl } from "../../src/index";
 
 // Don;t use this  or ovveride this  , this jsx is for testing category API, creat another jsx
 const Category = () => {

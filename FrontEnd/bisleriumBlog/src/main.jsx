@@ -33,7 +33,7 @@ const router = createBrowserRouter([
     path: "/",
     element: (
       <App>
-        <Home />
+        <Home /> 
       </App>
     ),
   },
@@ -184,7 +184,9 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-    <ThemeProvider> {/* Add this line, include the theme prop if you have a custom theme */}
+      <ThemeProvider>
+        {" "}
+        {/* Add this line, include the theme prop if you have a custom theme */}
         <RouterProvider router={router} />
       </ThemeProvider>
     </Provider>
