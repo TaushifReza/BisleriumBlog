@@ -9,7 +9,7 @@ const BlogComponent = () => {
     const Requestoptions = {
       method: "GET",
     };
-    fetch(Blogurl + "GetAllBlog", Requestoptions)
+    fetch(Blogurl + `GetAllBlog/pageSize=${3}&pageNumber=${1}`, Requestoptions)
       .then((response) => response.json())
       .then((data) => {
         setBlogs(data.result);

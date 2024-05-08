@@ -41,7 +41,7 @@ const Signup = () => {
          const response = await fetch(Userurl+"Register",Requestoptions )
          const data = await response.json()
         
-         
+        
          if (response.status == 200){ 
 
             navigate("/verifyemail");

@@ -20,7 +20,6 @@ const Signin = () => {
     const formData = new FormData();
     formData.append("Email", email.trim());
     formData.append("Password", password);
-    console.log(email, password);
     const Requestoptions = {
       method: "POST",
       body: formData,
