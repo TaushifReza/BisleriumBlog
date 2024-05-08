@@ -16,7 +16,7 @@ const ProfilePage = () => {
     });
 
     const handleEditProfile = () => {
-        navigate('/editprofile'); // Navigate to the edit profile page
+        navigate('/editprofile'); 
     };
 
     const handleChangePassword = () => {

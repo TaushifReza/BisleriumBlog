@@ -9,6 +9,9 @@ import {
 } from '@material-tailwind/react';
 import Input from './Input'; // Assuming Input.js is in the same directory
 import Footer from './Footer';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css'; // Import the styles for the editor
+
 
 function CreateBlog() {
   const context = useContext(myContext);
@@ -34,118 +37,125 @@ function CreateBlog() {
 
   return (
     <div>
-    <Nav/>
-    <div className='container mx-auto max-w-5xl py-6 mt-5 mb-8'>
-      <div
-        className='p-5'
-        style={{
-          background: mode === 'dark' ? '#353b48' : 'rgb(226, 232, 240)',
-          borderBottom: mode === 'dark' ? '4px solid rgb(226, 232, 240)' : '4px solid rgb(30, 41, 59)',
-        }}
-      >
-        <div className='mb-2 flex justify-between'>
-          <div className='flex gap-2 items-center'>
-            <Link to={'/dashboard'}>
-              <BsFillArrowLeftCircleFill size={25} />
-            </Link>
+      <Nav />
+      <div className='container mx-auto max-w-5xl py-6 mt-5 mb-10'>
+        <div
+          className='p-5'
+          style={{
+            background: mode === 'dark' ? '#353b48' : 'rgb(226, 232, 240)',
+            borderBottom: mode === 'dark' ? '4px solid rgb(226, 232, 240)' : '4px solid rgb(30, 41, 59)',
+          }}
+        >
+          <div className='mb-2 flex justify-between'>
+            <div className='flex gap-2 items-center'>
+              <Link to={'/dashboard'}>
+                <BsFillArrowLeftCircleFill size={25} />
+              </Link>
+              <Typography
+                variant='h4'
+                style={{
+                  color: mode === 'dark' ? 'white' : 'black',
+                }}
+              >
+                Create blog
+              </Typography>
+            </div>
+          </div>
+          <div className='mb-3'>
+            {thumbnail && (
+              <img
+                className='w-full rounded-md mb-3'
+                src={thumbnail ? URL.createObjectURL(thumbnail) : ''}
+                alt='thumbnail'
+              />
+            )}
             <Typography
-              variant='h4'
+              variant='small'
+              color='blue-gray'
+              className='mb-2 font-semibold'
+              style={{ color: mode === 'dark' ? 'white' : 'black' }}
+            >
+              Upload Thumbnail
+            </Typography>
+            <input
+              type='file'
+              label='Upload thumbnail'
+              className='shadow-[inset_0_0_4px_rgba(0,0,0,0.6)] placeholder-black w-full rounded-md p-1'
               style={{
-                color: mode === 'dark' ? 'white' : 'black',
+                background: mode === 'dark' ? '#dcdde1' : 'rgb(226, 232, 240)',
+              }}
+              onChange={handleThumbnailUpload}
+            />
+          </div>
+          <div className='mb-3'>
+            <Input
+              type='text'
+              label='Enter your Title'
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
+              placeholder='Enter Your Title'
+              style={{
+                background: mode === 'dark' ? '#dcdde1' : 'rgb(226, 232, 240)',
+              }}
+              name='title'
+            />
+          </div>
+          <div className='mb-3'>
+            <label htmlFor='category'>Select Category:</label>
+            <select
+              id='category'
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className='w-full p-1 mt-1 rounded-md shadow-[inset_0_0_4px_rgba(0,0,0,0.6)]'
+              style={{
+                background: mode === 'dark' ? '#dcdde1' : 'rgb(226, 232, 240)',
               }}
             >
-              Create blog
-            </Typography>
+              <option value='Health & Fitness'>Health & Fitness</option>
+              <option value='Technology'>Technology</option>
+              <option value='Entertainment'>Entertainment</option>
+            </select>
           </div>
-        </div>
-        <div className='mb-3'>
-          {thumbnail && (
-            <img
-              className='w-full rounded-md mb-3'
-              src={thumbnail ? URL.createObjectURL(thumbnail) : ''}
-              alt='thumbnail'
+          <div className='mb-3'>
+            <ReactQuill
+              theme="snow"
+              value={content}
+              onChange={setContent}
+              modules={{
+                toolbar: [
+                  [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],
+                  [{ size: [] }],
+                  ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+                  [{ 'list': 'ordered' }, { 'list': 'bullet' },
+                  { 'indent': '-1' }, { 'indent': '+1' }],
+                  ['link', 'image', 'video'],
+                  ['clean']
+                ],
+              }}
+              style={{
+                background: mode === 'dark' ? '#dcdde1' : 'rgb(226, 232, 240)',
+                height: '400px', // Adjust the height according to your preference
+              }}
             />
-          )}
-          <Typography
-            variant='small'
-            color='blue-gray'
-            className='mb-2 font-semibold'
-            style={{ color: mode === 'dark' ? 'white' : 'black' }}
-          >
-            Upload Thumbnail
-          </Typography>
-          <input
-            type='file'
-            label='Upload thumbnail'
-            className='shadow-[inset_0_0_4px_rgba(0,0,0,0.6)] placeholder-black w-full rounded-md p-1'
-            style={{
-              background: mode === 'dark' ? '#dcdde1' : 'rgb(226, 232, 240)',
-            }}
-            onChange={handleThumbnailUpload}
-          />
-        </div>
-        <div className='mb-3'>
-          <Input
-            type='text'
-            label='Enter your Title'
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-            placeholder='Enter Your Title'
-            style={{
-              background: mode === 'dark' ? '#dcdde1' : 'rgb(226, 232, 240)',
-            }}
-            name='title'
-          />
-        </div>
-        <div className='mb-3'>
-          <label htmlFor='category'>Select Category:</label>
-          <select
-            id='category'
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className='w-full p-1 mt-1 rounded-md shadow-[inset_0_0_4px_rgba(0,0,0,0.6)]'
-            style={{
-              background: mode === 'dark' ? '#dcdde1' : 'rgb(226, 232, 240)',
-            }}
-          >
-            <option value='Health & Fitness'>Health & Fitness</option>
-            <option value='Technology'>Technology</option>
-            <option value='Entertainment'>Entertainment</option>
-          </select>
-        </div>
-        <div className='mb-3'>
-          <Input
-            type='textarea'
-            label='Enter your Content'
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            required
-            placeholder='Enter Your Content'
-            style={{
-              background: mode === 'dark' ? '#dcdde1' : 'rgb(226, 232, 240)',
-              height: '400px', // Adjust the height according to your preference
-            }}
-            name='content'
-          />
-        </div>
 
-        <Button
-          className='w-full mt-5'
-          style={{
-            background: mode === 'dark' ? 'rgb(226, 232, 240)' : 'rgb(30, 41, 59)',
-            color: mode === 'dark' ? 'rgb(30, 41, 59)' : 'rgb(226, 232, 240)',
-          }}
-          onClick={handleSubmit}
-        >
-          Send
-        </Button>
-        <div className=''>
-  <h1 className='text-center mb-3 text-2xl'>Preview</h1>
-  <div
-    className={`[&> h1]:text-[32px] [&>h1]:font-bold  [&>h1]:mb-2.5 ${
-      mode === 'dark' ? '[&>h1]:text-[#ff4d4d]' : '[&>h1]:text-black'
-    }
+          </div>
+
+          <Button
+            className='w-full mt-5'
+            style={{
+              background: mode === 'dark' ? 'rgb(226, 232, 240)' : 'rgb(30, 41, 59)',
+              color: mode === 'dark' ? 'rgb(30, 41, 59)' : 'rgb(226, 232, 240)',
+            }}
+            onClick={handleSubmit}
+          >
+            Send
+          </Button>
+          <div className=''>
+            <h1 className='text-center mb-3 text-2xl'>Preview</h1>
+            <div
+              className={`[&> h1]:text-[32px] [&>h1]:font-bold  [&>h1]:mb-2.5 ${mode === 'dark' ? '[&>h1]:text-[#ff4d4d]' : '[&>h1]:text-black'
+                }
 
     [&>h2]:text-[30px] [&>h2]:font-bold [&>h2]:mb-2.5
     ${mode === 'dark' ? '[&>h2]:text-white' : '[&>h2]:text-black'}
@@ -176,17 +186,17 @@ function CreateBlog() {
 
     [&>img]:rounded-lg
     `}
-  >
-    {/* Preview content */}
-    <h1>{title}</h1>
-    <h2>{category}</h2>
-    <p>{content}</p>
-  </div>
-</div>
+            >
+              {/* Preview content */}
+              <h1>{title}</h1>
+              <h2>{category}</h2>
+              <p>{content}</p>
+            </div>
+          </div>
 
+        </div>
       </div>
-    </div>
-    <Footer />
+      <Footer />
     </div>
   );
 }
