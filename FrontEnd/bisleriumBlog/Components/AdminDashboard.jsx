@@ -44,8 +44,6 @@ function AdminDashboard() {
                             </span>
                         </a>
                     </div>
-
-                   
                     <div id="sidebar-menu">
                         <ul class="metismenu list-unStyled" id="side-menu">
                             <li class="menu-title">Menu</li>
@@ -108,7 +106,81 @@ function AdminDashboard() {
             </div>
 
             <div class="main-content">
+                <div class="page-content">
+                    <div class="container-fluid">
 
+                        <div class="row">
+                            <div class="col-md-6 col-xl-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="mb-4">
+                                            <span class="badge badge-soft-primary float-right">Daily</span>
+                                            <h5 class="card-title mb-0">Blog Posts</h5>
+                                        </div>
+                                        <div class="row d-flex align-items-center mb-4">
+                                            <div class="col-8">
+                                                <h2 class="d-flex align-items-center mb-0">
+                                                    123
+                                                </h2>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> 
+                            <div class="col-md-6 col-xl-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="mb-4">
+                                            <span class="badge badge-soft-primary float-right">Daily</span>
+                                            <h5 class="card-title mb-0">Comments</h5>
+                                        </div>
+                                        <div class="row d-flex align-items-center mb-4">
+                                            <div class="col-8">
+                                                <h2 class="d-flex align-items-center mb-0">
+                                                    100
+                                                </h2>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-xl-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="mb-4">
+                                            <span class="badge badge-soft-primary float-right">Daily</span>
+                                            <h5 class="card-title mb-0">Upvotes</h5>
+                                        </div>
+                                        <div class="row d-flex align-items-center mb-4">
+                                            <div class="col-8">
+                                                <h2 class="d-flex align-items-center mb-0">
+                                                    122
+                                                </h2>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-xl-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="mb-4">
+                                            <span class="badge badge-soft-primary float-right">All Time</span>
+                                            <h5 class="card-title mb-0">Down Votes</h5>
+                                        </div>
+                                        <div class="row d-flex align-items-center mb-4">
+                                            <div class="col-8">
+                                                <h2 class="d-flex align-items-center mb-0">
+                                                    123
+                                                </h2>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                
                 <footer class="footer">
                     <div class="container-fluid">
@@ -126,6 +198,9 @@ function AdminDashboard() {
                 </footer>
 
             </div>
+
+
+
 
         </div>
         <div class="menu-overlay"></div>
