@@ -4,6 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import Userurl from "../src";
 import { useDispatch } from "react-redux";
 import { signIn } from "../Features/SignIn/SignInSlice";
+import Nav from './Navbar';
+import Footer from './Footer';
 
 const Signin = () => {
   const navigate = useNavigate();
@@ -32,6 +34,8 @@ const Signin = () => {
     }
   };
   return (
+    <div>
+        <Nav />
     <section className="h-screen flex items-center justify-center inset-0 bg-custom">
       <div className="container 2xl:px-80 xl:px-52">
         <div
@@ -53,7 +57,7 @@ const Signin = () => {
                   <div className="my-8">
                     <Link
                       to="/signup"
-                      className="border text-white font-medium text-sm rounded-full transition-all duration-300 hover:bg-white hover:text-black focus:bg-white focus:text-black px-14 py-2.5"
+                      className="border text-white font-medium text-sm transition-all duration-300 hover:bg-white hover:text-black focus:bg-white focus:text-black px-14 py-2.5"
                     >
                       Sign up
                     </Link>
@@ -133,7 +137,7 @@ const Signin = () => {
                   </Link>
 
                   <button
-                    className="bg-sky-600 text-white font-medium text-sm rounded-full px-14 py-3"
+                    className="bg-sky-600 text-white font-medium text-sm  px-14 py-3"
                     onClick={signinHandler}
                   >
                     Sign In
@@ -145,6 +149,8 @@ const Signin = () => {
         </div>
       </div>
     </section>
+    <Footer />
+    </div>
   );
 };
 

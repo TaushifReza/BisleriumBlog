@@ -73,7 +73,7 @@ const Signup = () => {
                     <div className="my-8">
                       <Link
                         to="/signin"
-                        className="border text-white font-medium text-sm rounded-full transition-all duration-300 hover:bg-white hover:text-black focus:bg-white focus:text-black px-14 py-2.5"
+                        className="border text-white font-medium text-sm  transition-all duration-300 hover:bg-white hover:text-black focus:bg-white focus:text-black px-14 py-2.5"
                       >
                         Sign In
                       </Link>
@@ -196,7 +196,7 @@ const Signup = () => {
                     <input
                       type="submit"
                       value="Sign Up"
-                      className="bg-sky-600  text-white font-medium text-sm  rounded-full  py-3 px-6 inline-block"
+                      className="bg-sky-600  text-white font-medium text-sm  py-3 px-6 inline-block"
                       style={{ cursor: "pointer" }}
                       onClick={signupHandler}
                     />

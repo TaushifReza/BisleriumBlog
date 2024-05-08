@@ -18,6 +18,7 @@ import CreateBlog from "../Components/CreateBlog";
 import Signup from "../Components/Signup";
 import Signin from "../Components/Signin";
 import EditProfile from "../Components/EditProfile";
+import  Changepassword from "../Components/Changepassword";
 import Emailtemp from "../Components/Emailtemp";
 import Forget from "../Components/forget";
 import TwoFactor from "../Components/Twofactor";
@@ -190,6 +191,14 @@ const router = createBrowserRouter([
     element: (
       <App>
         < EditProfile />
+      </App>
+    ),
+  },
+  {
+    path: "/changepassword", // Route for Edit Profile page
+    element: (
+      <App>
+        < Changepassword  />
       </App>
     ),
   },
