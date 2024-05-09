@@ -51,10 +51,7 @@ const router = createBrowserRouter([
       </App>
     ),
   },
-  // {
-  //   path: "/blog",
-  //   element: <App><Blog /></App>,
-  // },
+
   {
     path: "/allblogs",
     element: (
@@ -71,10 +68,6 @@ const router = createBrowserRouter([
       </App>
     ),
   },
-  // {
-  //   path: "/bloginfo/:id",
-  //   element: <App><BlogInfo /></App>,
-  // },
 
   {
     path: "/dashboard",

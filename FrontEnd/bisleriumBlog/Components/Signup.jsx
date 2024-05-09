@@ -1,6 +1,7 @@
 
 
 import React,{useState} from 'react';
+import swal from 'sweetalert2' ;
 import '../style/signup.css';
 import { Link, useNavigate } from 'react-router-dom';
 import  Userurl  from '../src';
@@ -17,8 +18,6 @@ const Signup = () => {
       const navigate = useNavigate();
       
       const [showPassword, setShowPassword] = useState(false); // State for password visibility
-
-   
     
       const togglePasswordVisibility = () => {
         setShowPassword(!showPassword); // Toggle the visibility of the password
@@ -40,13 +39,25 @@ const Signup = () => {
 
          const response = await fetch(Userurl+"Register",Requestoptions )
          const data = await response.json()
+         const errors = await response.errors
+      
         
-        
-         if (response.status == 200){ 
-
+         if (response.status === 200) {
             navigate("/verifyemail");
-
-         }
+          } else {
+            const errors = data.errors;
+            let errorMessage = "";
+            for (const key in errors) {
+              if (errors.hasOwnProperty(key)) {
+                errorMessage += `${key}: ${errors[key]} ` + `${"\n"}`;
+              }
+            }
+            swal.fire({
+              icon: 'error',
+              title: 'Invalid',
+              text: errorMessage,
+            });
+          }
 
       };
 

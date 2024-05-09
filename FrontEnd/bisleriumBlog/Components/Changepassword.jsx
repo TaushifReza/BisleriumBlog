@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import swal from 'sweetalert2' ;
 import "../style/signup.css";
 import Nav from './Navbar';
 import Footer from './Footer';
@@ -45,9 +46,23 @@ const ChangePasswordForm = () => {
        body: formData,
      };
      const response = await fetch(Userurl+"ChangePassword", Requestoptions)
-     if (response.status == 200){
+     const data = await response.json()
+     if (response.status === 200){
         navigate("/")
-     }
+     }else {
+      const errors = data.errors;
+      let errorMessage = "";
+      for (const key in errors) {
+        if (errors.hasOwnProperty(key)) {
+          errorMessage += `${key}: ${errors[key]} ` + `${"\n"}`;
+        }
+      }
+      swal.fire({
+        icon: 'error',
+        title: 'Invalid',
+        text: errorMessage,
+      });
+    }
 
 
   };

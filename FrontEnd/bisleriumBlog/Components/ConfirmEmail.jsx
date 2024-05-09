@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import swal from 'sweetalert2' ;
 import Userurl from "../src";
 import {  useNavigate } from "react-router-dom";
 const ConfirmEmail = () => {
@@ -14,8 +15,22 @@ const ConfirmEmail = () => {
      Userurl + `ConfirmEmail/${id}/${token}`,
      Requestoptions
    );
+   const data = response.json()
     if (response.status === 200) {
       navigate("/signin");
+    }else {
+      const errors = data.errors;
+      let errorMessage = "";
+      for (const key in errors) {
+        if (errors.hasOwnProperty(key)) {
+          errorMessage += `${key}: ${errors[key]} ` + `${"\n"}`;
+        }
+      }
+      swal.fire({
+        icon: 'error',
+        title: 'Invalid',
+        text: errorMessage,
+      });
     }
   });
 };

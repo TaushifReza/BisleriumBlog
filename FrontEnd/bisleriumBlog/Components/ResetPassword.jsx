@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Userurl from "../src";
 import Nav from './Navbar';
 import Footer from './Footer';
+import swal from 'sweetalert2' ;
 
 const ResetPassword = () => {
   const navigate = useNavigate();
@@ -30,10 +31,23 @@ const ResetPassword = () => {
       Userurl + "VerifyOtpForForgotPassword",
       Requestoptions
     );
-    console.log(await response.json());
-    console.log(response);
+    const data = await response.json()
+
     if (response.status == 200) {
       navigate("/signin");
+    } else {
+      const errors = data.errors;
+      let errorMessage = "";
+      for (const key in errors) {
+        if (errors.hasOwnProperty(key)) {
+          errorMessage += `${key}: ${errors[key]} ` + `${"\n"}`;
+        }
+      }
+      swal.fire({
+        icon: 'error',
+        title: 'Invalid',
+        text: errorMessage,
+      });
     }
   };
   return (

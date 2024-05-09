@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import swal from 'sweetalert2' ;
 import "../style/signup.css";
 import { Link, useNavigate } from "react-router-dom";
 import Userurl from "../src";
@@ -18,12 +19,26 @@ const Forget = () => {
       Userurl + `SendOtpForForgotPassword?email=${email}`,
       Requestoptions
     );
+    const data = await response.json()
 
     if (response.status == 200) {
       navigate("/forgetverify");
       setInterval(() => {
         navigate("/signin");
-      }, 3000);
+      }, 2000);
+    } else {
+      const errors = data.errors;
+      let errorMessage = "";
+      for (const key in errors) {
+        if (errors.hasOwnProperty(key)) {
+          errorMessage += `${key}: ${errors[key]} ` + `${"\n"}`;
+        }
+      }
+      swal.fire({
+        icon: 'error',
+        title: 'Invalid',
+        text: errorMessage,
+      });
     }
   };
 
