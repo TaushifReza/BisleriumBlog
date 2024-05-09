@@ -37,6 +37,31 @@ namespace BisleriumBlog.API.Controllers
             this._response = new ();
         }
 
+        [HttpGet("Top3Blog")]
+        [AllowAnonymous]
+        public async Task<ActionResult<APIResponse>> Top3Blog()
+        {
+            try
+            {
+                var blogs = await _unitOfWork.Blog.GetAllAsync(pageSize: int.MaxValue);
+                var top3Blogs = blogs.OrderByDescending(b => b.UpVoteCount)
+                    .Take(3)
+                    .ToList();
+
+                var top3BlogDtOs = _mapper.Map<List<BlogDTO>>(top3Blogs);
+
+                _response.StatusCode = HttpStatusCode.OK;
+                _response.IsSuccess = true;
+                _response.Result = top3BlogDtOs;
+
+                return StatusCode(StatusCodes.Status200OK, _response);
+            }
+            catch (Exception e)
+            {
+                _response.ErrorMessage = new List<string>() { e.Message };
+            } return StatusCode(StatusCodes.Status500InternalServerError, _response);
+        }
+
         [HttpGet("GetAllBlog")]
         [AllowAnonymous]
         public async Task<ActionResult<APIResponse>> GetAllBlog(int pageSize = 3, int pageNumber = 1)
