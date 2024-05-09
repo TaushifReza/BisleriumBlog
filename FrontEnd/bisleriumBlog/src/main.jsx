@@ -12,10 +12,11 @@ import { ThemeProvider } from "@material-tailwind/react";
 import AllBlogs from "../Components/Allblogs";
 // import BlogInfo from "./pages/blogInfo/BlogInfo";
 // import NoPage from "./pages/nopage/NoPage";
-import AdminLogin from "../Components/Adminlogin";
+
 import AdminDashboard from "../Components/AdminDashboard";
 import CreateBlog from "../Components/CreateBlog";
 import Signup from "../Components/Signup";
+import Error404 from "../Components/Error404";
 import Signin from "../Components/Signin";
 import EditProfile from "../Components/EditProfile";
 import  Changepassword from "../Components/Changepassword";
@@ -64,14 +65,7 @@ const router = createBrowserRouter([
   //   path: "/bloginfo/:id",
   //   element: <App><BlogInfo /></App>,
   // },
-  {
-    path: "/adminlogin",
-    element: (
-      <App>
-        <AdminLogin />
-      </App>
-    ),
-  },
+  
   {
     path: "/dashboard",
     element: (
@@ -199,6 +193,14 @@ const router = createBrowserRouter([
     element: (
       <App>
         < Changepassword  />
+      </App>
+    ),
+  },
+  {
+    path: "/error", // Route for Edit Profile page
+    element: (
+      <App>
+        < Error404  />
       </App>
     ),
   },

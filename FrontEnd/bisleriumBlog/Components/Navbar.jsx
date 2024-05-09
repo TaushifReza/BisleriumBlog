@@ -25,12 +25,13 @@ export default function Nav() {
             <li className="text-white p-1">
                 <Link to={'/'}>Home</Link>
             </li>
-            <li className="text-white p-1">
+            {/* <li className="text-white p-1">
                 <Link to={'/allblogs'}>Blogs</Link>
             </li>
             <li className="text-white p-1">
                 <Link to={'/adminlogin'}>Admin Login</Link>
-            </li>
+            </li> */}
+
             <li className="text-white p-1">
                 <Link to={'/signup'}>Register</Link>
             </li>
@@ -45,7 +46,7 @@ export default function Nav() {
         <>
             {/* Navbar  */}
             <Navbar
-                className="sticky inset-0 z-20 h-max max-w-full border-none rounded-none py-2 px-4 lg:px-8 lg:py-2"
+                className="sticky inset-0 z-20 h-max max-w-full border-none rounded-none py-2 px-4 lg:px-8 lg:py-2 bg-dark"
                 style={{ background: mode === 'dark' ? 'rgb(30, 41, 59)' : '#30336b' }}>
 
                 {/* Desktop View  */}
@@ -77,21 +78,9 @@ export default function Nav() {
                         <div className="hidden lg:block">
                             {navList}
                         </div>
-
-                       {/* Search Icon */}
-                       <div>
-                            {/* <AiOutlineSearch size={20} color="white" /> */}
-                            <SearchDialog/>
-                        </div>
-
-                        {/* Share Icon */}
-                        <div className="hidden lg:block">
-                            <AiOutlineShareAlt size={20} color="white" />
-                        </div>
-
                         {/* Admin Profile Pic */}
                         <div>
-                            <Link to={'/dashboard'}>
+                            <Link to={'/profile'}>
                                 <div className="">
                                     <Avatar
                                         key={1}
