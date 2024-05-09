@@ -14,6 +14,7 @@ using System.Text;
 using BisleriumBlog.DataAccess;
 using BisleriumBlog.DataAccess.Repository;
 using BisleriumBlog.DataAccess.Repository.IRepository;
+using Microsoft.AspNetCore.Http.Connections;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +36,8 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 builder.Services.AddScoped<IPhotoManager, PhotoManager>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddSignalR();
+builder.Services.AddSingleton<INotificationService, NotificationService>();
 
 //Add Identity & JWT authentication
 //Identity
@@ -90,14 +93,12 @@ builder.Services.AddCors(options =>
     // React App
     options.AddPolicy("reactApp", policyBuilder =>
     {
-        policyBuilder.WithOrigins("http://localhost:5173");
+        policyBuilder.WithOrigins("http://localhost:5173", "http://127.0.0.1:5500");
         policyBuilder.AllowAnyHeader();
         policyBuilder.AllowAnyMethod();
         policyBuilder.AllowCredentials();
     });
 });
-
-builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -119,6 +120,15 @@ app.MapControllers();
 
 app.UseCors("reactApp");
 
-app.UseEndpoints(endpoints => endpoints.MapHub<NotificationHub>("/notification"));
+/*app.UseEndpoints(endpoints => endpoints.MapHub<NotificationHub>("/notification"));
+var useEndpoints = app;*/
+// Configure SignalR
+app.MapHub<NotificationHub>("/notification", options =>
+{
+    options.Transports =
+        HttpTransportType.WebSockets |
+        HttpTransportType.ServerSentEvents |
+        HttpTransportType.LongPolling;
+});
 
 app.Run();

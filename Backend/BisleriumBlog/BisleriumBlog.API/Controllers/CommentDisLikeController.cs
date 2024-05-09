@@ -72,6 +72,7 @@ namespace BisleriumBlog.API.Controllers
         }
 
         [HttpPost("DisLikeComment")]
+        [Authorize]
         public async Task<ActionResult<APIResponse>> DisLikeComment([FromForm] CommentDisLikeCreateDTO commentDisLikeCreateDto)
         {
             try
