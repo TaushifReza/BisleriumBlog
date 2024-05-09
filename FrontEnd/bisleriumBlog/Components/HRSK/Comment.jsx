@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Commenturl,LikeCommenturl,DislikeCommenturl } from "../src";
+import { Commenturl,LikeCommenturl,DislikeCommenturl } from "../../src";
 import { useSelector } from "react-redux";
 
 const Comment = () => {
@@ -17,7 +17,7 @@ const Comment = () => {
     };
 
     const response = await fetch(
-      Commenturl + `GetAllComment?pageSize=${3}&pageNumber=${1}`,Requestoptions
+      Commenturl + `GetAllCommentForBlog/${1}`,Requestoptions
     );
    
     const data = await response.json()
@@ -85,34 +85,35 @@ const Comment = () => {
   }
 
   const LikeComment = async(id)=>{
+     const formData = new FormData();
+    formData.append("CommentId", id);
      const Requestoptions = {
        method: "POST",
        headers: {
-         "Content-Type": "application/json",
          Authorization: "Bearer " + token,
        },
-       body: JSON.stringify({ commentId: id }),
+       body: formData,
      };
     const response = await fetch(LikeCommenturl +"LikeComment" ,Requestoptions);
-    const data = await response.json()
-    if (response.status == 200){
-      console.log(data.result.downVote)
+    
+    if (response.status == 204){
+      console.log("success")
     }
   }
 
    const DislikeComment = async(id) => {
-      const Requestoptions = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        },
-        body: JSON.stringify({ commentId: id }),
-      };
+       const formData = new FormData();
+       formData.append("CommentId", id);
+       const Requestoptions = {
+         method: "POST",
+         headers: {
+           Authorization: "Bearer " + token,
+         },
+         body: formData,
+       };
     const response = await fetch(DislikeCommenturl +"DisLikeComment" ,Requestoptions);
-    const data = await response.json()
     if (response.status == 200){
-      console.log(data.result.downVote)
+      console.log("success")
     }
       
    };
@@ -127,6 +128,7 @@ const Comment = () => {
         {getAllComment.map((comment)=>(
 
             <div key={comment.id}>
+              <p>{comment.id}</p>
                 <p>{comment.content}</p>
                 <p>{comment.likeCount}</p>
                 <p>{comment.disLikeCount}</p>

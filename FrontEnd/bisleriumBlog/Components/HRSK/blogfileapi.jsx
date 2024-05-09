@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Blogurl,Upvoteurl, Downvoteurl } from "../src/index";
+import { Blogurl,Upvoteurl, Downvoteurl } from "../../src/index";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 const Blogapi = () => {
