@@ -5,7 +5,7 @@ import '../style/AdminDashboard/css/bootstrap.min.css';
 import '../style/AdminDashboard/css/theme.css';
 import '../style/AdminDashboard/css/theme.min.css';
 import '../style/AdminDashboard/css/icons.min.css';
-//import Chart from 'chart.js/auto'; //this showed error so suyasha comented this line (happened after blogdetailpage uploaded)
+import Chart from 'chart.js/auto'; //this showed error so suyasha comented this line (happened after blogdetailpage uploaded)
 import myContext from "../context/myContext";
 import { Button } from '@material-tailwind/react';
 import { Link } from 'react-router-dom';
