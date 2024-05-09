@@ -74,7 +74,7 @@ namespace BisleriumBlog.API.Controllers
 
         [HttpPost("LikeComment")]
         [Authorize]
-        public async Task<ActionResult<APIResponse>> LikeComment(CommentLikeCreateDTO commentLikeCreateDto)
+        public async Task<ActionResult<APIResponse>> LikeComment([FromForm] CommentLikeCreateDTO commentLikeCreateDto)
         {
             try
             {
@@ -145,7 +145,7 @@ namespace BisleriumBlog.API.Controllers
                     {
                         message = "Successful Remove Like from the Comment."
                     };
-                    return StatusCode(StatusCodes.Status204NoContent, _response);
+                    return StatusCode(StatusCodes.Status200OK, _response);
                 }
             }
             catch (Exception e)

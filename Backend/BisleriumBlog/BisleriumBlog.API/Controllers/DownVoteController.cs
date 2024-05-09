@@ -149,7 +149,7 @@ namespace BisleriumBlog.API.Controllers
                     {
                         message = "Successful Remove DownVote the Blog."
                     };
-                    return StatusCode(StatusCodes.Status204NoContent, _response);
+                    return StatusCode(StatusCodes.Status200OK, _response);
                 }
 
             }
