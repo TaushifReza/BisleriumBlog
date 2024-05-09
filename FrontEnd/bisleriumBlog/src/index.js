@@ -9,5 +9,6 @@ const Downvoteurl=base+"DownVote/"
 const Upvoteurl = base+"UpVote/";
 const LikeCommenturl = base + "CommentLike/";
 const DislikeCommenturl = base + "CommentDisLike/";
-export {Categoryurl, Blogurl, Commenturl, Downvoteurl, Upvoteurl,LikeCommenturl,DislikeCommenturl}
+const GetAllBlogUrl = base + "Blog/GetAllBlog/"; 
+export {Categoryurl, Blogurl, Commenturl, Downvoteurl, Upvoteurl,LikeCommenturl,DislikeCommenturl,GetAllBlogUrl}
 export default Userurl
