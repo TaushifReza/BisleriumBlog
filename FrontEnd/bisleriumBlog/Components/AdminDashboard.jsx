@@ -14,7 +14,7 @@ const DummyData = {
     lineChartData: {
       labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
       datasets: [{
-        label: 'Sales',
+        label: 'Blogs',
         data: [65, 59, 80, 81, 56, 55, 40],
         fill: false,
         borderColor: 'rgb(75, 192, 192)',
@@ -22,10 +22,10 @@ const DummyData = {
       }]
     },
     barChartData: {
-      labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+      labels: ['Category1', 'Category2', 'Category3', 'Category4', 'Category5'],
       datasets: [{
-        label: '# of Votes',
-        data: [12, 19, 3, 5, 2, 3],
+        label: 'Total Categories',
+        data: [12, 19, 3, 5, 2],
         backgroundColor: [
           'rgba(255, 99, 132, 0.2)',
           'rgba(54, 162, 235, 0.2)',

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import swal from 'sweetalert2' ;
 import "../style/signup.css";
 import { Link, useNavigate } from "react-router-dom";
 import Userurl from "../src";
@@ -30,6 +31,12 @@ const Signin = () => {
     if (response.status == 200) {
       dispatch(signIn({ token: data.result.token, userData: data.result.userData }));
       navigate("/");
+    }else{
+      swal.fire({ 
+        icon: 'error',
+        title: 'Invalid',
+        text: 'Please check your credentials.'
+      });
     }
   };
   return (
