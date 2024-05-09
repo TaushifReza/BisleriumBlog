@@ -25,8 +25,9 @@ namespace BisleriumBlog.API.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<User> _userManager;
         private readonly IPhotoManager _photoManager;
+        private readonly INotificationService _notificationService;
 
-        public UpVoteController(IMapper mapper, ILogger<UpVoteController> logger, IUnitOfWork unitOfWork, UserManager<User> userManager, IPhotoManager photoManager)
+        public UpVoteController(IMapper mapper, ILogger<UpVoteController> logger, IUnitOfWork unitOfWork, UserManager<User> userManager, IPhotoManager photoManager, INotificationService notificationService)
         {
             _mapper = mapper;
             _logger = logger;
@@ -34,6 +35,7 @@ namespace BisleriumBlog.API.Controllers
             _userManager = userManager;
             _photoManager = photoManager;
             this._response = new();
+            _notificationService = notificationService;
         }
 
         [HttpGet("GetAllUpVoteForBlog/{id:int}")]
@@ -123,9 +125,9 @@ namespace BisleriumBlog.API.Controllers
                     await _unitOfWork.SaveAsync();
 
                     // Send a notification to the blog owner
-                    /*const string notificationType = "UpVote";
-                    var notificationMessage = $"Your blog '{blog.Title}' has been Upoted.";
-                    await _notificationService.SendNotificationAsync(blog.UserId, notificationType, notificationMessage);*/
+                    const string notificationType = "UpVote";
+                    var notificationMessage = $"Your blog '{blog.Title}' has been UpVoted.";
+                    await _notificationService.SendNotificationAsync(blog.UserId, notificationType, notificationMessage);
 
                     _response.StatusCode = HttpStatusCode.Created;
                     _response.IsSuccess = true;
@@ -145,9 +147,9 @@ namespace BisleriumBlog.API.Controllers
                     await _unitOfWork.SaveAsync();
 
                     // Send a notification to the blog owner
-                    /*const string notificationType = "Remove UpVote";
+                    const string notificationType = "Remove UpVote";
                     var notificationMessage = $"Your blog '{blog.Title}' has been Remove UpVoted.";
-                    await _notificationService.SendNotificationAsync(blog.UserId, notificationType, notificationMessage);*/
+                    await _notificationService.SendNotificationAsync(blog.UserId, notificationType, notificationMessage);
 
                     _response.StatusCode = HttpStatusCode.NoContent;
                     _response.IsSuccess = true;

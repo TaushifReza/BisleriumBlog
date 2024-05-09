@@ -120,15 +120,8 @@ app.MapControllers();
 
 app.UseCors("reactApp");
 
-/*app.UseEndpoints(endpoints => endpoints.MapHub<NotificationHub>("/notification"));
-var useEndpoints = app;*/
-// Configure SignalR
-app.MapHub<NotificationHub>("/notification", options =>
-{
-    options.Transports =
-        HttpTransportType.WebSockets |
-        HttpTransportType.ServerSentEvents |
-        HttpTransportType.LongPolling;
-});
+app.MapHub<NotificationHub>("/notification");
+
+builder.Logging.AddConsole();
 
 app.Run();

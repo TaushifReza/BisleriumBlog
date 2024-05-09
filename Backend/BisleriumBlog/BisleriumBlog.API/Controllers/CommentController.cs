@@ -28,8 +28,9 @@ namespace BisleriumBlog.API.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<User> _userManager;
         private readonly IPhotoManager _photoManager;
+        private readonly INotificationService _notificationService;
 
-        public CommentController(IMapper mapper, ILogger<CommentController> logger, IUnitOfWork unitOfWork, UserManager<User> userManager, IPhotoManager photoManager)
+        public CommentController(IMapper mapper, ILogger<CommentController> logger, IUnitOfWork unitOfWork, UserManager<User> userManager, IPhotoManager photoManager, INotificationService notificationService)
         {
             _mapper = mapper;
             _logger = logger;
@@ -37,6 +38,7 @@ namespace BisleriumBlog.API.Controllers
             _userManager = userManager;
             _photoManager = photoManager;
             this._response = new();
+            _notificationService = notificationService;
         }
 
         [HttpGet("GetAllCommentForBlog/{id:int}")]
@@ -141,6 +143,11 @@ namespace BisleriumBlog.API.Controllers
                 // Increase Comment count for Blog
                 blog.CommentCount += 1;
                 await _unitOfWork.SaveAsync();
+
+                // Send a notification to the blog owner
+                const string notificationType = "Comment";
+                var notificationMessage = $"Your blog '{blog.Title}' has been Commented.";
+                await _notificationService.SendNotificationAsync(blog.UserId, notificationType, notificationMessage);
 
                 _response.StatusCode = HttpStatusCode.OK;
                 _response.IsSuccess = true;

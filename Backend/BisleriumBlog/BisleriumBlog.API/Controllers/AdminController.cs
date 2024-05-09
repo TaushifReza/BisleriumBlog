@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Globalization;
+using AutoMapper;
 using BisleriumBlog.DataAccess.Repository.IRepository;
 using BisleriumBlog.DataAccess.Service.IService;
 using BisleriumBlog.Models.EntityModels;
@@ -48,7 +49,7 @@ namespace BisleriumBlog.API.Controllers
         }
 
         [HttpPost("RegisterAdmin")]
-        [AllowAnonymous]
+        //[AllowAnonymous]
         public async Task<ActionResult<APIResponse>> RegRegisterAdminister([FromForm] UserCreateDTO userCreateDto)
         {
             try
@@ -144,7 +145,7 @@ namespace BisleriumBlog.API.Controllers
         }
 
         [HttpGet("PopularBlog")]
-        [AllowAnonymous]
+        //[AllowAnonymous]
         public async Task<ActionResult<APIResponse>> PopularBlog(int pageSize = 10, int pageNumber = 1)
         {
             try
@@ -168,7 +169,7 @@ namespace BisleriumBlog.API.Controllers
         }
 
         [HttpGet("GetUniqueMonthsFromBlogCreation")]
-        [AllowAnonymous]
+        //[AllowAnonymous]
         public async Task<ActionResult<APIResponse>> GetUniqueMonthsFromBlogCreation()
         {
             try
@@ -195,7 +196,7 @@ namespace BisleriumBlog.API.Controllers
         }
 
         [HttpGet("PopularMonthBlog")]
-        [AllowAnonymous]
+        //[AllowAnonymous]
         public async Task<ActionResult<APIResponse>> PopularMonthBlog(int year, int month)
         {
             try
@@ -222,13 +223,13 @@ namespace BisleriumBlog.API.Controllers
         }
 
         [HttpGet("AdminDashboardData")]
-        //[Authorize(Roles = "Admin")]
-        [AllowAnonymous]
+        //[AllowAnonymous]
         public async Task<ActionResult<APIResponse>> GetAdminDashboardData(int? year, int? month)
         {
             try
             {
                 var blogs = await _unitOfWork.Blog.GetAllAsync(pageSize: int.MaxValue);
+                var categories = await _unitOfWork.Category.GetAllAsync(pageSize: int.MaxValue);
 
                 var allTimeData = new
                 {
@@ -253,12 +254,29 @@ namespace BisleriumBlog.API.Controllers
                     CommentsCount = filteredBlogs.Sum(b => b.CommentCount)
                 };
 
+                var categoriesWithBlogCount = categories.Select(c => new
+                {
+                    CategoryId = c.Id,
+                    CategoryName = c.Name,
+                    BlogCount = filteredBlogs.Count(b => b.CategoryId == c.Id)
+                });
+
+                var blogsPerMonth = blogs.GroupBy(b => b.CreatedAt.Month)
+                    .Select(g => new
+                    {
+                        MonthName = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(g.Key),
+                        BlogCount = g.Count()
+                    })
+                    .OrderBy(m => m.MonthName);
+
                 _response.StatusCode = HttpStatusCode.OK;
                 _response.IsSuccess = true;
                 _response.Result = new
                 {
                     AllTimeData = allTimeData,
-                    MonthSpecificData = monthSpecificData
+                    MonthSpecificData = monthSpecificData,
+                    CategoriesWithBlogCount = categoriesWithBlogCount,
+                    BlogsPerMonth = blogsPerMonth
                 };
 
                 return StatusCode(StatusCodes.Status200OK, _response);
