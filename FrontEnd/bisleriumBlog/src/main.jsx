@@ -31,14 +31,15 @@ import ResetPassword from "../Components/ResetPassword.jsx";
 import ProfilePage from "../Components/Profilepage.jsx";
 import ConfirmEmail from "../Components/ConfirmEmail.jsx";
 import Blogdetail from "../Components/Blogdetail.jsx";
-import IndividualBlog from "../Components/HRSK/individualblogpage.jsx";
-
+// import IndividualBlog from "../Components/individualblogpage.jsx";
+// import Blogapi from "../Components/blogfileapi.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
     element: (
       <App>
         <Home />
+        
       </App>
     ),
   },
@@ -47,7 +48,7 @@ const router = createBrowserRouter([
     element: (
       <App>
         {/* <Home />  */}
-        <IndividualBlog></IndividualBlog>
+        
       </App>
     ),
   },
@@ -70,7 +71,7 @@ const router = createBrowserRouter([
   },
 
   {
-    path: "/dashboard",
+    path: "/admin",
     element: (
       <App>
         <AdminDashboard />

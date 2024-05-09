@@ -7,40 +7,52 @@ import {
     Collapse,
 } from "@material-tailwind/react";
 import { useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AiOutlineShareAlt, AiOutlineSearch } from 'react-icons/ai'
 import myContext from "../context/myContext";
 import SearchDialog from "./SearchDialog";
+import { useSelector, useDispatch } from "react-redux";
+import { signIn } from "../Features/SignIn/SignInSlice";
+import { useState } from "react";
 
 export default function Nav() {
     const [openNav, setOpenNav] = React.useState(false);
-
+    const token = useSelector((state) => state.signin.token);
     const context = useContext(myContext);
     const { mode, toggleMode } = context;
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    
+    const Logout = ()=>{
+        {dispatch(signIn({ token: "", userData:{} }))} 
+        navigate("/signin")
 
-
+    }
     // All NavList 
     const navList = (
-        <ul className="flex gap-2 items-center">
+      <ul className="flex gap-2 items-center">
+        <li className="text-white p-1">
+          <Link to={"/"}>Home</Link>
+        </li>
+        {(token == "") ? (
+          <>
             <li className="text-white p-1">
-                <Link to={'/'}>Home</Link>
-            </li>
-            {/* <li className="text-white p-1">
-                <Link to={'/allblogs'}>Blogs</Link>
-            </li>
-            <li className="text-white p-1">
-                <Link to={'/adminlogin'}>Admin Login</Link>
-            </li> */}
-
-            <li className="text-white p-1">
-                <Link to={'/signup'}>Register</Link>
+              <Link to={"/signup"}>Register</Link>
             </li>
             <li className="text-white p-1">
-                <Link to={'/signin'}>Login</Link>
+              <Link to={"/signin"}>Login</Link>
             </li>
-        </ul>
+          </>
+        ) : (
+          <>
+            <li className="text-white p-1">
+              <button type="button" onClick={Logout}>Logout</button>
+            </li>
+          </>
+        )}
+      </ul>
     );
-    
+    {/* {dispatch(signIn({ token: "", userData:{} }))} */}
 
     return (
         <>
@@ -80,7 +92,7 @@ export default function Nav() {
                         </div>
                         {/* Admin Profile Pic */}
                         <div>
-                            <Link to={'/profile'}>
+                            {(token !== "") && (                           <Link to={'/profile'}>
                                 <div className="">
                                     <Avatar
                                         key={1}
@@ -98,7 +110,8 @@ export default function Nav() {
                                         }}
                                     />
                                 </div>
-                            </Link>
+                            </Link>) }
+ 
                         </div>
 
                         {/* dark And Light Button */}

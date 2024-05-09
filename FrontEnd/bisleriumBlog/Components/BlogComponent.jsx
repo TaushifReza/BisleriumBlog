@@ -2,49 +2,40 @@ import React, { useEffect, useState } from "react";
 import "../style/Blog.css";
 import { Blogurl } from "../src/index";
 import { AiFillHeart, AiFillDislike, AiOutlineComment } from "react-icons/ai";
-
+import { useNavigate } from "react-router-dom";
 const BlogComponent = () => {
   const [blogs, setBlogs] = useState([]);
+
   useEffect(() => {
     const Requestoptions = {
       method: "GET",
     };
-    fetch(Blogurl + `GetAllBlog/pageSize=${3}&pageNumber=${1}`, Requestoptions)
+    fetch(Blogurl + `GetAllBlog`, Requestoptions)
       .then((response) => response.json())
       .then((data) => {
         setBlogs(data.result);
       });
+      
   });
   
 
   return (
     <section id="demo" className="py-28">
       <div className="container1">
-        {/* <Header /> */}
         <BlogGrid blogs={blogs} />
       </div>
     </section>
   );
 };
 
-// const Header = () => {
-//   return (
-//     <div className="max-w-xl mx-auto text-center">
-//       <h2 className="text-4xl font-bold text-dark">Customer stories</h2>
-//       <p className="text-base font-medium text-gray-500 mt-6">
-//         Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-//       </p>
-//     </div>
-//   );
-// };
-
 const BlogGrid = ({ blogs }) => {
   return (
     <div className="relative">
-      <div className="grid lg:grid-cols-1 md:grid-cols-1 grid-cols-1 gap-6 ">
+      <div className="flex flex-wrap  justify-between ">
         {blogs.map((blog) => (
           <BlogCard
             key={blog.id}
+            id= {blog.id}
             title={blog.title}
             viewcount={blog.viewcount}
             date={new Date(blog.createdAt).toLocaleDateString()}
@@ -62,6 +53,7 @@ const BlogGrid = ({ blogs }) => {
 };
 
 const BlogCard = ({
+  id,
   title,
   date,
   category,
@@ -72,6 +64,12 @@ const BlogCard = ({
   comments,
   viewcount,
 }) => {
+  const navigate = useNavigate();
+  const individual = (id) => {
+    console.log(id);
+    navigate("/blogdetail", { state: id });
+  };
+
   return (
     <div className="group sm:flex rounded-xl">
       <div className="flex-shrink-0 relative rounded-xl overflow-hidden h-[200px] sm:w-[500px] sm:h-[300px] group">
@@ -98,9 +96,7 @@ const BlogCard = ({
           <p className=" line-clamp-3 mt-4 mb-6 text-gray-500 text-base leading-7 font-medium ">
             {description}
           </p>
-        
-         
-         
+
           <div className="flex items-center flex-wrap">
             <AiFillHeart className="text-red-500" />{" "}
             <span className="ml-2 text-gray-600">{likes}</span>
@@ -108,9 +104,11 @@ const BlogCard = ({
             <span className="ml-2 text-gray-600">{dislikes}</span>
             <AiOutlineComment className="ml-4 text-blue-500" />{" "}
             <span className="ml-2 text-gray-600">{comments}</span>
+            <p>view</p>
+            <span className="ml-2 text-gray-600">{viewcount}</span>
           </div>
           <a
-            href="#"
+            onClick={()=>{individual(id)}}
             className="read-more-btn flex mt-7 hover:text-primary transition-all duration-500 "
           >
             Read More<i data-lucide="arrow-up-right"></i>
