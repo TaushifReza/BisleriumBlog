@@ -238,5 +238,47 @@ namespace BisleriumBlog.API.Controllers
                 _response.ErrorMessage = new List<string>() { e.Message };
             } return StatusCode(StatusCodes.Status500InternalServerError, _response);
         }
+
+        [HttpDelete("DeleteBlog/{blogId:int}")]
+        [Authorize]
+        public async Task<ActionResult<APIResponse>> DeleteBlog(int blogId)
+        {
+            try
+            {
+                var blog = await _unitOfWork.Blog.GetAsync(u => u.Id == blogId);
+                if (blog == null)
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessage = new List<string>() { $"Blog with ID {blogId} not found."};
+                    return BadRequest(_response);
+                }
+
+                // Retrieve user claims from JWT token
+                var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                if (blog.UserId != userId) {
+                    _response.StatusCode = HttpStatusCode.Forbidden;
+                    _response.IsSuccess = false;
+                    _response.Result = new
+                    {
+                        message = $"Blog with ID {blogId} not found."
+                    };
+                    return StatusCode(StatusCodes.Status403Forbidden, _response);
+                }
+
+                _unitOfWork.Blog.Remove(blog);
+                await _unitOfWork.SaveAsync();
+
+                _response.StatusCode = HttpStatusCode.NoContent;
+                _response.IsSuccess = false;
+                _response.ErrorMessage = new List<string>() { $"Blog deleted successful" };
+                return StatusCode(StatusCodes.Status200OK, _response);
+            }
+            catch (Exception e)
+            {
+                _response.ErrorMessage = new List<string>() { e.Message };
+            } return StatusCode(StatusCodes.Status500InternalServerError, _response);
+        }
     }
 }

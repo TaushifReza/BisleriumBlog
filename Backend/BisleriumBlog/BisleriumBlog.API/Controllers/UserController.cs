@@ -567,7 +567,7 @@ namespace BisleriumBlog.API.Controllers
                         _response.StatusCode = HttpStatusCode.OK;
                         _response.Result = new
                         {
-                            mesage = "Password change Successfuly"
+                            mesage = "Password change Successful"
                         };
                         return StatusCode(StatusCodes.Status200OK, _response);
                     }
@@ -583,6 +583,38 @@ namespace BisleriumBlog.API.Controllers
             catch (Exception e)
             {
                 _response.ErrorMessage = new List<string?>() { e.ToString() };
+            } return StatusCode(StatusCodes.Status500InternalServerError, _response);
+        }
+
+        [HttpDelete("DeleteUser")]
+        [Authorize]
+        public async Task<ActionResult<APIResponse>> DeleteUser()
+        {
+            try
+            {
+                // Retrieve user claims from JWT token
+                var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                var user = await _userManager.FindByIdAsync(userId);
+
+                var result = await _userManager.DeleteAsync(user);
+                if (result.Succeeded) {
+                    _response.StatusCode = HttpStatusCode.NoContent;
+                    _response.IsSuccess = false;
+                    _response.Result = new
+                    {
+                        message = "User deleted successful"
+                    };
+                    return StatusCode(StatusCodes.Status200OK, _response);
+                }
+                _response.StatusCode = HttpStatusCode.InternalServerError;
+                _response.IsSuccess = false;
+                _response.ErrorMessage = new List<string>() { result.Errors.ToString()! };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+            catch (Exception e)
+            {
+                _response.ErrorMessage = new List<string>() { e.Message };
             } return StatusCode(StatusCodes.Status500InternalServerError, _response);
         }
 
