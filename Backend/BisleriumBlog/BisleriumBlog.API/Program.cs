@@ -11,6 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
+using BisleriumBlog.DataAccess;
 using BisleriumBlog.DataAccess.Repository;
 using BisleriumBlog.DataAccess.Repository.IRepository;
 
@@ -96,6 +97,8 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddSignalR();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -107,11 +110,15 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseRouting();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
 app.UseCors("reactApp");
+
+app.UseEndpoints(endpoints => endpoints.MapHub<NotificationHub>("/notification"));
 
 app.Run();

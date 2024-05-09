@@ -39,12 +39,21 @@ namespace BisleriumBlog.API.Controllers
             this._response = new();
         }
 
-        [HttpGet("GetAllComment")]
-        public async Task<ActionResult<APIResponse>> GetAllComment(int pageSize = 3, int pageNumber = 1)
+        [HttpGet("GetAllCommentForBlog/{id:int}")]
+        [AllowAnonymous]
+        public async Task<ActionResult<APIResponse>> GetAllCommentForBlog(int id, int pageSize = 3, int pageNumber = 1)
         {
             try
             {
-                var comments = await _unitOfWork.Comment.GetAllAsync(pageSize: pageSize, pageNumber: pageNumber);
+                var blog = await _unitOfWork.Blog.GetAsync(u => u.Id == id);
+                if (blog == null)
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.Result = $"BLog with ID {id} not found.";
+                    return StatusCode(StatusCodes.Status404NotFound, _response);
+                }
+                var comments = await _unitOfWork.Comment.GetAllAsync(u=>u.BlogId==blog.Id,pageSize: pageSize, pageNumber: pageNumber);
 
                 Pagination pagination = new() { PageNumber = pageNumber, PageSize = pageSize };
 
@@ -62,6 +71,7 @@ namespace BisleriumBlog.API.Controllers
         }
 
         [HttpGet("GetComment/{id:int}")]
+        [AllowAnonymous]
         public async Task<ActionResult<APIResponse>> GetComment(int id)
         {
             try
@@ -76,6 +86,13 @@ namespace BisleriumBlog.API.Controllers
                     };
                     return StatusCode(StatusCodes.Status404NotFound, _response);
                 }
+                _response.StatusCode = HttpStatusCode.OK;
+                _response.IsSuccess = true;
+                _response.Result = new
+                {
+                    commentData = _mapper.Map<CommentDTO>(comment)
+                };
+                return StatusCode(StatusCodes.Status200OK, _response);
             }
             catch (Exception e)
             {
@@ -211,6 +228,16 @@ namespace BisleriumBlog.API.Controllers
                     _response.ErrorMessage = new List<string> { "You are not authorized to update this comment" };
                     return StatusCode(StatusCodes.Status403Forbidden, _response);
                 }
+
+                _unitOfWork.Comment.Remove(comment);
+                await _unitOfWork.SaveAsync();
+
+                _response.StatusCode = HttpStatusCode.NoContent;
+                _response.Result = new
+                {
+                    message = "Comment Deleted successful"
+                };
+                return StatusCode(StatusCodes.Status204NoContent, _response);
             }
             catch (Exception e)
             {

@@ -48,7 +48,7 @@ namespace BisleriumBlog.API.Controllers
                     _response.IsSuccess = false;
                     _response.Result = new
                     {
-                        error = $"Blog with ID {id} Not Found!"
+                        error = $"Comment with ID {id} Not Found!"
                     };
                     return StatusCode(StatusCodes.Status404NotFound, _response);
                 }
@@ -72,7 +72,7 @@ namespace BisleriumBlog.API.Controllers
         }
 
         [HttpPost("DisLikeComment")]
-        public async Task<ActionResult<APIResponse>> DisLikeComment(CommentDisLikeCreateDTO commentDisLikeCreateDto)
+        public async Task<ActionResult<APIResponse>> DisLikeComment([FromForm] CommentDisLikeCreateDTO commentDisLikeCreateDto)
         {
             try
             {
@@ -145,7 +145,7 @@ namespace BisleriumBlog.API.Controllers
                     {
                         message = "Successful Remove DisLike from the Comment."
                     };
-                    return StatusCode(StatusCodes.Status204NoContent, _response);
+                    return StatusCode(StatusCodes.Status200OK, _response);
                 }
 
             }

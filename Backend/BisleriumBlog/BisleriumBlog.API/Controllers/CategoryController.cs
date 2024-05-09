@@ -5,6 +5,7 @@ using BisleriumBlog.DataAccess.Repository.IRepository;
 using BisleriumBlog.Models;
 using BisleriumBlog.Models.DTOs.Category;
 using BisleriumBlog.Models.EntityModels;
+using BisleriumBlog.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -14,7 +15,7 @@ namespace BisleriumBlog.API.Controllers
 {
     [Route("api/Category")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = SD.RoleAdmin)]
     public class CategoryController : ControllerBase
     {
         private IMapper _mapper;
@@ -33,6 +34,7 @@ namespace BisleriumBlog.API.Controllers
         }
 
         [HttpGet("GetAllCategory")]
+        [AllowAnonymous]
         public async Task<ActionResult<APIResponse>> GetAllCategory()
         {
             try

@@ -18,5 +18,6 @@ namespace BisleriumBlog.Models.DTOs.Blog
         public int UpVoteCount { get; set; } = 0;
         public int DownVoteCount { get; set; } = 0;
         public int CommentCount { get; set; } = 0;
+        public int BlogPopularity { get; set; } = 0;
     }
 }

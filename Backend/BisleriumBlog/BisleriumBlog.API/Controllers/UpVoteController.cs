@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Security.Claims;
 using BisleriumBlog.Models.DTOs.UpVote;
+using BisleriumBlog.DataAccess.Service;
 
 namespace BisleriumBlog.API.Controllers
 {
@@ -121,6 +122,11 @@ namespace BisleriumBlog.API.Controllers
                     _unitOfWork.Blog.Update(blog);
                     await _unitOfWork.SaveAsync();
 
+                    // Send a notification to the blog owner
+                    /*const string notificationType = "UpVote";
+                    var notificationMessage = $"Your blog '{blog.Title}' has been Upoted.";
+                    await _notificationService.SendNotificationAsync(blog.UserId, notificationType, notificationMessage);*/
+
                     _response.StatusCode = HttpStatusCode.Created;
                     _response.IsSuccess = true;
                     _response.Result = new
@@ -138,13 +144,18 @@ namespace BisleriumBlog.API.Controllers
                     blog.UpVoteCount -= 1;
                     await _unitOfWork.SaveAsync();
 
+                    // Send a notification to the blog owner
+                    /*const string notificationType = "Remove UpVote";
+                    var notificationMessage = $"Your blog '{blog.Title}' has been Remove UpVoted.";
+                    await _notificationService.SendNotificationAsync(blog.UserId, notificationType, notificationMessage);*/
+
                     _response.StatusCode = HttpStatusCode.NoContent;
                     _response.IsSuccess = true;
                     _response.Result = new
                     {
                         message = "Successful Remove UpVote the Blog."
                     };
-                    return StatusCode(StatusCodes.Status204NoContent, _response);
+                    return StatusCode(StatusCodes.Status200OK, _response);
                 }
 
             }
