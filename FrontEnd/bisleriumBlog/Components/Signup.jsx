@@ -73,7 +73,7 @@ const Signup = () => {
                     <div className="my-8">
                       <Link
                         to="/signin"
-                        className="border text-white font-medium text-sm  transition-all duration-300 hover:bg-white hover:text-black focus:bg-white focus:text-black px-14 py-2.5"
+                        className="border text-white font-medium text-sm  transition-all duration-300  hover:text-black1 focus:bg-white focus:text-black px-14 py-2.5"
                       >
                         Sign In
                       </Link>
@@ -84,32 +84,8 @@ const Signup = () => {
 
               <div className="xl:col-span-3 lg:col-span-2 lg:m-10 m-5">
                 <div className="text-center">
-                  <h1 className="text-4xl text-sky-600 mb-3">Create Account</h1>
+                  <h3 className="text-4xl text-sky-600 mb-3">Create Account</h3>
 
-                  <div className="flex items-center justify-center gap-2 my-5">
-                    <a
-                      href="#"
-                      className="border rounded-full flex items-center justify-center transition-all duration-300 focus:bg-sky-600 focus:text-white hover:bg-sky-600 hover:text-white h-10 w-10"
-                    >
-                      <i className="fa-brands fa-facebook-f"></i>
-                    </a>
-                    <a
-                      href="#"
-                      className="border rounded-full flex items-center justify-center transition-all duration-300 focus:bg-sky-600 focus:text-white hover:bg-sky-600 hover:text-white h-10 w-10"
-                    >
-                      <i className="fa-brands fa-google-plus-g"></i>
-                    </a>
-                    <a
-                      href="#"
-                      className="border rounded-full flex items-center justify-center transition-all duration-300 focus:bg-sky-600 focus:text-white hover:bg-sky-600 hover:text-white h-10 w-10"
-                    >
-                      <i className="fa-brands fa-linkedin-in"></i>
-                    </a>
-                  </div>
-
-                  <p className="text-sm font-medium leading-relaxed">
-                    Or use your email for registration
-                  </p>
                   <div className="space-y-5 mt-3">
                     <input
                       className="text-gray-500 border-gray-300 focus:ring-0 focus:border-gray-400 text-sm rounded-lg py-2 px-4 w-full"
@@ -135,7 +111,7 @@ const Signup = () => {
 
                     <input
                       className="text-gray-500 border-gray-300 focus:ring-0 focus:bonpm initrder-gray-400 text-sm rounded-lg py-2 px-4 w-full"
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       id="password"
                       name="password"
                       placeholder="Password"
@@ -153,7 +129,7 @@ const Signup = () => {
                       <div className="relative">
                     <input
                       className="text-gray-500 border-gray-300 focus:ring-0 focus:border-gray-400 text-sm rounded-lg py-2 px-4 w-full"
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       id="confirm_password"
                       name="confirm_password"
                       placeholder="Confirm Password"

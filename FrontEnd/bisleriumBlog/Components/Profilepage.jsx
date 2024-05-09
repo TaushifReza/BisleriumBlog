@@ -20,7 +20,7 @@ const ProfilePage = () => {
     };
 
     const handleChangePassword = () => {
-        alert("Change password functionality to be implemented!");
+        navigate('/changepassword'); 
     };
 
     const onUpload = (event) => {
@@ -115,7 +115,7 @@ const ProfilePage = () => {
                             <div className="container mx-auto px-4">
                                 <div className="w-full mb-6 shadow-xl rounded-lg px-6 py-8">
                                     <div className="text-center">
-                                        <h3 className="text-4xl font-semibold leading-normal mb-2 text-blueGray-700">
+                                        <h3 className="text-4xl text-black1 font-semibold leading-normal mb-2 text-blueGray-700">
                                             {user.username}
                                         </h3>
                                         <div className="text-sm leading-normal mt-0 mb-2 text-blueGray-400 font-bold uppercase">

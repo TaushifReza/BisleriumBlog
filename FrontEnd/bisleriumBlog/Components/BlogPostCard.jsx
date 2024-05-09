@@ -44,7 +44,7 @@ const BlogPostCard = () => {
   return (
     <section className="text-gray-600 body-font mt-0">
       <div className="container px-5 py-10 mx-auto flex flex-wrap">
-        <h2 className="text-4xl font-bold text-center w-full mb-11">Most Popular Blogs</h2>
+        <h2 className="text-4xl font-bold text-center w-full mb-11 text-black1">Most Popular Blogs</h2>
         <div className="md:flex md:items-start md:w-1/3 pr-4">
           {blogs.map(blog => (
             <div key={blog.id} className="p-4 md:w-full">
