@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Commenturl } from "../../src";
+import { Commenturl,LikeCommenturl,DislikeCommenturl } from "../src";
 import { useSelector } from "react-redux";
 
 const Comment = () => {
@@ -29,7 +29,7 @@ const Comment = () => {
 
   }
 
-  const createComment= async()=>{
+  const createComment= async(id)=>{
 
     const Requestoptions = {
       method: "POST",
@@ -37,7 +37,7 @@ const Comment = () => {
         "Content-Type": "application/json",
         Authorization: "Bearer " + token,
       },
-      body: JSON.stringify({"content":comment, "blogId":1})
+      body: JSON.stringify({"content":comment, "blogId":id})
       
     };
 
@@ -84,6 +84,41 @@ const Comment = () => {
         }
   }
 
+  const LikeComment = async(id)=>{
+     const Requestoptions = {
+       method: "POST",
+       headers: {
+         "Content-Type": "application/json",
+         Authorization: "Bearer " + token,
+       },
+       body: JSON.stringify({ commentId: id }),
+     };
+    const response = await fetch(LikeCommenturl +"LikeComment" ,Requestoptions);
+    const data = await response.json()
+    if (response.status == 200){
+      console.log(data.result.downVote)
+    }
+  }
+
+   const DislikeComment = async(id) => {
+      const Requestoptions = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        },
+        body: JSON.stringify({ commentId: id }),
+      };
+    const response = await fetch(DislikeCommenturl +"DisLikeComment" ,Requestoptions);
+    const data = await response.json()
+    if (response.status == 200){
+      console.log(data.result.downVote)
+    }
+      
+   };
+
+  
+
 
 
   return (
@@ -93,6 +128,10 @@ const Comment = () => {
 
             <div key={comment.id}>
                 <p>{comment.content}</p>
+                <p>{comment.likeCount}</p>
+                <p>{comment.disLikeCount}</p>
+                <button type="button" onClick={()=>{LikeComment(comment.id)}}>Like</button>
+                <button type="button" onClick={()=>{DislikeComment(comment.id)}}>Dislike</button><br />
                 <button type="button" onClick={()=> setupdate(true)}>update comment</button>
                 <button type="button" onClick={()=>{deleteComment(comment.id)}}>Delete comment</button>
                 {update && (<>
@@ -104,7 +143,7 @@ const Comment = () => {
 
         )}
         <input type="text" name="comment" id="comment" onInput={e=>setComment(e.target.value)} /> 
-        <button type="button" onClick={createComment}>comment</button> 
+        <button type="button" onClick={()=>{createComment()}}>comment</button> 
      
     </>
   );

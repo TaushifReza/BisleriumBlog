@@ -31,13 +31,26 @@ import ResetPassword from "../Components/ResetPassword.jsx";
 import ProfilePage from "../Components/Profilepage.jsx";
 import ConfirmEmail from "../Components/ConfirmEmail.jsx";
 import Blogdetail from "../Components/Blogdetail.jsx";
-
+import IndividualBlog from "../Components/individualblogpage.jsx";
+import Blogapi from "../Components/blogfileapi.jsx";
+import Comment from "../Components/Comment.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
     element: (
       <App>
-        <Home /> 
+        {/* <Home />  */}
+        {/* <Blogapi></Blogapi> */}
+        <Comment></Comment>
+      </App>
+    ),
+  },
+  {
+    path: "/individualblog",
+    element: (
+      <App>
+        {/* <Home />  */}
+        <IndividualBlog></IndividualBlog>
       </App>
     ),
   },
@@ -65,7 +78,7 @@ const router = createBrowserRouter([
   //   path: "/bloginfo/:id",
   //   element: <App><BlogInfo /></App>,
   // },
-  
+
   {
     path: "/dashboard",
     element: (
@@ -184,7 +197,7 @@ const router = createBrowserRouter([
     path: "/editprofile", // Route for Edit Profile page
     element: (
       <App>
-        < EditProfile />
+        <EditProfile />
       </App>
     ),
   },
@@ -192,7 +205,7 @@ const router = createBrowserRouter([
     path: "/changepassword", // Route for Edit Profile page
     element: (
       <App>
-        < Changepassword  />
+        <Changepassword />
       </App>
     ),
   },
@@ -200,7 +213,7 @@ const router = createBrowserRouter([
     path: "/error", // Route for Edit Profile page
     element: (
       <App>
-        < Error404  />
+        <Error404 />
       </App>
     ),
   },
@@ -209,6 +222,30 @@ const router = createBrowserRouter([
   //   element: <App><NoPage /></App>,
   // },
 ]);
+
+// SignalR Connection
+
+const connection = new signalR.HubConnectionBuilder()
+            .withUrl("https://1424-2400-1a00-b040-8072-29e9-6865-ff5b-c1a4.ngrok-free.app/notificationHub")
+            .build();
+
+        connection.start().then(()=>console.log("Connection started")).catch((err)=>console.error("ERROR"+err));
+
+        // connection.on("ReceiveNotification", (data)=>{
+        //   console.log("Notification received", data)
+        // })
+
+        // connection.on("ReceiveNotification", (notificationType, notificationMessage) => {
+        //     const notificationElement = document.createElement("div");
+        //     notificationElement.textContent = `${notificationType}: ${notificationMessage}`;
+        //     document.getElementById("notifications").appendChild(notificationElement);
+        // });
+
+        // connection.start()
+        //     .then(() => console.log("SignalR connection established."))
+        //     .catch(err => console.error("Error establishing SignalR connection:", err));
+
+
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

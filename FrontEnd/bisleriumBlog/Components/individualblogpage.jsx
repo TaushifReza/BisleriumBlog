@@ -1,4 +1,4 @@
-import { Blogurl } from "../../src/index";
+import { Blogurl } from "../src/index";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
