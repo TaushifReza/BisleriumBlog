@@ -2,16 +2,20 @@ import React, { useState } from "react";
 import "../style/signup.css";
 import Nav from './Navbar';
 import Footer from './Footer';
-import { Link } from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import Userurl from "../src";
 const ChangePasswordForm = () => {
+  
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
+   const token = useSelector((state) => state.signin.token);
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = async() => {
+    
 
     // Check if all fields are filled
     if (!oldPassword || !newPassword || !confirmPassword) {
@@ -29,9 +33,23 @@ const ChangePasswordForm = () => {
     setError("");
 
     // Add logic here to handle password change, such as sending a request to update the password
-    console.log("Old Password:", oldPassword);
-    console.log("New Password:", newPassword);
-    console.log("Confirm Password:", confirmPassword);
+    const formData = new FormData();
+     formData.append("CurrentPassword", oldPassword);
+     formData.append("NewPassword", newPassword);
+     formData.append("ConfirmPassword", confirmPassword);
+     const Requestoptions = {
+       method: "POST",
+       headers: {
+         Authorization: "Bearer " + token,
+       },
+       body: formData,
+     };
+     const response = await fetch(Userurl+"ChangePassword", Requestoptions)
+     if (response.status == 200){
+        navigate("/")
+     }
+
+
   };
 
   return (
@@ -65,7 +83,7 @@ const ChangePasswordForm = () => {
                 <div>
                   <h1 className="text-4xl text-sky-600 mb-3">Change Password</h1>
 
-                  <form onSubmit={handleSubmit} className="space-y-5 mt-10">
+                  <div  className="space-y-5 mt-10">
                     <input
                       className="text-gray-500 border-gray-300 focus:ring-0 focus:border-gray-400 text-sm rounded-lg py-2.5 px-4 w-full"
                       type="password"
@@ -93,10 +111,11 @@ const ChangePasswordForm = () => {
                     <button
                       type="submit"
                       className="bg-sky-600 text-white font-medium text-sm px-14 py-3"
+                      onClick={handleSubmit}
                     >
                       Change Password
                     </button>
-                  </form>
+                  </div>
                 </div>
               </div>
             </div>

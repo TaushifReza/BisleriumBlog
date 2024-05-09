@@ -1,15 +1,19 @@
 import React, { useState } from "react";
 import "../style/signup.css";
-import { Link } from "react-router-dom";
+import { Link , useNavigate} from "react-router-dom";
 import Nav from './Navbar';
 import Footer from './Footer';
+import { useSelector } from "react-redux";
+import Userurl from "../src";
+
 const EditProfileForm = () => {
   const [name, setName] = useState("");
   const [bio, setBio] = useState("");
   const [error, setError] = useState("");
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const token = useSelector((state) => state.signin.token);
+  const navigate = useNavigate();
+  const handleSubmit = async() => {
+    
 
     // Check if at least one field is filled
     if (!name && !bio) {
@@ -21,8 +25,24 @@ const EditProfileForm = () => {
     setError("");
 
     // Add logic here to handle form submission, such as updating the user's profile
-    console.log("Name:", name);
-    console.log("Bio:", bio);
+    
+     const formData = new FormData();
+     formData.append("FullName", name);
+     formData.append("Bio", bio);
+     const Requestoptions = {
+       method: "POST",
+       headers: {
+         Authorization: "Bearer " + token,
+       },
+       body: formData,
+     };
+     const response = await fetch(Userurl+"UpdateUserProfile", Requestoptions)
+     if (response.status == 200){
+        navigate("/");
+     }
+
+
+
   };
 
   return (
@@ -55,7 +75,7 @@ const EditProfileForm = () => {
                 <div>
                   <h1 className="text-4xl text-sky-600 mb-3">Edit Profile</h1>
 
-                  <form onSubmit={handleSubmit} className="space-y-5 mt-10">
+                  <div  className="space-y-5 mt-10">
                     <input
                       className="text-gray-500 border-gray-300 focus:ring-0 focus:border-gray-400 text-sm rounded-lg py-2.5 px-4 w-full"
                       type="text"
@@ -76,10 +96,11 @@ const EditProfileForm = () => {
                     <button
                       type="submit"
                       className="bg-sky-600 text-white font-medium text-sm px-14 py-3"
+                      onClick={handleSubmit}
                     >
                       Update
                     </button>
-                  </form>
+                  </div>
                 </div>
               </div>
             </div>
