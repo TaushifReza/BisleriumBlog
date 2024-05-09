@@ -75,7 +75,7 @@ namespace BisleriumBlog.API.Controllers
                     }
                     userCreateDto.ProfileImageUrl = uploadResult.Url.ToString();
                 }
-                User user = _mapper.Map<User>(userCreateDto);
+                var user = _mapper.Map<User>(userCreateDto);
                 user.UserName = user.Email;
                 // Create user
                 var createUser = await _userManager.CreateAsync(user, userCreateDto.Password);
@@ -101,7 +101,6 @@ namespace BisleriumBlog.API.Controllers
                     string emailConfirmationLink =
                         $"http://localhost:5173/confirmEmail?id={userIdEncoded}&token={tokenEncoded}";
                     // Send Email Confirmation Link to Email
-                    // email = taushif1teza@gmail.com
                     try
                     {
                         if (user.Email != null)
