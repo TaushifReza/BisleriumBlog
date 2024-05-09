@@ -43,7 +43,7 @@ namespace BisleriumBlog.API.Controllers
         {
             try
             {
-                var blogs = await _unitOfWork.Blog.GetAllAsync(pageSize: int.MaxValue);
+                var blogs = await _unitOfWork.Blog.GetAllAsync(pageSize: int.MaxValue, includeProperties: "Category,User");
                 var top3Blogs = blogs.OrderByDescending(b => b.UpVoteCount)
                     .Take(3)
                     .ToList();
@@ -68,21 +68,24 @@ namespace BisleriumBlog.API.Controllers
         {
             try
             {
-                var blogs = await _unitOfWork.Blog.GetAllAsync(pageSize:pageSize, pageNumber:pageNumber);
+                var blogs = await _unitOfWork.Blog.GetAllAsync(pageSize: pageSize, pageNumber: pageNumber, 
+                    includeProperties: "Category,User");
+                var blogDtos = _mapper.Map<List<BlogDTO>>(blogs);
 
-                Pagination pagination = new() {PageNumber = pageNumber, PageSize = pageSize};
-
+                Pagination pagination = new() { PageNumber = pageNumber, PageSize = pageSize };
                 Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagination));
 
                 _response.StatusCode = HttpStatusCode.OK;
                 _response.IsSuccess = true;
-                _response.Result = blogs;
+                _response.Result = blogDtos;
+
                 return StatusCode(StatusCodes.Status200OK, _response);
             }
             catch (Exception e)
             {
                 _response.ErrorMessage = new List<string>() { e.Message };
-            } return StatusCode(StatusCodes.Status500InternalServerError, _response);
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
         }
 
         [HttpGet("GetBlog/{id:int}")]
@@ -91,7 +94,7 @@ namespace BisleriumBlog.API.Controllers
         {
             try
             {
-                var blog = await _unitOfWork.Blog.GetAsync(u=>u.Id==id);
+                var blog = await _unitOfWork.Blog.GetAsync(u=>u.Id==id, includeProperties: "Category,User");
                 if (blog == null) {
                     _response.StatusCode = HttpStatusCode.NotFound;
                     _response.IsSuccess = true;
@@ -103,7 +106,7 @@ namespace BisleriumBlog.API.Controllers
                 }
                 _response.StatusCode = HttpStatusCode.OK;
                 _response.IsSuccess = true;
-                _response.Result = blog;
+                _response.Result = _mapper.Map<BlogDTO>(blog); ;
                 return StatusCode(StatusCodes.Status200OK, _response);
             }
             catch (Exception e)
