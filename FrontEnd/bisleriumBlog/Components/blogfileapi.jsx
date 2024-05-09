@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Blogurl } from "../../src/index";
+import { Blogurl,Upvoteurl, Downvoteurl } from "../src/index";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 const Blogapi = () => {
@@ -90,6 +90,63 @@ const Blogapi = () => {
     }
   };
 
+  const upvoteBlog = async (id)=>{
+    const formData = new FormData();
+    formData.append("BlogId", id);
+    const Requestoptions = {
+      method: "POST",
+      body: formData,
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+
+      
+    };
+      const response = await fetch(Upvoteurl+"UpVoteBlog",Requestoptions)
+      if (response.status == 201){
+        console.log("success")
+      }
+  }
+
+  const downvoteBlog = async (id)=>{
+    const formData = new FormData();
+    formData.append("BlogId", id);
+    const Requestoptions = {
+      method: "POST",
+      body: formData,
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    };
+    const response = await fetch(Downvoteurl + "DownVoteBlog",Requestoptions);
+      if (response.status == 201) {
+        console.log("success");
+      }
+  }
+
+  const getallupvoteBlog = async(id)=>{
+    const Requestoptions = {
+      method: "GET",
+    };
+    const response = await fetch(Upvoteurl + `GetAllUpVoteForBlog/${id}`,Requestoptions);
+    const data = await response.json()
+    if (response.status == 200){
+      console.log(data.result.downVote)
+    }
+  }
+
+   const getalldownvoteBlog = async(id) => {
+      const Requestoptions = {
+        method: "GET",
+        };
+        const response = await fetch(Upvoteurl + `GetAllDownVoteForBlog/${id}`,Requestoptions);
+    const data = await response.json()
+    if (response.status == 200){
+      console.log(data.result.downVote)
+    }
+      
+   };
+
   return (
     <>
       <input
@@ -141,6 +198,10 @@ const Blogapi = () => {
             <div key={blog.id}>
               <h1>{blog.title}</h1>
               <p>{blog.body}</p>
+              <p>{blog.upVoteCount}</p>
+              <p>{blog.downVoteCount}</p>
+              <button type="button" onClick={()=>{upvoteBlog(blog.id)}}>U</button>
+              <button type="button" onClick={()=>{downvoteBlog(blog.id)}}>D</button>
               <button
                 type="button"
                 onClick={() => {
