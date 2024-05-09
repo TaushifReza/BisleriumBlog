@@ -222,20 +222,20 @@ const router = createBrowserRouter([
 
 // SignalR Connection
 
-const connection = new signalR.HubConnectionBuilder()
-  .withUrl(
-    "https://1424-2400-1a00-b040-8072-29e9-6865-ff5b-c1a4.ngrok-free.app/notificationHub"
-  )
-  .build();
+// const connection = new signalR.HubConnectionBuilder()
+//   .withUrl(
+//     "https://1424-2400-1a00-b040-8072-29e9-6865-ff5b-c1a4.ngrok-free.app/notificationHub"
+//   )
+//   .build();
 
-connection
-  .start()
-  .then(() => console.log("Connection started"))
-  .catch((err) => console.error("ERROR" + err));
+// connection
+//   .start()
+//   .then(() => console.log("Connection started"))
+//   .catch((err) => console.error("ERROR" + err));
 
-connection.on("ReceiveNotification", (data) => {
-  console.log("Notification received", data);
-});
+// connection.on("ReceiveNotification", (data) => {
+//   console.log("Notification received", data);
+// });
 
 // connection.on("ReceiveNotification", (notificationType, notificationMessage) => {
 //     const notificationElement = document.createElement("div");

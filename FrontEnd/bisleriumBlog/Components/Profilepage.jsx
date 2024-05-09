@@ -3,16 +3,20 @@ import { useNavigate } from 'react-router-dom';
 import "../style/Profile.css";
 import BlogPostsMade from './Blogpostmade'; // Import the BlogPostsMade component
 import Layout from './Layout';
+import { useSelector } from "react-redux";
 
 const ProfilePage = () => {
     const navigate = useNavigate(); // Initialize navigate
+    const token = useSelector((state) => state.signin.token);
+    const userDetail = useSelector((state) => state.signin.userData);
+    console.log(userDetail)
     const [user, setUser] = useState({
-        username: "Jenna Stones",
-        bio: "Solution Manager - Creative Tim Officer",
+        username: userDetail.fullName,
+        bio: userDetail.bio,
         numberOfBlogs: 50,
         likes: 350,
         comments: 89,
-        profileImage: null
+        profileImage: userDetail.profileImageUrl
     });
 
     const handleEditProfile = () => {
