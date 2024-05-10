@@ -19,7 +19,6 @@ namespace BisleriumBlog.API.Controllers
 {
     [Route("api/Comment")]
     [ApiController]
-    [Authorize]
     public class CommentController : ControllerBase
     {
         private IMapper _mapper;

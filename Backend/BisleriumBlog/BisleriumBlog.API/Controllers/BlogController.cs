@@ -17,7 +17,6 @@ namespace BisleriumBlog.API.Controllers
 {
     [Route("api/Blog")]
     [ApiController]
-    [Authorize]
     public class BlogController : ControllerBase
     {
         private IMapper _mapper;

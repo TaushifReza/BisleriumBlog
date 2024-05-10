@@ -12,6 +12,7 @@ const AdminNavs = () => {
       // Fetch blog posts
       axios.get(`https://localhost:7094/api/Admin/AdminDashboardData?year=${2024}&month=${5}`)
         .then(response => {
+        console.log(response)
           setBlogPosts(response.data.result.allTimeData.blogCount);
           setCommentsCount(response.data.result.allTimeData.commentsCount);
           setUpvotes(response.data.result.allTimeData.downvotesCount);
@@ -39,9 +40,6 @@ const AdminNavs = () => {
                                     </h2>
                                 </div>
                             </div>
-                            <div class="progress shadow-sm" Style="height: 5px;">
-                                <div class="progress-bar bg-success" role="progressbar" Style="width: 100%;"></div>
-                            </div>
                         </div>
                     </div>
                 </div> 
@@ -58,9 +56,6 @@ const AdminNavs = () => {
                                         {comments}
                                     </h2>
                                 </div>
-                            </div>
-                            <div class="progress shadow-sm" Style="height: 5px;">
-                                <div class="progress-bar bg-danger" role="progressbar" Style="width: 100%;"></div>
                             </div>
                         </div>
                     </div>
@@ -79,9 +74,6 @@ const AdminNavs = () => {
                                     </h2>
                                 </div>
                             </div>
-                            <div class="progress shadow-sm" Style="height: 5px;">
-                                <div class="progress-bar bg-warning" role="progressbar" Style="width: 100%;"></div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -98,9 +90,6 @@ const AdminNavs = () => {
                                         {downvotes}
                                     </h2>
                                 </div>
-                            </div>
-                            <div class="progress shadow-sm" Style="height: 5px;">
-                                <div class="progress-bar bg-info" role="progressbar" Style="width: 100%;"></div>
                             </div>
                         </div>
                     </div>

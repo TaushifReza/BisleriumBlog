@@ -1,4 +1,4 @@
-import React, { useContext, useEffect , useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import Layout from './Layout'
 import '../style/AdminDashboard/css/bootstrap.css';
 import '../style/AdminDashboard/css/bootstrap.min.css';
@@ -10,27 +10,118 @@ import myContext from "../context/myContext";
 import { Button } from '@material-tailwind/react';
 import { Link } from 'react-router-dom';
 import AdminNavs from './AdminNavs';
-import Charts from './Charts';
 
-
+const DummyData = {
+    lineChartData: {
+      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+      datasets: [{
+        label: "Total Blogs Per Month",
+        data: [30, 20, 10, 18, 22, 21, 5],
+        fill: false,
+        borderColor: 'rgb(75, 192, 192)',
+        tension: 0.1
+      }]
+    },
+    barChartData: {
+      labels: ['Technology', 'LifeStyle', 'Economisc', 'Science', 'Movie'],
+      datasets: [{
+        label: 'Total Blogs Per Category',
+        data: [12, 19, 3, 5, 2],
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)'
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)'
+        ],
+        borderWidth: 1
+      }]
+    },
+    areaChartData: {
+      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+      datasets: [{
+        label: 'Total Views Per Month',
+        data: [65, 59, 80, 81, 56, 55, 40],
+        borderColor: 'rgba(75, 192, 192, 1)',
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        tension: 0.1
+      }]
+    },
+    pieChartData: {
+      labels: ['Week1', 'Week2', 'Week3', 'Week4',],
+      datasets: [{
+        label: 'Number of Blogs This Month',
+        data: [3, 5, 10, 7],
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)'
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)'
+        ],
+        borderWidth: 1
+      }]
+    }
+  };
+  
 
 function AdminDashboard() {
-    const [topBlogs, setTopBlogs] = useState([]);
-
     useEffect(() => {
-        const fetchTopBlogs = async () => {
-            try {
-                const response = await axios.get(`https://localhost:7094/api/Admin/PopularMonthBlog?year=${2024}&month=${5}`);
-                console.log(response);
-                setTopBlogs(response.data.result.top10Blog);
-            } catch (error) {
-                console.error('Error fetching top blogs:', error);
-            }
+        const lineCtx = document.getElementById('lineChart').getContext('2d');
+        let lineChartInstance = new Chart(lineCtx, {
+            type: 'line',
+            data: DummyData.lineChartData,
+        });
+    
+        const barCtx = document.getElementById('barChart').getContext('2d');
+        let barChartInstance = new Chart(barCtx, {
+            type: 'bar',
+            data: DummyData.barChartData,
+        });
+    
+        const areaCtx = document.getElementById('areaChart').getContext('2d');
+        let areaChartInstance = new Chart(areaCtx, {
+            type: 'line',
+            data: DummyData.areaChartData,
+        });
+    
+        const pieCtx = document.getElementById('pieChart').getContext('2d');
+        pieCtx.canvas.width = 80;
+        pieCtx.canvas.height = 80;
+
+        let pieChartInstance = new Chart(pieCtx, {
+            type: 'pie',
+            data: DummyData.pieChartData,
+        });
+
+    
+        // Clean up function to destroy Chart instances
+        return () => {
+            lineChartInstance.destroy();
+            barChartInstance.destroy();
+            areaChartInstance.destroy();
+            pieChartInstance.destroy();
         };
-
-        fetchTopBlogs();
     }, []);
-
+    
 
     const context = useContext(myContext);
     const { mode } = context;
@@ -106,8 +197,47 @@ function AdminDashboard() {
                     <div class="container-fluid">
                         <AdminNavs></AdminNavs>
                         <div class="row">
-                        <Charts></Charts>
-
+                        <div class="col-xl-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title">Line Chart</h4>
+                                    <canvas id="lineChart"></canvas>
+                                </div>
+                            </div> 
+                        </div> 
+                    
+                        <div class="col-xl-6">
+                            <div class="card">
+                                <div class="card-body">
+                    
+                                    <h4 class="card-title">Bar Chart</h4>
+                                    <canvas id="barChart"></canvas>
+                    
+                                </div> 
+                            </div> 
+                        </div> 
+                        <div class="col-xl-6">
+                            <div class="card">
+                                <div class="card-body" Style="height:400px; width:600px;">
+                    
+                                    <h4 class="card-title">Area chart</h4>
+                                    <canvas id="areaChart"></canvas>
+                    
+                                </div> 
+                            </div> 
+                        </div> 
+                    
+                        <div class="col-xl-6">
+                            <div class="card">
+                                <div class="card-body" Style="height:400px; width:600px;">
+                    
+                                    <h4 class="card-title">Pie chart</h4>
+                                    <canvas id="pieChart" Style="max-height:300px;"></canvas>
+                    
+                                </div> 
+                            </div> 
+                        </div> 
+                 
                     </div>
                         <div class="col-lg-12">
                                 <div class="card">
@@ -115,31 +245,90 @@ function AdminDashboard() {
 
                                         <h4 class="card-title">Top 10 Blogs</h4>
                                         <div class="table-responsive">
-                                            <table className="table table-centered table-striped table-nowrap mb-0">
+                                            <table class="table table-centered table-striped table-nowrap mb-0">
                                                 <thead>
                                                     <tr>
                                                         <th>User</th>
                                                         <th>Email</th>
-                                                        <th>Blog Title</th>
+                                                        <th>Blog title</th>
                                                         <th>Create Date</th>
-                                                        <th>Popularity</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {topBlogs.map(blog => (
-                                                        <tr key={blog.id}>
-                                                            <td className="table-user">
-                                                                <a className="text-body font-weight-semibold">{blog.user}</a>
-                                                            </td>
-                                                            <td>{blog.userEmail}</td>
-                                                            <td>{blog.title}</td>
-                                                            <td>{blog.createdAt}</td>
-                                                            <td>{blog.blogPopularity}</td>
-                                                        </tr>
-                                                    ))}
+                                                    <tr>
+                                                        <td class="table-user">
+                                                            <a href="javascript:void(0);" class="text-body font-weight-semibold">Paul J. Friend</a>
+                                                        </td>
+                                                        <td>
+                                                            pauljfrnd@jourrapide.com
+                                                        </td>
+                                                        <td>
+                                                            Title 1
+                                                        </td>
+                                                        <td>
+                                                            07/07/2018
+                                                        </td>
+                                                    </tr>
+                                                    
+                                                    <tr>
+                                                        <td class="table-user">
+                                                            <a href="javascript:void(0);" class="text-body font-weight-semibold">Bryan J. Luellen</a>
+                                                        </td>
+                                                        <td>
+                                                            bryuellen@dayrep.com
+                                                        </td>
+                                                        <td>
+                                                            Title 2
+                                                        </td>
+                                                        <td>
+                                                            09/12/2018
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="table-user">
+                                                            <a href="javascript:void(0);" class="text-body font-weight-semibold">Kathryn S. Collier</a>
+                                                        </td>
+                                                        <td>
+                                                            collier@jourrapide.com
+                                                        </td>
+                                                        <td>
+                                                            Title 3
+                                                        </td>
+                                                        <td>
+                                                            06/30/2018
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="table-user">
+                                                            <a href="javascript:void(0);" class="text-body font-weight-semibold">Timothy Kauper</a>
+                                                        </td>
+                                                        <td>
+                                                            thykauper@rhyta.com
+                                                        </td>
+                                                        <td>
+                                                            Title 4
+                                                        </td>
+                                                        <td>
+                                                            09/08/2018
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="table-user">
+                                                            <a href="javascript:void(0);" class="text-body font-weight-semibold">Zara Raws</a>
+                                                        </td>
+                                                        <td>
+                                                            austin@dayrep.com
+                                                        </td>
+                                                        <td>
+                                                            Germany
+                                                        </td>
+                                                        <td>
+                                                            07/15/2018
+                                                        </td>
+                                                    </tr>
+                                                    
                                                 </tbody>
                                             </table>
-                                                      
                                         </div>
                                     </div>
                                 </div>
@@ -162,6 +351,11 @@ function AdminDashboard() {
                 </footer>
 
             </div>
+
+            
+
+
+
 
 
         </div>

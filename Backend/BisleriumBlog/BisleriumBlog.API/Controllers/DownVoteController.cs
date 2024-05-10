@@ -17,7 +17,6 @@ namespace BisleriumBlog.API.Controllers
 
     [Route("api/DownVote")]
     [ApiController]
-    [Authorize]
     public class DownVoteController : ControllerBase
     {
         private IMapper _mapper;

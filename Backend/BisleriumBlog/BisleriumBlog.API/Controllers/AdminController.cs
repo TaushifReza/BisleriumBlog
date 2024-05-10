@@ -20,7 +20,6 @@ namespace BisleriumBlog.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = SD.RoleAdmin)]
     public class AdminController : ControllerBase
     {
         protected APIResponse _response;

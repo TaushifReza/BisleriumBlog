@@ -22,7 +22,7 @@ function Charts() {
         fetchChartData();
     
         return () => {
-            destroyChartInstances(); // Cleanup function to destroy Chart instances when component unmounts
+             // Cleanup function to destroy Chart instances when component unmounts
         };
     }, []);
 
@@ -31,18 +31,13 @@ function Charts() {
     useEffect(() => {
         if (chartData) {
             console.log(chartData)
-            destroyChartInstances();
+           
             renderCharts();
         }
     }, [chartData]);
 
-    const destroyChartInstances = () => {
-        Object.values(chartInstances).forEach(chartInstance => {
-            if (chartInstance) {
-                chartInstance.destroy();
-            }
-        });
-    };
+    
+    
 
     const renderCharts = () => {
         if (!chartData) {
@@ -60,7 +55,7 @@ function Charts() {
                 labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
                 datasets: [{
                     label: 'Blogs',
-                    data: [chartData.blogCount, chartData.upvotesCount, chartData.downvotesCount, chartData.commentsCount],
+                    data: [10,20,40,50,10,7,15],
                     fill: false,
                     borderColor: 'rgb(75, 192, 192)',
                     tension: 0.1
