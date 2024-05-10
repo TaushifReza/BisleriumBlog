@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { BsFillArrowLeftCircleFill } from 'react-icons/bs';
 import myContext from '../context/myContext';
 import { Link } from 'react-router-dom';
@@ -7,23 +7,23 @@ import Footer from './Footer';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; // Import the styles for the editor
 import { useSelector } from "react-redux";
-import { Blogurl } from "../src/index";
+import { Blogurl, Categoryurl } from "../src/index";
 
 function CreateBlog() {
   const context = useContext(myContext);
   const { mode } = context;
 
   const [thumbnail, setThumbnail] = useState(null);
-  
+  const [categorydata, setcategorydata] = useState([]);
   const [content, setContent] = useState('');
-  const [category, setCategory] = useState('Health & Fitness'); // Default category
+  const [category, setCategory] = useState(); // Default category
 
 
    const [title, setTitle] = useState("");
    const [categoryID, setcategoryID] = useState("");
    const [blogImg, setBlogImg] = useState("");
-   const [getBlog, setgetBlog] = useState(false);
-   const [blogs, setblogs] = useState([]);
+  //  const [getBlog, setgetBlog] = useState(false);
+  //  const [blogs, setblogs] = useState([]);
    const [toUpdate, setToUpdate] = useState("");
    const token = useSelector((state) => state.signin.token);
 
@@ -32,15 +32,55 @@ function CreateBlog() {
     setThumbnail(file);
   };
 
-  console.log(context)
+  
   const handleSubmit = (e) => {
    
   };
+  useEffect(()=>{
+    const listCategory = async () => {
+      const Requestoptions = {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      };
+      const response = await fetch(
+        Categoryurl + "GetAllCategory",
+        Requestoptions
+      );
+
+      const data = await response.json();
+      if (response.status == 200) {
+        setcategorydata(data.result.category);
+        console.log(data)
+      }
+    };
+    listCategory();
+  },[])
+
+   const listCategory = async () => {
+     const Requestoptions = {
+       method: "GET",
+       headers: {
+         Authorization: "Bearer " + token,
+       },
+     };
+     const response = await fetch(
+       Categoryurl + "GetAllCategory",
+       Requestoptions
+     );
+
+     const data = await response.json();
+     if (response.status == 200) {
+       setcategorydata(data.result.category);
+     }
+   };
+
   const createBlog = async () => {
     const formData = new FormData();
     formData.append("Title", title);
-    formData.append("Body", body);
-    formData.append("CategoryId", categoryID);
+    formData.append("Body", content);
+    formData.append("CategoryId", category);
     formData.append("BlogImage", blogImg);
 
     const Requestoptions = {
@@ -57,6 +97,7 @@ function CreateBlog() {
       console.log("created");
     }
   };
+
   return (
     <div className="bg-gray-50 min-h-screen">
       <Nav />
@@ -83,27 +124,22 @@ function CreateBlog() {
           <div className='mb-3'>
             <label className="block text-sm font-semibold mb-2 mt-4">Select Category:</label>
             <select id='category' value={category} onChange={(e) => setCategory(e.target.value)} className='block w-full p-2 border rounded-md focus:ring focus:ring-blue-300'>
-              <option value='Health & Fitness'>Health & Fitness</option>
-              <option value='Technology'>Technology</option>
-              <option value='Entertainment'>Entertainment</option>
+              {categorydata.map((category)=>(
+                 <option value={category.id}>{category.name}</option>
+              )
+
+              )}
+             
             </select>
           </div>
           <div className='mb-5'>
             <label className="block text-xl font-semibold mb-2 mt-4">Content:</label>
-            <ReactQuill theme="snow" value={content} onChange={(e)=>setContent(e.target.value)} style={{ height: '300px' }} />
+            <ReactQuill theme="snow" value={content} onChange={(content) => setContent(content)} style={{ height: '300px' }} />
           </div>
-          <button onClick={handleSubmit}className="bg-sky-600 text-white font-medium text-sm  px-14 py-3"
+          <button onClick={createBlog}className="bg-sky-600 text-white font-medium text-sm  px-14 py-3"
 >
             Submit
           </button>
-          <div className='mt-6'>
-            <h2 className='text-xl font-semibold mb-2'>Preview</h2>
-            <div className={`p-3 rounded-lg ${mode === 'dark' ? 'bg-gray-900' : 'bg-gray-100'}`}>
-              <h1 className='text-2xl font-bold'>{title}</h1>
-              <h2 className='text-lg'>{category}</h2>
-              <p className='whitespace-pre-line'>{content}</p>
-            </div>
-          </div>
         </div>
       </div>
       <Footer />

@@ -9,8 +9,8 @@ const Category = () => {
   const [categorydata, setcategorydata] = useState([]);
   const [Name, setName] = useState("");
 
-  const listCategory = async (e) => {
-    e.preventDefault();
+  const listCategory = async () => {
+    
     const Requestoptions = {
       method: "GET",
       headers: {
