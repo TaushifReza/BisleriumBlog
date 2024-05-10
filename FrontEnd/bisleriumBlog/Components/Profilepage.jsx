@@ -4,7 +4,7 @@ import "../style/Profile.css";
 import BlogPostsMade from './Blogpostmade'; // Import the BlogPostsMade component
 import Layout from './Layout';
 import { useSelector } from "react-redux";
-
+import Userurl from "../src";
 const ProfilePage = () => {
     const navigate = useNavigate(); // Initialize navigate
     const token = useSelector((state) => state.signin.token);
@@ -27,6 +27,21 @@ const ProfilePage = () => {
         navigate('/changepassword'); 
     };
 
+
+    const handleDeleteprofile = async()=>{
+         const Requestoptions = {
+      method: "DELETE",
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    };
+    const response = await fetch(Userurl + "DeleteUser", Requestoptions);
+    console.log(response)
+    if (response.status == 200) {
+      navigate("/signin");
+    }
+
+    }
     const onUpload = (event) => {
         const file = event.target.files[0];
         if (file) {
@@ -133,6 +148,8 @@ const ProfilePage = () => {
                                     <div className="mt-10 mb-10 flex justify-center">
                                         <button className="auth-button1 mb-4" onClick={handleChangePassword}>Change Password</button>
                                         <button className="auth-button1 mb-4" onClick={handleEditProfile}>Edit Profile</button>
+                                        <button className="auth-button1 mb-4" onClick={handleDeleteprofile}>Delete Profile</button>
+                                        
                                     </div>
                                 </div>
                             </div>
