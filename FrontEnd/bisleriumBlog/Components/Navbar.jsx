@@ -34,7 +34,7 @@ export default function Nav() {
         <li className="text-white p-1">
           <Link to={"/"}>Home</Link>
         </li>
-        {(token == "") ? (
+        {token == "" ? (
           <>
             <li className="text-white p-1">
               <Link to={"/signup"}>Register</Link>
@@ -46,7 +46,12 @@ export default function Nav() {
         ) : (
           <>
             <li className="text-white p-1">
-              <button type="button" onClick={Logout}>Logout</button>
+              <Link to={"/createblog"}>Create Blog</Link>
+            </li>
+            <li className="text-white p-1">
+              <button type="button" onClick={Logout}>
+                Logout
+              </button>
             </li>
           </>
         )}
