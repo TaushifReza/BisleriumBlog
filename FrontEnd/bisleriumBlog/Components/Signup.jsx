@@ -39,7 +39,7 @@ const Signup = () => {
 
          const response = await fetch(Userurl+"Register",Requestoptions )
          const data = await response.json()
-         const errors = await response.errors
+         
       
         
          if (response.status === 200) {
