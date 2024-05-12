@@ -298,7 +298,7 @@ function Blogdetail() {
                             </span>
                           </div>
                         </button>
-                        {blog.userId == comment.userId && (
+                        { comment.userId && (
                           <>
                             <AiFillDelete
                               className=" ml-5 text-blue-500 cursor-pointer text-xl"

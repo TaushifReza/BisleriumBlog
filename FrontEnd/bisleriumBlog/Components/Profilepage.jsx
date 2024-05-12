@@ -5,6 +5,10 @@ import BlogPostsMade from './Blogpostmade'; // Import the BlogPostsMade componen
 import Layout from './Layout';
 import { useSelector } from "react-redux";
 import Userurl from "../src";
+import swal from "sweetalert2";
+
+
+
 const ProfilePage = () => {
     const navigate = useNavigate(); // Initialize navigate
     const token = useSelector((state) => state.signin.token);
@@ -36,7 +40,7 @@ const ProfilePage = () => {
       },
     };
     const response = await fetch(Userurl + "DeleteUser", Requestoptions);
-    console.log(response)
+    
     if (response.status == 200) {
       navigate("/signin");
     }
@@ -52,6 +56,23 @@ const ProfilePage = () => {
             reader.readAsDataURL(file);
         }
     };
+
+    const areyousure = ()=>{
+        swal.fire({
+          title: "Are you sure?",
+          text: "You won't be able to revert this!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, delete it!",
+        }).then((result) => {
+          if (result.isConfirmed) {
+           handleDeleteprofile()
+          }
+        });
+    }
+
 
     // Sample blog posts data
     const blogPosts = [
@@ -148,7 +169,7 @@ const ProfilePage = () => {
                                     <div className="mt-10 mb-10 flex justify-center">
                                         <button className="auth-button1 mb-4" onClick={handleChangePassword}>Change Password</button>
                                         <button className="auth-button1 mb-4" onClick={handleEditProfile}>Edit Profile</button>
-                                        <button className="auth-button1 mb-4" onClick={handleDeleteprofile}>Delete Profile</button>
+                                        <button className="auth-button1 mb-4" onClick={areyousure}>Delete Profile</button>
                                         
                                     </div>
                                 </div>
