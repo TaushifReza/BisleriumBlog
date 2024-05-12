@@ -1,19 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import "../style/Profile.css";
 import BlogPostsMade from './Blogpostmade'; // Import the BlogPostsMade component
 import Layout from './Layout';
 import { useSelector } from "react-redux";
 import Userurl from "../src";
+import { Blogurl } from "../src/index";
 import swal from "sweetalert2";
-
-
 
 const ProfilePage = () => {
     const navigate = useNavigate(); // Initialize navigate
     const token = useSelector((state) => state.signin.token);
     const userDetail = useSelector((state) => state.signin.userData);
-    console.log(userDetail)
+    const [blogs, setBlogs] = useState([]);
     const [user, setUser] = useState({
         username: userDetail.fullName,
         bio: userDetail.bio,
@@ -31,6 +30,17 @@ const ProfilePage = () => {
         navigate('/changepassword'); 
     };
 
+
+      useEffect(() => {
+        const Requestoptions = {
+          method: "GET",
+        };
+        fetch(Blogurl + `GetAllBlog`, Requestoptions)
+          .then((response) => response.json())
+          .then((data) => {
+            setBlogs(data.result);
+          });
+      });
 
     const handleDeleteprofile = async()=>{
          const Requestoptions = {
@@ -74,60 +84,6 @@ const ProfilePage = () => {
     }
 
 
-    // Sample blog posts data
-    const blogPosts = [
-        {
-            id: 1,
-            title: 'My First Blog Post',
-            date: 'May 1, 2024',
-            image: 'https://source.unsplash.com/random/400x300',
-            description: 'This is my very first blog post. Excited to start this journey!',
-            likes: 120,
-            dislikes: 3,
-            comments: 15
-        },
-        {
-            id: 1,
-            title: 'My First Blog Post',
-            date: 'May 1, 2024',
-            image: 'https://source.unsplash.com/random/400x300',
-            description: 'This is my very first blog post. Excited to start this journey!',
-            likes: 120,
-            dislikes: 3,
-            comments: 15
-        },
-        {
-            id: 1,
-            title: 'My First Blog Post',
-            date: 'May 1, 2024',
-            image: 'https://source.unsplash.com/random/400x300',
-            description: 'This is my very first blog post. Excited to start this journey!',
-            likes: 120,
-            dislikes: 3,
-            comments: 15
-        },
-        {
-            id: 1,
-            title: 'My First Blog Post',
-            date: 'May 1, 2024',
-            image: 'https://source.unsplash.com/random/400x300',
-            description: 'This is my very first blog post. Excited to start this journey!',
-            likes: 120,
-            dislikes: 3,
-            comments: 15
-        },
-        {
-            id: 1,
-            title: 'My First Blog Post',
-            date: 'May 1, 2024',
-            image: 'https://source.unsplash.com/random/400x300',
-            description: 'This is my very first blog post. Excited to start this journey!',
-            likes: 120,
-            dislikes: 3,
-            comments: 15
-        },
-        
-    ];
 
     return (
         <Layout>
@@ -178,7 +134,7 @@ const ProfilePage = () => {
                     </main>
                 </div>
             </div>
-            <BlogPostsMade blogPosts={blogPosts} /> {/* Render the BlogPostsMade component */}
+            <BlogPostsMade blogPosts={blogs} /> {/* Render the BlogPostsMade component */}
         </Layout>
     );
 };

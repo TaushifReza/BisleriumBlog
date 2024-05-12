@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { AiFillHeart, AiFillDislike, AiOutlineComment } from 'react-icons/ai';
-
+import { AiFillLike, AiFillDislike, AiOutlineComment,AiFillDelete } from 'react-icons/ai';
+import { GrUpdate } from "react-icons/gr";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 const BlogPostsMade = ({ blogPosts }) => {
     const postsPerPage = 3; // Number of blog posts per page
     const [currentPage, setCurrentPage] = useState(1); // Current page number
@@ -12,34 +14,89 @@ const BlogPostsMade = ({ blogPosts }) => {
 
     // Change page
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
+    const navigate = useNavigate();
+
+      const individual = (id) => {
+        console.log(id);
+        navigate("/blogdetail", { state: id });
+      };
+
+    const userdata = useSelector((state) => state.signin.userData);
 
     return (
-        <section className="py-8 bg-blueGray-200">
-            <div className="container mx-auto px-4">
-                <h2 className="text-2xl font-semibold text-center mb-4">My Blog Posts</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {currentPosts.map(blog => (
-                        <div key={blog.id} className="bg-white shadow-lg rounded-lg px-4 py-6">
-                            <img src={blog.image} alt="Blog Post" className="h-40 w-full object-cover object-center mb-4 rounded-lg" />
-                            <h3 className="text-xl font-semibold mb-2">{blog.title}</h3>
-                            <p className="text-sm text-gray-600 mb-4">{blog.date}</p>
-                            <p className="text-gray-800">{blog.description}</p>
-                            <div className="flex items-center flex-wrap mt-4">
-                                <AiFillHeart className="text-red-500" /> <span className="ml-2 text-gray-600">{blog.likes}</span>
-                                <AiFillDislike className="ml-4 text-gray-600" /> <span className="ml-2 text-gray-600">{blog.dislikes}</span>
-                                <AiOutlineComment className="ml-4 text-blue-500" /> <span className="ml-2 text-gray-600">{blog.comments}</span>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-                {/* Pagination */}
-                <div className="flex justify-center mt-4">
-                    {[...Array(Math.ceil(blogPosts.length / postsPerPage)).keys()].map(number => (
-                        <button key={number + 1} onClick={() => paginate(number + 1)} className="mx-1 px-3 py-1 bg-blue-500 text-white rounded-md">{number + 1}</button>
-                    ))}
-                </div>
-            </div>
-        </section>
+      <section className="py-8 bg-blueGray-200">
+        <div className="container mx-auto px-4">
+          <h2 className="text-2xl font-semibold text-center mb-4">
+            My Blog Posts
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {currentPosts.map(
+              (blog) =>
+                userdata.id === blog.userId && (
+                  <div
+                    key={blog.id}
+                    className="bg-white shadow-lg rounded-lg px-4 py-6"
+                  >
+                    <img
+                      src={blog.image}
+                      alt="Blog Post"
+                      className="h-40 w-full object-cover object-center mb-4 rounded-lg"
+                    />
+                    <h3 className="text-xl font-semibold mb-2">{blog.title}</h3>
+                    <p className="text-sm text-gray-600 mb-4">
+                      {new Date(blog.createdAt).toLocaleDateString()}
+                    </p>
+                    <p className="line-clamp-3 text-gray-800">{blog.body}</p>
+                    <div className="flex items-center flex-wrap mt-4">
+                      <AiFillLike className="text-red-500" />{" "}
+                      <span className="ml-2 text-gray-600">
+                        {blog.upVoteCount}
+                      </span>
+                      <AiFillDislike className="ml-4 text-gray-600" />{" "}
+                      <span className="ml-2 text-gray-600">
+                        {blog.downVoteCount}
+                      </span>
+                      <AiOutlineComment className="ml-4 text-blue-500" />{" "}
+                      <span className="ml-2 text-gray-600">
+                        {blog.commentCount}
+                      </span>
+                    </div>
+                    <div className="flex mb-2 justify-between">
+                      <a
+                        onClick={() => {
+                          individual(blog.id);
+                        }}
+                        className="read-more-btn flex mt-7 hover:text-primary transition-all duration-500 "
+                      >
+                        Read More
+                      </a>
+                      {userdata.id === blog.userId && (
+                        <>
+                          <AiFillDelete className="text-red-500 text-lg mt-8 cursor-pointer" />
+                          <GrUpdate className="mt-8 cursor-pointer" />
+                        </>
+                      )}
+                    </div>
+                  </div>
+                )
+            )}
+          </div>
+          {/* Pagination */}
+          <div className="flex justify-center mt-4">
+            {[...Array(Math.ceil(blogPosts.length / postsPerPage)).keys()].map(
+              (number) => (
+                <button
+                  key={number + 1}
+                  onClick={() => paginate(number + 1)}
+                  className="mx-1 px-3 py-1 bg-blue-500 text-white rounded-md"
+                >
+                  {number + 1}
+                </button>
+              )
+            )}
+          </div>
+        </div>
+      </section>
     );
 };
 

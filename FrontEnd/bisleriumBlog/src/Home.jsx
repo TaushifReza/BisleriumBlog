@@ -5,8 +5,6 @@ import BlogComponent from '../Components/BlogComponent';
 function Home() {
     return (
       <Layout>
-     
-       
           <BlogComponent/>
           <BlogPostCard/>
       </Layout>

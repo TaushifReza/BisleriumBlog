@@ -20,21 +20,13 @@ function CreateBlog() {
 
 
    const [title, setTitle] = useState("");
-   const [categoryID, setcategoryID] = useState("");
+ 
    const [blogImg, setBlogImg] = useState("");
 
-   const [toUpdate, setToUpdate] = useState("");
+  
    const token = useSelector((state) => state.signin.token);
 
-  const handleThumbnailUpload = (e) => {
-    const file = e.target.files[0];
-    setThumbnail(file);
-  };
-
-  
-  const handleSubmit = (e) => {
-   
-  };
+ 
   useEffect(()=>{
     const listCategory = async () => {
       const Requestoptions = {

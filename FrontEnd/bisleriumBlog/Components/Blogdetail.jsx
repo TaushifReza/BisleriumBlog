@@ -21,6 +21,7 @@ import {
 } from "../src/index";
 import { useSelector } from "react-redux";
 import swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 function Blogdetail() {
   const [blog, setblog] = useState({});
@@ -35,6 +36,8 @@ function Blogdetail() {
   const [update, setupdate] = useState(false);
   const [cc, setcc] = useState(false);
   const userdata = useSelector((state) => state.signin.userData);
+  const navigate = useNavigate();
+
   const Requestoptions = {
     method: "GET",
   };
@@ -219,6 +222,42 @@ function Blogdetail() {
       updateComment(id,text)
     }
   }
+       const deleteBlog = async (id) => {
+         const Requestoptions = {
+           method: "DELETE",
+           headers: {
+             Authorization: "Bearer " + token,
+           },
+         };
+         const response = await fetch(
+           `${Blogurl}DeleteBlog/${id}`,
+           Requestoptions
+         );
+         console.log(response.status)
+         if (response.status == 200) {
+           navigate("/profile")
+           
+         }
+       };
+
+    const areyousure = (id) => {
+      swal
+        .fire({
+          title: "Are you sure?",
+          text: "You won't be able to revert this!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, delete it!",
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            deleteBlog(id)
+          }
+        });
+    };
+ 
 
   return (
     <div>
@@ -226,6 +265,12 @@ function Blogdetail() {
       <section className="flex items-center justify-center bg-custom">
         <body className="text-gray-900 antialiased">
           <div className="max-w-4xl mx-auto py-12 px-12 lg:px-24 -mt-32 relative z-10">
+            {userdata.id == blog.userId && (
+              <div className="flex justify-end w-full ">
+                <AiFillDelete className="text-red-500 text-xl mt-8 cursor-pointer mr-5" onClick={()=>{areyousure(blog.id)}} />
+                <GrUpdate className="mt-8 cursor-pointer"></GrUpdate>
+              </div>
+            )}
             <div className="flex justify-between items-center">
               <div>
                 <h2 className="uppercase text-gray-900">
@@ -316,7 +361,7 @@ function Blogdetail() {
                             </span>
                           </div>
                         </button>
-                        { userdata.id == comment.userId && (
+                        {userdata.id == comment.userId && (
                           <>
                             <AiFillDelete
                               className=" ml-5 text-blue-500 cursor-pointer text-xl"
@@ -326,7 +371,9 @@ function Blogdetail() {
                             />
                             <GrUpdate
                               className=" ml-5 text-blue-500 cursor-pointer text-lg"
-                              onClick={()=>{commentupdateareyousure(comment.id)}}
+                              onClick={() => {
+                                commentupdateareyousure(comment.id);
+                              }}
                             ></GrUpdate>
                           </>
                         )}
