@@ -20,6 +20,7 @@ import {
   DislikeCommenturl,
 } from "../src/index";
 import { useSelector } from "react-redux";
+import swal from "sweetalert2";
 
 function Blogdetail() {
   const [blog, setblog] = useState({});
@@ -33,7 +34,7 @@ function Blogdetail() {
   const [postcomment, setpostComment] = useState("");
   const [update, setupdate] = useState(false);
   const [cc, setcc] = useState(false);
-
+  const userdata = useSelector((state) => state.signin.userData);
   const Requestoptions = {
     method: "GET",
   };
@@ -69,11 +70,12 @@ function Blogdetail() {
       const data = await response.json();
 
       if (response.status == 200) {
+        setupdate(false)
         setGetAllComment(data.result);
       }
     };
     getAllCommnet();
-  }, [upvoteComment, downvoteComment, cc, deletecomment]);
+  }, [upvoteComment, downvoteComment, cc, deletecomment,update]);
 
   const upvoteBlog = async (id) => {
     const formData = new FormData();
@@ -158,7 +160,7 @@ function Blogdetail() {
     };
 
     const response = await fetch(Commenturl + "CreateComment", Requestoptions);
-    console.log(response);
+    
 
     if (response.status == 201) {
       setcc(true);
@@ -182,25 +184,41 @@ function Blogdetail() {
       setcc(false);
     }
   };
-  const updateComment = async (id) => {
+  const updateComment = async (id,newcomment) => {
     const Requestoptions = {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer " + token,
       },
-      body: JSON.stringify({ content: comment }),
+      body: JSON.stringify({ content: newcomment }),
     };
 
     const response = await fetch(
       Commenturl + `UpdateComment/${id}`,
       Requestoptions
     );
-
+    console.log(response)
     if (response.status == 205) {
-      console.log("updated");
+      setupdate(true)
     }
   };
+
+  const commentupdateareyousure= async(id)=>{
+    const { value: text } = await swal.fire({
+      input: "textarea",
+      inputLabel: "Upate Comment",
+      inputPlaceholder: "Update your comment...",
+      inputAttributes: {
+        "aria-label": "Update your comment",
+      },
+      showCancelButton: true,
+    });
+    if (text) {
+      console.log(text)
+      updateComment(id,text)
+    }
+  }
 
   return (
     <div>
@@ -298,7 +316,7 @@ function Blogdetail() {
                             </span>
                           </div>
                         </button>
-                        { comment.userId && (
+                        { userdata.id == comment.userId && (
                           <>
                             <AiFillDelete
                               className=" ml-5 text-blue-500 cursor-pointer text-xl"
@@ -308,7 +326,7 @@ function Blogdetail() {
                             />
                             <GrUpdate
                               className=" ml-5 text-blue-500 cursor-pointer text-lg"
-                              onClick={() => {}}
+                              onClick={()=>{commentupdateareyousure(comment.id)}}
                             ></GrUpdate>
                           </>
                         )}
