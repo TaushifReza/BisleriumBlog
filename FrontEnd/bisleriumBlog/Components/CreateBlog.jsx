@@ -22,8 +22,7 @@ function CreateBlog() {
    const [title, setTitle] = useState("");
    const [categoryID, setcategoryID] = useState("");
    const [blogImg, setBlogImg] = useState("");
-  //  const [getBlog, setgetBlog] = useState(false);
-  //  const [blogs, setblogs] = useState([]);
+
    const [toUpdate, setToUpdate] = useState("");
    const token = useSelector((state) => state.signin.token);
 
@@ -52,32 +51,16 @@ function CreateBlog() {
       const data = await response.json();
       if (response.status == 200) {
         setcategorydata(data.result.category);
-        console.log(data)
+      
       }
     };
     listCategory();
   },[])
 
-   const listCategory = async () => {
-     const Requestoptions = {
-       method: "GET",
-       headers: {
-         Authorization: "Bearer " + token,
-       },
-     };
-     const response = await fetch(
-       Categoryurl + "GetAllCategory",
-       Requestoptions
-     );
-
-     const data = await response.json();
-     if (response.status == 200) {
-       setcategorydata(data.result.category);
-     }
-   };
-
+   
   const createBlog = async () => {
     const formData = new FormData();
+   
     formData.append("Title", title);
     formData.append("Body", content);
     formData.append("CategoryId", category);
@@ -92,7 +75,7 @@ function CreateBlog() {
     };
 
     const response = await fetch(Blogurl + "CreateBlog", Requestoptions);
-
+    console.log(content)
     if (response.status == 201) {
       console.log("created");
     }

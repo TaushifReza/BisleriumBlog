@@ -215,7 +215,7 @@ function Blogdetail() {
       showCancelButton: true,
     });
     if (text) {
-      console.log(text)
+
       updateComment(id,text)
     }
   }
