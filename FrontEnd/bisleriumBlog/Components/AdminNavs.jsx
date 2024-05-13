@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-
+import { useSelector } from "react-redux";
 const AdminNavs = () => {
   const [blogPostscount, setBlogPostscount] = useState("");
   const [blogcategoriescount, setBlogcategoriescount] = useState("");
@@ -8,11 +8,13 @@ const AdminNavs = () => {
   const [upvotes, setUpvotes] = useState("");
   const [downvotes, setDownvotes] = useState("");
   const [date, setdate] = useState("");
+   const token = useSelector((state) => state.signin.token);
+
 
   useEffect(() => {
     
     axios
-      .get(`https://localhost:7094/api/Admin/AdminDashboardData`)
+      .get(`https://localhost:7094/api/Admin/AdminDashboardData`,{headers: {"Authorization" : `Bearer ${token}`}})
       .then((response) => {
         setBlogPostscount(response.data.result.allTimeData.blogCount);
         setBlogcategoriescount(
@@ -27,7 +29,7 @@ const AdminNavs = () => {
 
   useEffect(() => {
     axios
-      .get(`https://localhost:7094/api/Admin/AdminDashboardData?year=${+date.split("-")[0]}&month=${+date.split("-")[1]}`)
+      .get(`https://localhost:7094/api/Admin/AdminDashboardData?year=${+date.split("-")[0]}&month=${+date.split("-")[1]}`,{headers: {"Authorization" : `Bearer ${token}`}})
       .then((response) => {
         console.log(response)
         setBlogPostscount(response.data.result.monthSpecificData.blogCount);

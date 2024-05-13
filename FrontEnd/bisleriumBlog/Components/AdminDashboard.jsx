@@ -12,6 +12,8 @@ import { Link } from "react-router-dom";
 import AdminNavs from "./AdminNavs";
 import { useState } from "react";
 import axios from "axios";
+import { useSelector } from "react-redux";
+
 const DummyData = {
   lineChartData: {
     labels: ["January", "February", "March", "April", "May", "June", "July"],
@@ -129,18 +131,28 @@ function AdminDashboard() {
     };
   }, []);
 
-
+  const token = useSelector((state) => state.signin.token);
   const [topblogs,settopblogs] = useState([])
-
+  const [date,setdate] =useState("")
   useEffect(() => {
     axios
-      .get(`https://localhost:7094/api/Admin/PopularBlog?pageSize=${10}&pageNumber=${1}`)
+      .get(`https://localhost:7094/api/Admin/PopularBlog?pageSize=${10}&pageNumber=${1}`,{headers: {"Authorization" : `Bearer ${token}`}})
       .then((response) => {
         settopblogs(response.data.result.top10Blog)
       })
       .catch((error) => console.error("Error fetching blog posts:", error));
   }, []);
 
+  useEffect(() => {
+    axios
+      .get(
+        `https://localhost:7094/api/Admin/PopularMonthBlog?year=${+date.split("-")[0]}&month=${+date.split("-")[1]}`,{headers: {"Authorization" : `Bearer ${token}`}}
+      )
+      .then((response) => {
+        settopblogs(response.data.result.top10Blog);
+      })
+      .catch((error) => console.error("Error fetching blog posts:", error));
+  }, [date]);
 
   const context = useContext(myContext);
   const { mode } = context;
@@ -167,11 +179,8 @@ function AdminDashboard() {
                   aria-haspopup="true"
                   aria-expanded="false"
                 >
-              
                   Dashboard
                 </button>
-
-           
               </div>
             </div>
           </div>
@@ -277,7 +286,18 @@ function AdminDashboard() {
               <div className="col-lg-12">
                 <div className="card">
                   <div className="card-body">
-                    <h4 className="card-title">Top 10 Bloggers</h4>
+                    <div className="flex justify-between mb-3 ">
+                      <h4 className="card-title ">Top 10 Blogger</h4>
+                      <input
+                        type="month"
+                        name=""
+                        id=""
+                        value={date}
+                        onChange={(e) => {
+                          setdate(e.target.value);
+                        }}
+                      />
+                    </div>
                     <div className="table-responsive">
                       <table className="table table-centered table-striped table-nowrap mb-50">
                         <thead>
@@ -311,8 +331,20 @@ function AdminDashboard() {
 
               <div className="col-lg-12">
                 <div className="card">
-                  <div className="card-body">
-                    <h4 className="card-title">Top 10 Blogs</h4>
+                  <div className="card-body ">
+                    <div className="flex justify-between mb-3 ">
+                      <h4 className="card-title ">Top 10 Blogs</h4>
+                      <input
+                        type="month"
+                        name=""
+                        id=""
+                        value={date}
+                        onChange={(e) => {
+                          setdate(e.target.value);
+                        }}
+                      />
+                    </div>
+
                     <div className="table-responsive">
                       <table className="table table-centered table-striped table-nowrap mb-0">
                         <thead>
@@ -325,16 +357,17 @@ function AdminDashboard() {
                           </tr>
                         </thead>
                         <tbody>
-                          {topblogs.map((blog)=>(
-                              <tr>
-                            <td>{blog.title}</td>
-                            <td>{blog.category}</td>
-                            <td>{blog.upVoteCount}</td>
-                            <td>{blog.downVoteCount}</td>
-                            <td>{new Date(blog.createdAt).toLocaleDateString()}</td>
-                          </tr>
+                          {topblogs.map((blog) => (
+                            <tr>
+                              <td>{blog.title}</td>
+                              <td>{blog.category.name}</td>
+                              <td>{blog.upVoteCount}</td>
+                              <td>{blog.downVoteCount}</td>
+                              <td>
+                                {new Date(blog.createdAt).toLocaleDateString()}
+                              </td>
+                            </tr>
                           ))}
-                        
                         </tbody>
                       </table>
                     </div>
