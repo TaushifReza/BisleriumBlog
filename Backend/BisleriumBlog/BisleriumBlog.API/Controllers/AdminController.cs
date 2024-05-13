@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using System.Net;
 using System.Text;
 using BisleriumBlog.Models.DTOs.Blog;
+using BisleriumBlog.Models.DTOs.Blogger;
 
 namespace BisleriumBlog.API.Controllers
 {
@@ -277,6 +278,41 @@ namespace BisleriumBlog.API.Controllers
                     CategoriesWithBlogCount = categoriesWithBlogCount,
                     BlogsPerMonth = blogsPerMonth
                 };
+
+                return StatusCode(StatusCodes.Status200OK, _response);
+            }
+            catch (Exception e)
+            {
+                _response.ErrorMessage = new List<string>() { e.Message };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
+
+        [HttpGet("TopBloggers")]
+        [Authorize]
+        public async Task<ActionResult<APIResponse>> GetTopBloggers(int count = 10)
+        {
+            try
+            {
+                var blogs = await _unitOfWork.Blog.GetAllAsync(includeProperties: "User");
+                var topBloggers = blogs.GroupBy(b => new { b.UserId, b.User.UserName, b.User.FullName, b.User.Email, b.User.ProfileImageUrl })
+                    .Select(g => new BloggerDTO
+                    {
+                        UserId = g.Key.UserId,
+                        FullName = g.Key.FullName,
+                        Email = g.Key.Email,
+                        ProfileImageUrl = g.Key.ProfileImageUrl,
+                        TotalUpvotes = g.Sum(b => b.UpVoteCount),
+                        TotalBlogs = g.Count()
+                    })
+                    .OrderByDescending(b => b.TotalUpvotes)
+                    .ThenByDescending(b => b.TotalBlogs)
+                    .Take(count)
+                    .ToList();
+
+                _response.StatusCode = HttpStatusCode.OK;
+                _response.IsSuccess = true;
+                _response.Result = topBloggers;
 
                 return StatusCode(StatusCodes.Status200OK, _response);
             }
