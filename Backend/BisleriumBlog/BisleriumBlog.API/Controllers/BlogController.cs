@@ -116,6 +116,7 @@ namespace BisleriumBlog.API.Controllers
         }
 
         [HttpPost("CreateBlog")]
+        [Authorize]
         public async Task<ActionResult<APIResponse>> CreateBlog([FromForm] BlogCreateDTO blogCreateDto)
         {
             try
@@ -185,6 +186,7 @@ namespace BisleriumBlog.API.Controllers
         }
 
         [HttpPut("UpdateBlog/{id:int}")]
+        [Authorize]
         public async Task<ActionResult<APIResponse>> UpdateBlog(int id, [FromForm] BlogUpdateDTO blogUpdateDTO)
         {
             try

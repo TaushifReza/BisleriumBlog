@@ -78,6 +78,7 @@ namespace BisleriumBlog.API.Controllers
         }
 
         [HttpPost("DownVoteBlog")]
+        [Authorize]
         public async Task<ActionResult<APIResponse>> DownVoteBlog([FromForm] DownVoteCreateDTO downVoteCreateDto)
         {
             try

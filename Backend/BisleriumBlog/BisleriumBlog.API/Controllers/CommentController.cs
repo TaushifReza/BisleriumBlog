@@ -102,6 +102,7 @@ namespace BisleriumBlog.API.Controllers
         }
 
         [HttpPost("CreateComment")]
+        [Authorize]
         public async Task<ActionResult<APIResponse>> CreateComment(CommentCreateDTO commentCreateDto)
         {
             try
@@ -164,6 +165,7 @@ namespace BisleriumBlog.API.Controllers
         }
 
         [HttpPut("UpdateComment/{id:int}")]
+        [Authorize]
         public async Task<ActionResult<APIResponse>> UpdateComment(int id, CommentCreateDTO commentCreateDto)
         {
             try
@@ -212,6 +214,7 @@ namespace BisleriumBlog.API.Controllers
         }
 
         [HttpDelete("DeleteComment/{id:int}")]
+        [Authorize]
         public async Task<ActionResult<APIResponse>> DeleteComment(int id)
         {
             try
