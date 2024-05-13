@@ -1,15 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import "../style/Profile.css";
 import BlogPostsMade from './Blogpostmade'; // Import the BlogPostsMade component
 import Layout from './Layout';
 import { useSelector } from "react-redux";
 import Userurl from "../src";
+import { Blogurl } from "../src/index";
+import swal from "sweetalert2";
+
 const ProfilePage = () => {
-    const navigate = useNavigate(); // Initialize navigate
+    const navigate = useNavigate(); 
     const token = useSelector((state) => state.signin.token);
     const userDetail = useSelector((state) => state.signin.userData);
-    console.log(userDetail)
+    const [blogs, setBlogs] = useState([]);
     const [user, setUser] = useState({
         username: userDetail.fullName,
         bio: userDetail.bio,
@@ -28,6 +31,17 @@ const ProfilePage = () => {
     };
 
 
+      useEffect(() => {
+        const Requestoptions = {
+          method: "GET",
+        };
+        fetch(Blogurl + `GetAllBlog`, Requestoptions)
+          .then((response) => response.json())
+          .then((data) => {
+            setBlogs(data.result);
+          });
+      });
+
     const handleDeleteprofile = async()=>{
          const Requestoptions = {
       method: "DELETE",
@@ -36,7 +50,7 @@ const ProfilePage = () => {
       },
     };
     const response = await fetch(Userurl + "DeleteUser", Requestoptions);
-    console.log(response)
+    
     if (response.status == 200) {
       navigate("/signin");
     }
@@ -53,60 +67,23 @@ const ProfilePage = () => {
         }
     };
 
-    // Sample blog posts data
-    const blogPosts = [
-        {
-            id: 1,
-            title: 'My First Blog Post',
-            date: 'May 1, 2024',
-            image: 'https://source.unsplash.com/random/400x300',
-            description: 'This is my very first blog post. Excited to start this journey!',
-            likes: 120,
-            dislikes: 3,
-            comments: 15
-        },
-        {
-            id: 1,
-            title: 'My First Blog Post',
-            date: 'May 1, 2024',
-            image: 'https://source.unsplash.com/random/400x300',
-            description: 'This is my very first blog post. Excited to start this journey!',
-            likes: 120,
-            dislikes: 3,
-            comments: 15
-        },
-        {
-            id: 1,
-            title: 'My First Blog Post',
-            date: 'May 1, 2024',
-            image: 'https://source.unsplash.com/random/400x300',
-            description: 'This is my very first blog post. Excited to start this journey!',
-            likes: 120,
-            dislikes: 3,
-            comments: 15
-        },
-        {
-            id: 1,
-            title: 'My First Blog Post',
-            date: 'May 1, 2024',
-            image: 'https://source.unsplash.com/random/400x300',
-            description: 'This is my very first blog post. Excited to start this journey!',
-            likes: 120,
-            dislikes: 3,
-            comments: 15
-        },
-        {
-            id: 1,
-            title: 'My First Blog Post',
-            date: 'May 1, 2024',
-            image: 'https://source.unsplash.com/random/400x300',
-            description: 'This is my very first blog post. Excited to start this journey!',
-            likes: 120,
-            dislikes: 3,
-            comments: 15
-        },
-        
-    ];
+    const areyousure = ()=>{
+        swal.fire({
+          title: "Are you sure?",
+          text: "You won't be able to revert this!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, delete it!",
+        }).then((result) => {
+          if (result.isConfirmed) {
+           handleDeleteprofile()
+          }
+        });
+    }
+
+
 
     return (
         <Layout>
@@ -148,7 +125,7 @@ const ProfilePage = () => {
                                     <div className="mt-10 mb-10 flex justify-center">
                                         <button className="auth-button1 mb-4" onClick={handleChangePassword}>Change Password</button>
                                         <button className="auth-button1 mb-4" onClick={handleEditProfile}>Edit Profile</button>
-                                        <button className="auth-button1 mb-4" onClick={handleDeleteprofile}>Delete Profile</button>
+                                        <button className="auth-button1 mb-4" onClick={areyousure}>Delete Profile</button>
                                         
                                     </div>
                                 </div>
@@ -157,7 +134,7 @@ const ProfilePage = () => {
                     </main>
                 </div>
             </div>
-            <BlogPostsMade blogPosts={blogPosts} /> {/* Render the BlogPostsMade component */}
+            <BlogPostsMade blogPosts={blogs} /> {/* Render the BlogPostsMade component */}
         </Layout>
     );
 };

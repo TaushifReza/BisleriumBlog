@@ -1,41 +1,29 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { BsFillArrowLeftCircleFill } from 'react-icons/bs';
 import myContext from '../context/myContext';
-import { Link } from 'react-router-dom';
 import Nav from './Navbar';
 import Footer from './Footer';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; // Import the styles for the editor
 import { useSelector } from "react-redux";
 import { Blogurl, Categoryurl } from "../src/index";
+import { useNavigate } from "react-router-dom";
 
 function CreateBlog() {
   const context = useContext(myContext);
   const { mode } = context;
-
-  const [thumbnail, setThumbnail] = useState(null);
   const [categorydata, setcategorydata] = useState([]);
   const [content, setContent] = useState('');
   const [category, setCategory] = useState(); // Default category
 
 
    const [title, setTitle] = useState("");
-   const [categoryID, setcategoryID] = useState("");
+ 
    const [blogImg, setBlogImg] = useState("");
-  //  const [getBlog, setgetBlog] = useState(false);
-  //  const [blogs, setblogs] = useState([]);
-   const [toUpdate, setToUpdate] = useState("");
-   const token = useSelector((state) => state.signin.token);
-
-  const handleThumbnailUpload = (e) => {
-    const file = e.target.files[0];
-    setThumbnail(file);
-  };
 
   
-  const handleSubmit = (e) => {
-   
-  };
+   const token = useSelector((state) => state.signin.token);
+   const navigate = useNavigate();
+ 
   useEffect(()=>{
     const listCategory = async () => {
       const Requestoptions = {
@@ -52,32 +40,16 @@ function CreateBlog() {
       const data = await response.json();
       if (response.status == 200) {
         setcategorydata(data.result.category);
-        console.log(data)
+      
       }
     };
     listCategory();
   },[])
 
-   const listCategory = async () => {
-     const Requestoptions = {
-       method: "GET",
-       headers: {
-         Authorization: "Bearer " + token,
-       },
-     };
-     const response = await fetch(
-       Categoryurl + "GetAllCategory",
-       Requestoptions
-     );
-
-     const data = await response.json();
-     if (response.status == 200) {
-       setcategorydata(data.result.category);
-     }
-   };
-
+   
   const createBlog = async () => {
     const formData = new FormData();
+   
     formData.append("Title", title);
     formData.append("Body", content);
     formData.append("CategoryId", category);
@@ -92,9 +64,9 @@ function CreateBlog() {
     };
 
     const response = await fetch(Blogurl + "CreateBlog", Requestoptions);
-
+ 
     if (response.status == 201) {
-      console.log("created");
+      navigate("/profile")
     }
   };
 
@@ -110,9 +82,7 @@ function CreateBlog() {
             </h1>
 
           </div>
-          {thumbnail && (
-            <img className='w-full max-h-60 rounded-md mb-3 object-cover' src={URL.createObjectURL(thumbnail)} alt='thumbnail' />
-          )}
+      
           <div className='mb-3'>
             <label className="block text-sm font-semibold mb-2 mt-4">Upload Thumbnail:</label>
             <input type='file' onChange={(e) => {setBlogImg(e.target.files[0])}} className='block w-full text-sm text-gray-500 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100' />
@@ -125,8 +95,11 @@ function CreateBlog() {
             <label className="block text-sm font-semibold mb-2 mt-4">Select Category:</label>
             <select id='category' value={category} onChange={(e) => setCategory(e.target.value)} className='block w-full p-2 border rounded-md focus:ring focus:ring-blue-300'>
               {categorydata.map((category)=>(
+                
                  <option value={category.id}>{category.name}</option>
+                 
               )
+              
 
               )}
              
@@ -136,8 +109,7 @@ function CreateBlog() {
             <label className="block text-xl font-semibold mb-2 mt-4">Content:</label>
             <ReactQuill theme="snow" value={content} onChange={(content) => setContent(content)} style={{ height: '300px' }} />
           </div>
-          <button onClick={createBlog}className="bg-sky-600 text-white font-medium text-sm  px-14 py-3"
->
+          <button onClick={createBlog}className="bg-sky-600 text-white font-medium text-sm  px-14 py-3">
             Submit
           </button>
         </div>

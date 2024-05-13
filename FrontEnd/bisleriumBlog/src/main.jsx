@@ -31,24 +31,14 @@ import ResetPassword from "../Components/ResetPassword.jsx";
 import ProfilePage from "../Components/Profilepage.jsx";
 import ConfirmEmail from "../Components/ConfirmEmail.jsx";
 import Blogdetail from "../Components/Blogdetail.jsx";
-// import IndividualBlog from "../Components/individualblogpage.jsx";
-// import Blogapi from "../Components/blogfileapi.jsx";
+import UpdateBlog from "../Components/UpdateBlog.jsx";
+
 const router = createBrowserRouter([
   {
     path: "/",
     element: (
       <App>
         <Home />
-        
-      </App>
-    ),
-  },
-  {
-    path: "/individualblog",
-    element: (
-      <App>
-        {/* <Home />  */}
-        
       </App>
     ),
   },
@@ -208,38 +198,17 @@ const router = createBrowserRouter([
       </App>
     ),
   },
-  // {
-  //   path: "/*",
-  //   element: <App><NoPage /></App>,
-  // },
+  {
+    path: "/update", 
+    element: (
+      <App>
+       <UpdateBlog></UpdateBlog>
+      </App>
+    ),
+  },
 ]);
 
-// SignalR Connection
 
-// const connection = new signalR.HubConnectionBuilder()
-//   .withUrl(
-//     "https://1424-2400-1a00-b040-8072-29e9-6865-ff5b-c1a4.ngrok-free.app/notificationHub"
-//   )
-//   .build();
-
-// connection
-//   .start()
-//   .then(() => console.log("Connection started"))
-//   .catch((err) => console.error("ERROR" + err));
-
-// connection.on("ReceiveNotification", (data) => {
-//   console.log("Notification received", data);
-// });
-
-// connection.on("ReceiveNotification", (notificationType, notificationMessage) => {
-//     const notificationElement = document.createElement("div");
-//     notificationElement.textContent = `${notificationType}: ${notificationMessage}`;
-//     document.getElementById("notifications").appendChild(notificationElement);
-// });
-
-// connection.start()
-//     .then(() => console.log("SignalR connection established."))
-//     .catch(err => console.error("Error establishing SignalR connection:", err));
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

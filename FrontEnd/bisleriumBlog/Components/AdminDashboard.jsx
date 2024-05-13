@@ -10,7 +10,8 @@ import myContext from "../context/myContext";
 import { Button } from "@material-tailwind/react";
 import { Link } from "react-router-dom";
 import AdminNavs from "./AdminNavs";
-
+import { useState } from "react";
+import axios from "axios";
 const DummyData = {
   lineChartData: {
     labels: ["January", "February", "March", "April", "May", "June", "July"],
@@ -128,6 +129,19 @@ function AdminDashboard() {
     };
   }, []);
 
+
+  const [topblogs,settopblogs] = useState([])
+
+  useEffect(() => {
+    axios
+      .get(`https://localhost:7094/api/Admin/PopularBlog?pageSize=${10}&pageNumber=${1}`)
+      .then((response) => {
+        settopblogs(response.data.result.top10Blog)
+      })
+      .catch((error) => console.error("Error fetching blog posts:", error));
+  }, []);
+
+
   const context = useContext(myContext);
   const { mode } = context;
   return (
@@ -153,9 +167,11 @@ function AdminDashboard() {
                   aria-haspopup="true"
                   aria-expanded="false"
                 >
-                  {" "}
+              
                   Dashboard
                 </button>
+
+           
               </div>
             </div>
           </div>
@@ -286,124 +302,6 @@ function AdminDashboard() {
                             <td>Test title 1</td>
                             <td>07/07/2024</td>
                           </tr>
-
-                          <tr>
-                            <td className="table-user">
-                              <a
-                                href="javascript:void(0);"
-                                className="text-body font-weight-semibold"
-                              >
-                                Hrishik Sangroula
-                              </a>
-                            </td>
-                            <td>hrishiksangrou@gmail.com</td>
-                            <td>Test title 12</td>
-                            <td>07/04/2024</td>
-                          </tr>
-                          <tr>
-                            <td className="table-user">
-                              <a
-                                href="javascript:void(0);"
-                                className="text-body font-weight-semibold"
-                              >
-                                Mohammad Taushif Reza
-                              </a>
-                            </td>
-                            <td>taushif1teza@gmail.com</td>
-                            <td>Test title 3</td>
-                            <td>06/30/2024</td>
-                          </tr>
-                          <tr>
-                            <td className="table-user">
-                              <a
-                                href="javascript:void(0);"
-                                className="text-body font-weight-semibold"
-                              >
-                                Himani Acharya
-                              </a>
-                            </td>
-                            <td>himaniacharya@gmail.com</td>
-                            <td>Title 4</td>
-                            <td>09/08/2024</td>
-                          </tr>
-                          <tr>
-                            <td className="table-user">
-                              <a
-                                href="javascript:void(0);"
-                                className="text-body font-weight-semibold"
-                              >
-                                Suyasha Adhikari
-                              </a>
-                            </td>
-                            <td>suyashaadhikari@gmail.com</td>
-                            <td>Title 4</td>
-                            <td>07/15/2018</td>
-                          </tr>
-                          <tr>
-                            <td className="table-user">
-                              <a
-                                href="javascript:void(0);"
-                                className="text-body font-weight-semibold"
-                              >
-                                Aarav Gurung
-                              </a>
-                            </td>
-                            <td>aaravgurung@gmail.com</td>
-                            <td>Title 6</td>
-                            <td>11/22/2024</td>
-                          </tr>
-                          <tr>
-                            <td className="table-user">
-                              <a
-                                href="javascript:void(0);"
-                                className="text-body font-weight-semibold"
-                              >
-                                Anaya Thapa
-                              </a>
-                            </td>
-                            <td>anayathapa@gmail.com</td>
-                            <td>Title 7</td>
-                            <td>10/15/2024</td>
-                          </tr>
-                          <tr>
-                            <td className="table-user">
-                              <a
-                                href="javascript:void(0);"
-                                className="text-body font-weight-semibold"
-                              >
-                                Pranav Joshi
-                              </a>
-                            </td>
-                            <td>pranavjoshi@gmail.com</td>
-                            <td>Title 8</td>
-                            <td>09/30/2024</td>
-                          </tr>
-                          <tr>
-                            <td className="table-user">
-                              <a
-                                href="javascript:void(0);"
-                                className="text-body font-weight-semibold"
-                              >
-                                Ishita Rai
-                              </a>
-                            </td>
-                            <td>ishitarai@gmail.com</td>
-                            <td>Title 9</td>
-                            <td>08/18/2024</td>
-                          </tr>
-                          <tr>
-                            <td className="table-user">
-                              <a
-                                href="javascript:void(0);"
-                                className="text-body font-weight-semibold"
-                              >
-                                Aarush Shahi
-                              </a>
-                            </td>
-                            <td>aarushshahi@gmail.com</td>
-                            <td>Title 10</td>
-                            <td>07/03/2024</td>
-                          </tr>
                         </tbody>
                       </table>
                     </div>
@@ -427,76 +325,16 @@ function AdminDashboard() {
                           </tr>
                         </thead>
                         <tbody>
-                          <tr>
-                            <td>Test title 1</td>
-                            <td>Category 1</td>
-                            <td>10</td>
-                            <td>2</td>
-                            <td>07/07/2024</td>
+                          {topblogs.map((blog)=>(
+                              <tr>
+                            <td>{blog.title}</td>
+                            <td>{blog.category}</td>
+                            <td>{blog.upVoteCount}</td>
+                            <td>{blog.downVoteCount}</td>
+                            <td>{new Date(blog.createdAt).toLocaleDateString()}</td>
                           </tr>
-                          <tr>
-                            <td>Test title 12</td>
-                            <td>Category 2</td>
-                            <td>15</td>
-                            <td>3</td>
-                            <td>07/04/2024</td>
-                          </tr>
-                          <tr>
-                            <td>Test title 3</td>
-                            <td>Category 3</td>
-                            <td>20</td>
-                            <td>5</td>
-                            <td>06/30/2024</td>
-                          </tr>
-                          <tr>
-                            <td>Title 4</td>
-                            <td>Category 4</td>
-                            <td>8</td>
-                            <td>1</td>
-                            <td>09/08/2024</td>
-                          </tr>
-                          <tr>
-                            <td>Title 4</td>
-                            <td>Category 5</td>
-                            <td>5</td>
-                            <td>0</td>
-                            <td>07/15/2018</td>
-                          </tr>
-                          <tr>
-                            <td>Title 6</td>
-                            <td>Category 6</td>
-                            <td>12</td>
-                            <td>4</td>
-                            <td>11/22/2024</td>
-                          </tr>
-                          <tr>
-                            <td>Title 7</td>
-                            <td>Category 7</td>
-                            <td>18</td>
-                            <td>2</td>
-                            <td>10/15/2024</td>
-                          </tr>
-                          <tr>
-                            <td>Title 8</td>
-                            <td>Category 8</td>
-                            <td>25</td>
-                            <td>7</td>
-                            <td>09/30/2024</td>
-                          </tr>
-                          <tr>
-                            <td>Title 9</td>
-                            <td>Category 9</td>
-                            <td>14</td>
-                            <td>3</td>
-                            <td>08/18/2024</td>
-                          </tr>
-                          <tr>
-                            <td>Title 10</td>
-                            <td>Category 10</td>
-                            <td>9</td>
-                            <td>1</td>
-                            <td>07/03/2024</td>
-                          </tr>
+                          ))}
+                        
                         </tbody>
                       </table>
                     </div>

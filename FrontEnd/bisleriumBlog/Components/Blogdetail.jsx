@@ -8,7 +8,6 @@ import {
 } from "react-icons/ai";
 import { GrUpdate } from "react-icons/gr";
 import Nav from "./Navbar";
-import { Navbar } from "@material-tailwind/react";
 import Footer from "./Footer";
 import { useLocation } from "react-router-dom";
 import {
@@ -20,6 +19,8 @@ import {
   DislikeCommenturl,
 } from "../src/index";
 import { useSelector } from "react-redux";
+import swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 function Blogdetail() {
   const [blog, setblog] = useState({});
@@ -33,6 +34,8 @@ function Blogdetail() {
   const [postcomment, setpostComment] = useState("");
   const [update, setupdate] = useState(false);
   const [cc, setcc] = useState(false);
+  const userdata = useSelector((state) => state.signin.userData);
+  const navigate = useNavigate();
 
   const Requestoptions = {
     method: "GET",
@@ -69,11 +72,12 @@ function Blogdetail() {
       const data = await response.json();
 
       if (response.status == 200) {
+        setupdate(false)
         setGetAllComment(data.result);
       }
     };
     getAllCommnet();
-  }, [upvoteComment, downvoteComment, cc, deletecomment]);
+  }, [upvoteComment, downvoteComment, cc, deletecomment,update]);
 
   const upvoteBlog = async (id) => {
     const formData = new FormData();
@@ -158,7 +162,7 @@ function Blogdetail() {
     };
 
     const response = await fetch(Commenturl + "CreateComment", Requestoptions);
-    console.log(response);
+    
 
     if (response.status == 201) {
       setcc(true);
@@ -182,25 +186,97 @@ function Blogdetail() {
       setcc(false);
     }
   };
-  const updateComment = async (id) => {
+  const updateComment = async (id,newcomment) => {
     const Requestoptions = {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer " + token,
       },
-      body: JSON.stringify({ content: comment }),
+      body: JSON.stringify({ content: newcomment }),
     };
 
     const response = await fetch(
       Commenturl + `UpdateComment/${id}`,
       Requestoptions
     );
-
+    console.log(response)
     if (response.status == 205) {
-      console.log("updated");
+      setupdate(true)
     }
   };
+
+  const commentupdateareyousure= async(id)=>{
+    const { value: text } = await swal.fire({
+      input: "textarea",
+      inputLabel: "Upate Comment",
+      inputPlaceholder: "Update your comment...",
+      inputAttributes: {
+        "aria-label": "Update your comment",
+      },
+      showCancelButton: true,
+    });
+    if (text) {
+
+      updateComment(id,text)
+    }
+  }
+       const deleteBlog = async (id) => {
+         const Requestoptions = {
+           method: "DELETE",
+           headers: {
+             Authorization: "Bearer " + token,
+           },
+         };
+         const response = await fetch(
+           `${Blogurl}DeleteBlog/${id}`,
+           Requestoptions
+         );
+         console.log(response.status)
+         if (response.status == 200) {
+           navigate("/profile")
+           
+         }
+       };
+
+    const areyousure = (id) => {
+      swal
+        .fire({
+          title: "Are you sure?",
+          text: "You won't be able to revert this!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, delete it!",
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            deleteBlog(id)
+          }
+        });
+    };
+    const updateBlog = (data)=>{
+      navigate("/update" ,{ state: data })
+    }
+
+        const areyousureupdate = (data) => {
+          swal
+            .fire({
+              title: "Are you sure?",
+              text: "You won't be able to revert this!",
+              icon: "info",
+              showCancelButton: true,
+              confirmButtonColor: "#3085d6",
+              cancelButtonColor: "#d33",
+              confirmButtonText: "Yes, update it!",
+            })
+            .then((result) => {
+              if (result.isConfirmed) {
+                updateBlog(data);
+              }
+            });
+        };
 
   return (
     <div>
@@ -208,6 +284,22 @@ function Blogdetail() {
       <section className="flex items-center justify-center bg-custom">
         <body className="text-gray-900 antialiased">
           <div className="max-w-4xl mx-auto py-12 px-12 lg:px-24 -mt-32 relative z-10">
+            {userdata.id == blog.userId && (
+              <div className="flex justify-end w-full ">
+                <AiFillDelete
+                  className="text-red-500 text-xl mt-8 cursor-pointer mr-5"
+                  onClick={() => {
+                    areyousure(blog.id);
+                  }}
+                />
+                <GrUpdate
+                  className="mt-8 cursor-pointer"
+                  onClick={() => {
+                    areyousureupdate(blog);
+                  }}
+                ></GrUpdate>
+              </div>
+            )}
             <div className="flex justify-between items-center">
               <div>
                 <h2 className="uppercase text-gray-900">
@@ -298,7 +390,7 @@ function Blogdetail() {
                             </span>
                           </div>
                         </button>
-                        {blog.userId == comment.userId && (
+                        {userdata.id == comment.userId && (
                           <>
                             <AiFillDelete
                               className=" ml-5 text-blue-500 cursor-pointer text-xl"
@@ -308,7 +400,9 @@ function Blogdetail() {
                             />
                             <GrUpdate
                               className=" ml-5 text-blue-500 cursor-pointer text-lg"
-                              onClick={() => {}}
+                              onClick={() => {
+                                commentupdateareyousure(comment.id);
+                              }}
                             ></GrUpdate>
                           </>
                         )}
