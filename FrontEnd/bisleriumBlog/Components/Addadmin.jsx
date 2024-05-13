@@ -33,10 +33,14 @@ const AddAdmin = () => {
           };
 
           const response = await fetch("https://localhost:7094/api/Admin/RegisterAdmin", Requestoptions);
-          const data = await response.json();
-
           if (response.status === 200) {
-            navigate("/admin");
+            swal.fire({
+              position: "top",
+              icon: "success",
+              title: "Admin Account Created",
+              showConfirmButton: false,
+              timer: 1500,
+            });
           } else {
             const errors = data.errors;
             let errorMessage = "";

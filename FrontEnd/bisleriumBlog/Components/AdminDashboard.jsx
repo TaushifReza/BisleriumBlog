@@ -12,7 +12,7 @@ import { Link, useNavigate } from "react-router-dom";
 import AdminNavs from "./AdminNavs";
 import { useState } from "react";
 import axios from "axios";
-import { useSelector,useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import AddAdmin from "./Addadmin";
 import { signIn } from "../Features/SignIn/SignInSlice";
 const DummyData = {
@@ -95,22 +95,23 @@ const DummyData = {
 };
 
 function AdminDashboard() {
-
-     const Logout = ()=>{
-        {dispatch(signIn({ token: "", userData:{} }))} 
-        navigate("/signin")
-
+  const Logout = () => {
+    {
+      dispatch(signIn({ token: "", userData: {} }));
     }
-  
+    navigate("/signin");
+  };
 
   const token = useSelector((state) => state.signin.token);
-  const [topblogs,settopblogs] = useState([])
-  const [date,setdate] =useState("")
-  const [addAdmin, setaddAdmin] = useState(false)
+  const [topblogs, settopblogs] = useState([]);
+  const [topbloggers, settopbloggers] = useState([]);
+  const [date, setdate] = useState("");
+  const [date2, setdate2] = useState("");
+  const [addAdmin, setaddAdmin] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-useEffect(() => {
+  useEffect(() => {
     const lineCtx = document.getElementById("lineChart").getContext("2d");
     let lineChartInstance = new Chart(lineCtx, {
       type: "line",
@@ -147,12 +148,14 @@ useEffect(() => {
     };
   }, []);
 
-
   useEffect(() => {
     axios
-      .get(`https://localhost:7094/api/Admin/PopularBlog?pageSize=${10}&pageNumber=${1}`,{headers: {"Authorization" : `Bearer ${token}`}})
+      .get(
+        `https://localhost:7094/api/Admin/PopularBlog?pageSize=${10}&pageNumber=${1}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
       .then((response) => {
-        settopblogs(response.data.result.top10Blog)
+        settopblogs(response.data.result.top10Blog);
       })
       .catch((error) => console.error("Error fetching blog posts:", error));
   }, []);
@@ -160,13 +163,27 @@ useEffect(() => {
   useEffect(() => {
     axios
       .get(
-        `https://localhost:7094/api/Admin/PopularMonthBlog?year=${+date.split("-")[0]}&month=${+date.split("-")[1]}`,{headers: {"Authorization" : `Bearer ${token}`}}
+        `https://localhost:7094/api/Admin/PopularMonthBlog?year=${+date.split(
+          "-"
+        )[0]}&month=${+date.split("-")[1]}`,
+        { headers: { Authorization: `Bearer ${token}` } }
       )
       .then((response) => {
         settopblogs(response.data.result.top10Blog);
       })
       .catch((error) => console.error("Error fetching blog posts:", error));
   }, [date]);
+
+  useEffect(() => {
+    axios
+      .get(`https://localhost:7094/api/Admin/TopBloggers`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((response) => {
+        settopbloggers(response.data.result.top10Blog);
+      })
+      .catch((error) => console.error("Error fetching blog posts:", error));
+  }, []);
 
   const context = useContext(myContext);
   const { mode } = context;
@@ -271,7 +288,6 @@ useEffect(() => {
           <AddAdmin></AddAdmin>
         ) : (
           <>
-          
             <div className="main-content">
               <div className="page-content">
                 <div className="container-fluid">
@@ -330,9 +346,9 @@ useEffect(() => {
                             type="month"
                             name=""
                             id=""
-                            value={date}
+                            value={date2}
                             onChange={(e) => {
-                              setdate(e.target.value);
+                              setdate2(e.target.value);
                             }}
                           />
                         </div>
@@ -347,19 +363,20 @@ useEffect(() => {
                               </tr>
                             </thead>
                             <tbody>
-                              <tr>
-                                <td className="table-user">
-                                  <a
-                                    href="javascript:void(0);"
-                                    className="text-body font-weight-semibold"
-                                  >
-                                    Bicky Yadav
-                                  </a>
-                                </td>
-                                <td>yadavbicky99@gmail.com</td>
-                                <td>Test title 1</td>
-                                <td>07/07/2024</td>
-                              </tr>
+                              {/* {topbloggers.map((bloggers) => (
+                                <tr>
+                                  <td className="table-user">
+                                    <a
+                                      href="javascript:void(0);"
+                                      className="text-body font-weight-semibold"
+                                    >{bloggers}
+                                    </a>
+                                  </td>
+                                  <td>{bloggers}</td>
+                                  <td>{bloggers}</td>
+                                  <td>{bloggers}</td>
+                                </tr>
+                              ))} */}
                             </tbody>
                           </table>
                         </div>
