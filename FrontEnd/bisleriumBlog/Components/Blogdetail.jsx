@@ -72,12 +72,12 @@ function Blogdetail() {
       const data = await response.json();
 
       if (response.status == 200) {
-        setupdate(false)
+        setupdate(false);
         setGetAllComment(data.result);
       }
     };
     getAllCommnet();
-  }, [upvoteComment, downvoteComment, cc, deletecomment,update]);
+  }, [upvoteComment, downvoteComment, cc, deletecomment, update]);
 
   const upvoteBlog = async (id) => {
     const formData = new FormData();
@@ -162,7 +162,6 @@ function Blogdetail() {
     };
 
     const response = await fetch(Commenturl + "CreateComment", Requestoptions);
-    
 
     if (response.status == 201) {
       setcc(true);
@@ -186,7 +185,7 @@ function Blogdetail() {
       setcc(false);
     }
   };
-  const updateComment = async (id,newcomment) => {
+  const updateComment = async (id, newcomment) => {
     const Requestoptions = {
       method: "PUT",
       headers: {
@@ -200,13 +199,13 @@ function Blogdetail() {
       Commenturl + `UpdateComment/${id}`,
       Requestoptions
     );
-    console.log(response)
+    console.log(response);
     if (response.status == 205) {
-      setupdate(true)
+      setupdate(true);
     }
   };
 
-  const commentupdateareyousure= async(id)=>{
+  const commentupdateareyousure = async (id) => {
     const { value: text } = await swal.fire({
       input: "textarea",
       inputLabel: "Upate Comment",
@@ -217,66 +216,61 @@ function Blogdetail() {
       showCancelButton: true,
     });
     if (text) {
-
-      updateComment(id,text)
+      updateComment(id, text);
     }
-  }
-       const deleteBlog = async (id) => {
-         const Requestoptions = {
-           method: "DELETE",
-           headers: {
-             Authorization: "Bearer " + token,
-           },
-         };
-         const response = await fetch(
-           `${Blogurl}DeleteBlog/${id}`,
-           Requestoptions
-         );
-         console.log(response.status)
-         if (response.status == 200) {
-           navigate("/profile")
-           
-         }
-       };
-
-    const areyousure = (id) => {
-      swal
-        .fire({
-          title: "Are you sure?",
-          text: "You won't be able to revert this!",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
-          confirmButtonText: "Yes, delete it!",
-        })
-        .then((result) => {
-          if (result.isConfirmed) {
-            deleteBlog(id)
-          }
-        });
+  };
+  const deleteBlog = async (id) => {
+    const Requestoptions = {
+      method: "DELETE",
+      headers: {
+        Authorization: "Bearer " + token,
+      },
     };
-    const updateBlog = (data)=>{
-      navigate("/update" ,{ state: data })
+    const response = await fetch(`${Blogurl}DeleteBlog/${id}`, Requestoptions);
+    console.log(response.status);
+    if (response.status == 200) {
+      navigate("/profile");
     }
+  };
 
-        const areyousureupdate = (data) => {
-          swal
-            .fire({
-              title: "Are you sure?",
-              text: "You won't be able to revert this!",
-              icon: "info",
-              showCancelButton: true,
-              confirmButtonColor: "#3085d6",
-              cancelButtonColor: "#d33",
-              confirmButtonText: "Yes, update it!",
-            })
-            .then((result) => {
-              if (result.isConfirmed) {
-                updateBlog(data);
-              }
-            });
-        };
+  const areyousure = (id) => {
+    swal
+      .fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+          deleteBlog(id);
+        }
+      });
+  };
+  const updateBlog = (data) => {
+    navigate("/update", { state: data });
+  };
+
+  const areyousureupdate = (data) => {
+    swal
+      .fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "info",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, update it!",
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+          updateBlog(data);
+        }
+      });
+  };
 
   return (
     <div>
@@ -303,8 +297,11 @@ function Blogdetail() {
             <div className="flex justify-between items-center">
               <div>
                 <h2 className="uppercase text-gray-900">
-                  {}
-                  {new Date(blog.createdAt).toLocaleDateString()}
+                  {blog.updatedAt == "0001-01-01T00:00:00" ? (
+                    <>{new Date(blog.createdAt).toLocaleDateString()}</>
+                  ) : (
+                    <>{new Date(blog.updatedAt).toLocaleDateString()}</>
+                  )}
                 </h2>
                 <h1 className="text-3xl mt-2 ">{blog.title}</h1>
                 <p className="text-sm text-gray-600 mt-4 mb-2">
@@ -365,6 +362,17 @@ function Blogdetail() {
                       key={index}
                       className="bg-white rounded-lg p-6 mb-4 shadow-lg"
                     >
+                      <h2 className="uppercase text-gray-900">
+                        {blog.updatedAt == null ? (
+                          <>
+                            {new Date(comment.createdAt).toLocaleDateString()}
+                          </>
+                        ) : (
+                          <>
+                            {new Date(comment.updatedAt).toLocaleDateString()}
+                          </>
+                        )}
+                      </h2>
                       <p className="text-gray-800 leading-relaxed">
                         {comment.content}
                       </p>
