@@ -185,6 +185,20 @@ function AdminDashboard() {
       .catch((error) => console.error("Error fetching blog posts:", error));
   }, []);
 
+    useEffect(() => {
+      axios
+        .get(
+          `https://localhost:7094/api/Admin/TopBloggersOfMonth?year=${+date2.split(
+            "-"
+          )[0]}&month=${+date2.split("-")[1]}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        )
+        .then((response) => {
+          settopblogs(response.data.result.top10Blog);
+        })
+        .catch((error) => console.error("Error fetching blog posts:", error));
+    }, [date2]);
+
   const context = useContext(myContext);
   const { mode } = context;
   return (
@@ -358,25 +372,25 @@ function AdminDashboard() {
                               <tr>
                                 <th>Full Name</th>
                                 <th>Email</th>
-                                <th>Blog title</th>
+                                <th>UpVote</th>
                                 <th>Create Date</th>
                               </tr>
                             </thead>
                             <tbody>
-                              {/* {topbloggers.map((bloggers) => (
+                              {topbloggers.map((blogger) => (
                                 <tr>
                                   <td className="table-user">
                                     <a
                                       href="javascript:void(0);"
                                       className="text-body font-weight-semibold"
-                                    >{bloggers}
+                                    >{blogger.fullName}
                                     </a>
                                   </td>
-                                  <td>{bloggers}</td>
-                                  <td>{bloggers}</td>
-                                  <td>{bloggers}</td>
+                                  <td>{blogger.email}</td>
+                                  <td>{blogger.totalUpvotes}</td>
+                                  <td>{blogger.totalBlogs}</td>
                                 </tr>
-                              ))} */}
+                              ))}
                             </tbody>
                           </table>
                         </div>
