@@ -303,6 +303,7 @@ function Blogdetail() {
             <div className="flex justify-between items-center">
               <div>
                 <h2 className="uppercase text-gray-900">
+                  {}
                   {new Date(blog.createdAt).toLocaleDateString()}
                 </h2>
                 <h1 className="text-3xl mt-2 ">{blog.title}</h1>
