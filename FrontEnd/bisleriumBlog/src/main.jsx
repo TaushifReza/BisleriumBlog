@@ -33,6 +33,7 @@ import ConfirmEmail from "../Components/ConfirmEmail.jsx";
 import Blogdetail from "../Components/Blogdetail.jsx";
 import UpdateBlog from "../Components/UpdateBlog.jsx";
 
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -199,13 +200,14 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/update", 
+    path: "/update",
     element: (
       <App>
-       <UpdateBlog></UpdateBlog>
+        <UpdateBlog></UpdateBlog>
       </App>
     ),
   },
+  
 ]);
 
 

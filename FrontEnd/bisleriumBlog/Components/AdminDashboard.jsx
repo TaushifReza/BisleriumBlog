@@ -8,12 +8,13 @@ import "../style/AdminDashboard/css/icons.min.css";
 import Chart from "chart.js/auto"; //this showed error so suyasha comented this line (happened after blogdetailpage uploaded)
 import myContext from "../context/myContext";
 import { Button } from "@material-tailwind/react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AdminNavs from "./AdminNavs";
 import { useState } from "react";
 import axios from "axios";
-import { useSelector } from "react-redux";
-
+import { useSelector, useDispatch } from "react-redux";
+import AddAdmin from "./Addadmin";
+import { signIn } from "../Features/SignIn/SignInSlice";
 const DummyData = {
   lineChartData: {
     labels: ["January", "February", "March", "April", "May", "June", "July"],
@@ -94,6 +95,22 @@ const DummyData = {
 };
 
 function AdminDashboard() {
+  const Logout = () => {
+    {
+      dispatch(signIn({ token: "", userData: {} }));
+    }
+    navigate("/signin");
+  };
+
+  const token = useSelector((state) => state.signin.token);
+  const [topblogs, settopblogs] = useState([]);
+  const [topbloggers, settopbloggers] = useState([]);
+  const [date, setdate] = useState("");
+  const [date2, setdate2] = useState("");
+  const [addAdmin, setaddAdmin] = useState(false);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   useEffect(() => {
     const lineCtx = document.getElementById("lineChart").getContext("2d");
     let lineChartInstance = new Chart(lineCtx, {
@@ -131,14 +148,14 @@ function AdminDashboard() {
     };
   }, []);
 
-  const token = useSelector((state) => state.signin.token);
-  const [topblogs,settopblogs] = useState([])
-  const [date,setdate] =useState("")
   useEffect(() => {
     axios
-      .get(`https://localhost:7094/api/Admin/PopularBlog?pageSize=${10}&pageNumber=${1}`,{headers: {"Authorization" : `Bearer ${token}`}})
+      .get(
+        `https://localhost:7094/api/Admin/PopularBlog?pageSize=${10}&pageNumber=${1}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
       .then((response) => {
-        settopblogs(response.data.result.top10Blog)
+        settopblogs(response.data.result.top10Blog);
       })
       .catch((error) => console.error("Error fetching blog posts:", error));
   }, []);
@@ -146,13 +163,27 @@ function AdminDashboard() {
   useEffect(() => {
     axios
       .get(
-        `https://localhost:7094/api/Admin/PopularMonthBlog?year=${+date.split("-")[0]}&month=${+date.split("-")[1]}`,{headers: {"Authorization" : `Bearer ${token}`}}
+        `https://localhost:7094/api/Admin/PopularMonthBlog?year=${+date.split(
+          "-"
+        )[0]}&month=${+date.split("-")[1]}`,
+        { headers: { Authorization: `Bearer ${token}` } }
       )
       .then((response) => {
         settopblogs(response.data.result.top10Blog);
       })
       .catch((error) => console.error("Error fetching blog posts:", error));
   }, [date]);
+
+  useEffect(() => {
+    axios
+      .get(`https://localhost:7094/api/Admin/TopBloggers`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((response) => {
+        settopbloggers(response.data.result.top10Blog);
+      })
+      .catch((error) => console.error("Error fetching blog posts:", error));
+  }, []);
 
   const context = useContext(myContext);
   const { mode } = context;
@@ -199,16 +230,26 @@ function AdminDashboard() {
                 <li className="menu-title">Menu</li>
 
                 <li>
-                  <a href="index.html" className="waves-effect">
+                  <Link
+                    onClick={() => {
+                      setaddAdmin(false);
+                    }}
+                    className="waves-effect"
+                  >
                     <i className="mdi mdi-home-analytics"></i>
                     <span>Dashboard</span>
-                  </a>
+                  </Link>
                 </li>
 
                 <li>
-                  <a href="javascript: void(0);" className="waves-effect">
+                  <a
+                    onClick={() => {
+                      setaddAdmin(true);
+                    }}
+                    className="waves-effect"
+                  >
                     <i className="fas fa-user"></i>
-                    <span>Profile</span>
+                    <span>Resgister Admin</span>
                   </a>
                 </li>
 
@@ -232,165 +273,183 @@ function AdminDashboard() {
                     <span>Bloggers</span>
                   </a>
                 </li>
+                <li>
+                  <a onClick={Logout} className="waves-effect">
+                    <i className="fas fa-user"></i>
+                    <span>Logout</span>
+                  </a>
+                </li>
               </ul>
             </div>
           </div>
         </div>
 
-        <div className="main-content">
-          <div className="page-content">
-            <div className="container-fluid">
-              <AdminNavs></AdminNavs>
-              <div className="row">
-                <div className="col-xl-6">
-                  <div className="card">
-                    <div className="card-body">
-                      <h4 className="card-title">Line Chart</h4>
-                      <canvas id="lineChart"></canvas>
+        {addAdmin ? (
+          <AddAdmin></AddAdmin>
+        ) : (
+          <>
+            <div className="main-content">
+              <div className="page-content">
+                <div className="container-fluid">
+                  <AdminNavs></AdminNavs>
+                  <div className="row">
+                    <div className="col-xl-6">
+                      <div className="card">
+                        <div className="card-body">
+                          <h4 className="card-title">Line Chart</h4>
+                          <canvas id="lineChart"></canvas>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
 
-                <div className="col-xl-6">
-                  <div className="card">
-                    <div className="card-body">
-                      <h4 className="card-title">Bar Chart</h4>
-                      <canvas id="barChart"></canvas>
+                    <div className="col-xl-6">
+                      <div className="card">
+                        <div className="card-body">
+                          <h4 className="card-title">Bar Chart</h4>
+                          <canvas id="barChart"></canvas>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-                <div className="col-xl-6">
-                  <div className="card">
-                    <div
-                      className="card-body"
-                      Style="height:400px; width:600px;"
-                    >
-                      <h4 className="card-title">Area chart</h4>
-                      <canvas id="areaChart"></canvas>
+                    <div className="col-xl-6">
+                      <div className="card">
+                        <div
+                          className="card-body"
+                          Style="height:400px; width:600px;"
+                        >
+                          <h4 className="card-title">Area chart</h4>
+                          <canvas id="areaChart"></canvas>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
 
-                <div className="col-xl-6">
-                  <div className="card">
-                    <div
-                      className="card-body"
-                      Style="height:400px; width:600px;"
-                    >
-                      <h4 className="card-title">Pie chart</h4>
-                      <canvas id="pieChart" Style="max-height:300px;"></canvas>
+                    <div className="col-xl-6">
+                      <div className="card">
+                        <div
+                          className="card-body"
+                          Style="height:400px; width:600px;"
+                        >
+                          <h4 className="card-title">Pie chart</h4>
+                          <canvas
+                            id="pieChart"
+                            Style="max-height:300px;"
+                          ></canvas>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-lg-12">
+                    <div className="card">
+                      <div className="card-body">
+                        <div className="flex justify-between mb-3 ">
+                          <h4 className="card-title ">Top 10 Blogger</h4>
+                          <input
+                            type="month"
+                            name=""
+                            id=""
+                            value={date2}
+                            onChange={(e) => {
+                              setdate2(e.target.value);
+                            }}
+                          />
+                        </div>
+                        <div className="table-responsive">
+                          <table className="table table-centered table-striped table-nowrap mb-50">
+                            <thead>
+                              <tr>
+                                <th>Full Name</th>
+                                <th>Email</th>
+                                <th>Blog title</th>
+                                <th>Create Date</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {/* {topbloggers.map((bloggers) => (
+                                <tr>
+                                  <td className="table-user">
+                                    <a
+                                      href="javascript:void(0);"
+                                      className="text-body font-weight-semibold"
+                                    >{bloggers}
+                                    </a>
+                                  </td>
+                                  <td>{bloggers}</td>
+                                  <td>{bloggers}</td>
+                                  <td>{bloggers}</td>
+                                </tr>
+                              ))} */}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="col-lg-12">
+                    <div className="card">
+                      <div className="card-body ">
+                        <div className="flex justify-between mb-3 ">
+                          <h4 className="card-title ">Top 10 Blogs</h4>
+                          <input
+                            type="month"
+                            name=""
+                            id=""
+                            value={date}
+                            onChange={(e) => {
+                              setdate(e.target.value);
+                            }}
+                          />
+                        </div>
+
+                        <div className="table-responsive">
+                          <table className="table table-centered table-striped table-nowrap mb-0">
+                            <thead>
+                              <tr>
+                                <th>Blog Title</th>
+                                <th>Category</th>
+                                <th>Upvotes</th>
+                                <th>Downvotes</th>
+                                <th>Created At</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {topblogs.map((blog) => (
+                                <tr>
+                                  <td>{blog.title}</td>
+                                  <td>{blog.category.name}</td>
+                                  <td>{blog.upVoteCount}</td>
+                                  <td>{blog.downVoteCount}</td>
+                                  <td>
+                                    {new Date(
+                                      blog.createdAt
+                                    ).toLocaleDateString()}
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-              <div className="col-lg-12">
-                <div className="card">
-                  <div className="card-body">
-                    <div className="flex justify-between mb-3 ">
-                      <h4 className="card-title ">Top 10 Blogger</h4>
-                      <input
-                        type="month"
-                        name=""
-                        id=""
-                        value={date}
-                        onChange={(e) => {
-                          setdate(e.target.value);
-                        }}
-                      />
-                    </div>
-                    <div className="table-responsive">
-                      <table className="table table-centered table-striped table-nowrap mb-50">
-                        <thead>
-                          <tr>
-                            <th>Full Name</th>
-                            <th>Email</th>
-                            <th>Blog title</th>
-                            <th>Create Date</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td className="table-user">
-                              <a
-                                href="javascript:void(0);"
-                                className="text-body font-weight-semibold"
-                              >
-                                Bicky Yadav
-                              </a>
-                            </td>
-                            <td>yadavbicky99@gmail.com</td>
-                            <td>Test title 1</td>
-                            <td>07/07/2024</td>
-                          </tr>
-                        </tbody>
-                      </table>
+              <footer className="footer">
+                <div className="container-fluid">
+                  <div className="row">
+                    <div className="col-sm-6">2024 © BisleriumBlog.</div>
+                    <div className="col-sm-6">
+                      <div className="text-sm-right d-none d-sm-block">
+                        Design & Develop by Hero Devs
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-
-              <div className="col-lg-12">
-                <div className="card">
-                  <div className="card-body ">
-                    <div className="flex justify-between mb-3 ">
-                      <h4 className="card-title ">Top 10 Blogs</h4>
-                      <input
-                        type="month"
-                        name=""
-                        id=""
-                        value={date}
-                        onChange={(e) => {
-                          setdate(e.target.value);
-                        }}
-                      />
-                    </div>
-
-                    <div className="table-responsive">
-                      <table className="table table-centered table-striped table-nowrap mb-0">
-                        <thead>
-                          <tr>
-                            <th>Blog Title</th>
-                            <th>Category</th>
-                            <th>Upvotes</th>
-                            <th>Downvotes</th>
-                            <th>Created At</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {topblogs.map((blog) => (
-                            <tr>
-                              <td>{blog.title}</td>
-                              <td>{blog.category.name}</td>
-                              <td>{blog.upVoteCount}</td>
-                              <td>{blog.downVoteCount}</td>
-                              <td>
-                                {new Date(blog.createdAt).toLocaleDateString()}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              </footer>
             </div>
-          </div>
-          <footer className="footer">
-            <div className="container-fluid">
-              <div className="row">
-                <div className="col-sm-6">2024 © BisleriumBlog.</div>
-                <div className="col-sm-6">
-                  <div className="text-sm-right d-none d-sm-block">
-                    Design & Develop by Hero Devs
-                  </div>
-                </div>
-              </div>
-            </div>
-          </footer>
-        </div>
+            <div className="menu-overlay"></div>
+          </>
+        )}
       </div>
-      <div className="menu-overlay"></div>
     </>
   );
 }
