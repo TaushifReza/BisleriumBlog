@@ -8,7 +8,6 @@ import {
 } from "react-icons/ai";
 import { GrUpdate } from "react-icons/gr";
 import Nav from "./Navbar";
-import { Navbar } from "@material-tailwind/react";
 import Footer from "./Footer";
 import { useLocation } from "react-router-dom";
 import {
@@ -257,7 +256,27 @@ function Blogdetail() {
           }
         });
     };
- 
+    const updateBlog = (data)=>{
+      navigate("/update" ,{ state: data })
+    }
+
+        const areyousureupdate = (data) => {
+          swal
+            .fire({
+              title: "Are you sure?",
+              text: "You won't be able to revert this!",
+              icon: "info",
+              showCancelButton: true,
+              confirmButtonColor: "#3085d6",
+              cancelButtonColor: "#d33",
+              confirmButtonText: "Yes, update it!",
+            })
+            .then((result) => {
+              if (result.isConfirmed) {
+                updateBlog(data);
+              }
+            });
+        };
 
   return (
     <div>
@@ -267,8 +286,18 @@ function Blogdetail() {
           <div className="max-w-4xl mx-auto py-12 px-12 lg:px-24 -mt-32 relative z-10">
             {userdata.id == blog.userId && (
               <div className="flex justify-end w-full ">
-                <AiFillDelete className="text-red-500 text-xl mt-8 cursor-pointer mr-5" onClick={()=>{areyousure(blog.id)}} />
-                <GrUpdate className="mt-8 cursor-pointer"></GrUpdate>
+                <AiFillDelete
+                  className="text-red-500 text-xl mt-8 cursor-pointer mr-5"
+                  onClick={() => {
+                    areyousure(blog.id);
+                  }}
+                />
+                <GrUpdate
+                  className="mt-8 cursor-pointer"
+                  onClick={() => {
+                    areyousureupdate(blog);
+                  }}
+                ></GrUpdate>
               </div>
             )}
             <div className="flex justify-between items-center">

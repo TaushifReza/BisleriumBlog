@@ -9,7 +9,7 @@ import { Blogurl } from "../src/index";
 import swal from "sweetalert2";
 
 const ProfilePage = () => {
-    const navigate = useNavigate(); // Initialize navigate
+    const navigate = useNavigate(); 
     const token = useSelector((state) => state.signin.token);
     const userDetail = useSelector((state) => state.signin.userData);
     const [blogs, setBlogs] = useState([]);
