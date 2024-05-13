@@ -30,7 +30,6 @@ const Signin = () => {
     const data = await response.json();
     if (response.status == 200) {
       dispatch(signIn({ token: data.result.token, userData: data.result.userData }));
-      console.log(data.result.role);
       if (data.result.userData.role == "Blogger"){
         navigate("/");
       }else{

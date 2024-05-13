@@ -12,6 +12,8 @@ import { Link } from "react-router-dom";
 import AdminNavs from "./AdminNavs";
 import { useState } from "react";
 import axios from "axios";
+import { useSelector } from "react-redux";
+
 const DummyData = {
   lineChartData: {
     labels: ["January", "February", "March", "April", "May", "June", "July"],
@@ -129,12 +131,12 @@ function AdminDashboard() {
     };
   }, []);
 
-
+  const token = useSelector((state) => state.signin.token);
   const [topblogs,settopblogs] = useState([])
   const [date,setdate] =useState("")
   useEffect(() => {
     axios
-      .get(`https://localhost:7094/api/Admin/PopularBlog?pageSize=${10}&pageNumber=${1}`)
+      .get(`https://localhost:7094/api/Admin/PopularBlog?pageSize=${10}&pageNumber=${1}`,{headers: {"Authorization" : `Bearer ${token}`}})
       .then((response) => {
         settopblogs(response.data.result.top10Blog)
       })
@@ -144,7 +146,7 @@ function AdminDashboard() {
   useEffect(() => {
     axios
       .get(
-        `https://localhost:7094/api/Admin/PopularBlog?pageSize=${10}&pageNumber=${1}`
+        `https://localhost:7094/api/Admin/PopularMonthBlog?year=${+date.split("-")[0]}&month=${+date.split("-")[1]}`,{headers: {"Authorization" : `Bearer ${token}`}}
       )
       .then((response) => {
         settopblogs(response.data.result.top10Blog);
@@ -358,7 +360,7 @@ function AdminDashboard() {
                           {topblogs.map((blog) => (
                             <tr>
                               <td>{blog.title}</td>
-                              <td>{blog.category}</td>
+                              <td>{blog.category.name}</td>
                               <td>{blog.upVoteCount}</td>
                               <td>{blog.downVoteCount}</td>
                               <td>
