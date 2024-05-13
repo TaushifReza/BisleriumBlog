@@ -3,6 +3,7 @@ import "../style/Blog.css";
 import { Blogurl } from "../src/index";
 import { AiFillHeart, AiFillDislike, AiOutlineComment } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
+
 const BlogComponent = () => {
   const [blogs, setBlogs] = useState([]);
 
