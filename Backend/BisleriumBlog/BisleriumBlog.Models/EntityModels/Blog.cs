@@ -24,7 +24,8 @@ namespace BisleriumBlog.Models.EntityModels
         public Category? Category { get; set; }
         [Required]
         public DateTime CreatedAt { get; set; } = DateTime.Now;
-        public DateTime UpdatedAt { get; set; }
+
+        public DateTime? UpdatedAt { get; set; } = null;
         public int ViewCount { get; set; } = 0;
         public int UpVoteCount { get; set; } = 0;
         public int DownVoteCount { get; set; } = 0;
