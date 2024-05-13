@@ -32,6 +32,7 @@ import ProfilePage from "../Components/Profilepage.jsx";
 import ConfirmEmail from "../Components/ConfirmEmail.jsx";
 import Blogdetail from "../Components/Blogdetail.jsx";
 import UpdateBlog from "../Components/UpdateBlog.jsx";
+import AddAdmin from "../Components/Addadmin.jsx";
 
 const router = createBrowserRouter([
   {
@@ -199,10 +200,18 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/update", 
+    path: "/update",
     element: (
       <App>
-       <UpdateBlog></UpdateBlog>
+        <UpdateBlog></UpdateBlog>
+      </App>
+    ),
+  },
+  {
+    path: "/addAdmin",
+    element: (
+      <App>
+      <AddAdmin></AddAdmin>
       </App>
     ),
   },
