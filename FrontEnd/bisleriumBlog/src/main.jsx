@@ -32,8 +32,7 @@ import ProfilePage from "../Components/Profilepage.jsx";
 import ConfirmEmail from "../Components/ConfirmEmail.jsx";
 import Blogdetail from "../Components/Blogdetail.jsx";
 import UpdateBlog from "../Components/UpdateBlog.jsx";
-// import IndividualBlog from "../Components/individualblogpage.jsx";
-// import Blogapi from "../Components/blogfileapi.jsx";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -42,10 +41,6 @@ const router = createBrowserRouter([
         <Home />
       </App>
     ),
-  },
-  {
-    path: "/individualblog",
-    element: <App>{/* <Home />  */}</App>,
   },
 
   {
