@@ -144,12 +144,12 @@ namespace BisleriumBlog.API.Controllers
         }
 
         [HttpGet("PopularBlog")]
-        //[AllowAnonymous]
+        [Authorize]
         public async Task<ActionResult<APIResponse>> PopularBlog(int pageSize = 10, int pageNumber = 1)
         {
             try
             {
-                var blogs = await _unitOfWork.Blog.GetAllAsync(pageSize: pageSize, pageNumber: pageNumber);
+                var blogs = await _unitOfWork.Blog.GetAllAsync(pageSize: pageSize, pageNumber: pageNumber, includeProperties: "Category,User");
 
                 var top10Blog = CalculateBlogPopularity(_mapper.Map<IEnumerable<BlogDTO>>(blogs));
 
@@ -168,7 +168,7 @@ namespace BisleriumBlog.API.Controllers
         }
 
         [HttpGet("GetUniqueMonthsFromBlogCreation")]
-        //[AllowAnonymous]
+        [Authorize]
         public async Task<ActionResult<APIResponse>> GetUniqueMonthsFromBlogCreation()
         {
             try
@@ -195,12 +195,12 @@ namespace BisleriumBlog.API.Controllers
         }
 
         [HttpGet("PopularMonthBlog")]
-        //[AllowAnonymous]
+        [Authorize]
         public async Task<ActionResult<APIResponse>> PopularMonthBlog(int year, int month)
         {
             try
             {
-                var blogs = await _unitOfWork.Blog.GetAllAsync(pageSize: int.MaxValue);
+                var blogs = await _unitOfWork.Blog.GetAllAsync(pageSize: int.MaxValue, includeProperties: "Category,User");
                 var filteredBlogs = blogs.Where(b => b.CreatedAt.Year == year && b.CreatedAt.Month == month);
 
                 var top10Blog = CalculateBlogPopularity(_mapper.Map<IEnumerable<BlogDTO>>(filteredBlogs));
@@ -222,7 +222,7 @@ namespace BisleriumBlog.API.Controllers
         }
 
         [HttpGet("AdminDashboardData")]
-        //[AllowAnonymous]
+        [Authorize]
         public async Task<ActionResult<APIResponse>> GetAdminDashboardData(int? year, int? month)
         {
             try
