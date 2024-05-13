@@ -323,6 +323,48 @@ namespace BisleriumBlog.API.Controllers
             }
         }
 
+        [HttpGet("TopBloggersOfMonth")]
+        [Authorize]
+        public async Task<ActionResult<APIResponse>> GetTopBloggersOfMonth(int? month = null, int? year = null, int count = 10)
+        {
+            try
+            {
+                // If month and year are not provided, use the current month and year
+                month ??= DateTime.Now.Month;
+                year ??= DateTime.Now.Year;
+
+                var blogs = await _unitOfWork.Blog.GetAllAsync(includeProperties: "User");
+
+                blogs = blogs.Where(b => b.CreatedAt.Month == month.Value && b.CreatedAt.Year == year.Value);
+
+                var topBloggers = blogs.GroupBy(b => new { b.UserId, b.User.UserName, b.User.FullName, b.User.Email, b.User.ProfileImageUrl })
+                    .Select(g => new BloggerDTO
+                    {
+                        UserId = g.Key.UserId,
+                        FullName = g.Key.FullName,
+                        Email = g.Key.Email,
+                        ProfileImageUrl = g.Key.ProfileImageUrl,
+                        TotalUpvotes = g.Sum(b => b.UpVoteCount),
+                        TotalBlogs = g.Count()
+                    })
+                    .OrderByDescending(b => b.TotalUpvotes)
+                    .ThenByDescending(b => b.TotalBlogs)
+                    .Take(count)
+                    .ToList();
+
+                _response.StatusCode = HttpStatusCode.OK;
+                _response.IsSuccess = true;
+                _response.Result = topBloggers;
+
+                return StatusCode(StatusCodes.Status200OK, _response);
+            }
+            catch (Exception e)
+            {
+                _response.ErrorMessage = new List<string>() { e.Message };
+                return StatusCode(StatusCodes.Status500InternalServerError, _response);
+            }
+        }
+
         private IEnumerable<BlogDTO> CalculateBlogPopularity(IEnumerable<BlogDTO> blogDtos)
         {
             foreach (var blog in blogDtos)
