@@ -45,7 +45,7 @@ Provide instructions specific to your development environment for running the ap
     - Google Cloud account for SMTP server access (if using)
 2. **Clone the Repository:**
     ```bash
-    git clone https://github.com/<your-username>/blog-website.git
+    git clone https://github.com/TaushifReza/BisleriumBlog.git
     ```
 3. **Set Up Database:**
     - Create a database server and configure connection details.
