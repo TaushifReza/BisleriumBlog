@@ -176,28 +176,28 @@ function AdminDashboard() {
 
   useEffect(() => {
     axios
-      .get(`https://localhost:7094/api/Admin/TopBloggers`, {
+      .get(`https://localhost:7094/api/Admin/TopBloggers?count=10`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        settopbloggers(response.data.result.top10Blog);
+        settopbloggers(response.data.result);
       })
       .catch((error) => console.error("Error fetching blog posts:", error));
   }, []);
 
-    useEffect(() => {
-      axios
-        .get(
-          `https://localhost:7094/api/Admin/TopBloggersOfMonth?year=${+date2.split(
-            "-"
-          )[0]}&month=${+date2.split("-")[1]}`,
-          { headers: { Authorization: `Bearer ${token}` } }
-        )
-        .then((response) => {
-          settopblogs(response.data.result.top10Blog);
-        })
-        .catch((error) => console.error("Error fetching blog posts:", error));
-    }, [date2]);
+  useEffect(() => {
+    axios
+      .get(
+        `https://localhost:7094/api/Admin/TopBloggersOfMonth?year=${+date2.split(
+          "-"
+        )[0]}&month=${+date2.split("-")[1]}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+      .then((response) => {
+        settopbloggers(response.data.result);
+      })
+      .catch((error) => console.error("Error fetching blog posts:", error));
+  }, [date2]);
 
   const context = useContext(myContext);
   const { mode } = context;
@@ -383,7 +383,8 @@ function AdminDashboard() {
                                     <a
                                       href="javascript:void(0);"
                                       className="text-body font-weight-semibold"
-                                    >{blogger.fullName}
+                                    >
+                                      {blogger.fullName}
                                     </a>
                                   </td>
                                   <td>{blogger.email}</td>

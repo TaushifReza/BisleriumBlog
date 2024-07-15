@@ -26,7 +26,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection") ??
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") ??
                          throw new InvalidOperationException("Connection String is not found"));
 });
 

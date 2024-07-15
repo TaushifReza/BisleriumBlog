@@ -1,30 +1,30 @@
-import React, { useContext,useEffect,useState } from 'react';
-import { AiFillHeart, AiFillDislike, AiOutlineComment } from 'react-icons/ai';
-import myContext from '../context/myContext';
-import { Button } from '@material-tailwind/react';
+import React, { useContext, useEffect, useState } from "react";
+import { AiFillHeart, AiFillDislike, AiOutlineComment } from "react-icons/ai";
+import myContext from "../context/myContext";
+import { Button } from "@material-tailwind/react";
 import { Blogurl } from "../src/index";
 import { useNavigate } from "react-router-dom";
 const BlogPostCard = () => {
   const context = useContext(myContext);
   const { mode } = context;
 
- const [blogs, setBlogs] = useState([]);
+  const [blogs, setBlogs] = useState([]);
 
-    useEffect(() => {
-      const Requestoptions = {
-        method: "GET",
-      };
-      fetch(Blogurl + `Top3Blog`, Requestoptions)
-        .then((response) => response.json())
-        .then((data) => {
-          setBlogs(data.result);
-        });
-    });
-      const navigate = useNavigate();
-      const individual = (id) => {
-        console.log(id);
-        navigate("/blogdetail", { state: id });
-      };
+  useEffect(() => {
+    const Requestoptions = {
+      method: "GET",
+    };
+    fetch(Blogurl + `Top3Blog`, Requestoptions)
+      .then((response) => response.json())
+      .then((data) => {
+        setBlogs(data.result);
+      });
+  });
+  const navigate = useNavigate();
+  const individual = (id) => {
+    console.log(id);
+    navigate("/blogdetail", { state: id });
+  };
 
   return (
     <section className="text-gray-600 body-font mt-0">
@@ -36,12 +36,12 @@ const BlogPostCard = () => {
           {blogs.map((blog) => (
             <div key={blog.id} className="p-4 md:w-full">
               <div
-                className={`h-full bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 ease-in-out ${
+                className={`w-15 h-auto bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 ease-in-out ${
                   mode === "dark" ? "bg-gray-800" : "bg-white"
                 }`}
               >
                 <img
-                  className="lg:h-48 md:h-36 w-full object-cover object-center"
+                  className="lg:h-48 md:h-36 object-cover object-center"
                   src={blog.imageUrl}
                   alt="blog"
                 />

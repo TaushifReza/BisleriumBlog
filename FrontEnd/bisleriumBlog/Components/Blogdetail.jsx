@@ -315,7 +315,7 @@ function Blogdetail() {
 
             <div className="relative h-96">
               <img
-                src="https://tech.feedspot.com/wp-content/uploads/2016/08/technology.jpeg"
+                src={blog.imageUrl}
                 className="w-full h-full object-cover"
                 alt="post"
               />

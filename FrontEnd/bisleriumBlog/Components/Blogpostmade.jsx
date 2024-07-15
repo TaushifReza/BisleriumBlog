@@ -39,7 +39,7 @@ const BlogPostsMade = ({ blogPosts }) => {
       },
     };
     const response = await fetch(`${Blogurl}DeleteBlog/${id}`, Requestoptions);
-   
+
     if (response.status == 200) {
       navigate("/profile");
     }
@@ -62,27 +62,27 @@ const BlogPostsMade = ({ blogPosts }) => {
         }
       });
   };
-      const updateBlog = (data) => {
-        navigate("/update", { state: data });
-      };
+  const updateBlog = (data) => {
+    navigate("/update", { state: data });
+  };
 
-    const areyousureupdate = (data) => {
-      swal
-        .fire({
-          title: "Are you sure?",
-          text: "You won't be able to revert this!",
-          icon: "info",
-          showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
-          confirmButtonText: "Yes, update it!",
-        })
-        .then((result) => {
-          if (result.isConfirmed) {
-            updateBlog(data)
-          }
-        });
-    };
+  const areyousureupdate = (data) => {
+    swal
+      .fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "info",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, update it!",
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+          updateBlog(data);
+        }
+      });
+  };
 
   return (
     <section className="py-8 bg-blueGray-200">
@@ -99,7 +99,7 @@ const BlogPostsMade = ({ blogPosts }) => {
                   className="bg-white shadow-lg rounded-lg px-4 py-6"
                 >
                   <img
-                    src={blog.image}
+                    src={blog.imageUrl}
                     alt="Blog Post"
                     className="h-40 w-full object-cover object-center mb-4 rounded-lg"
                   />
@@ -139,7 +139,12 @@ const BlogPostsMade = ({ blogPosts }) => {
                             areyousure(blog.id);
                           }}
                         />
-                        <GrUpdate className="mt-8 cursor-pointer" onClick={()=>{areyousureupdate(blog)}}/>
+                        <GrUpdate
+                          className="mt-8 cursor-pointer"
+                          onClick={() => {
+                            areyousureupdate(blog);
+                          }}
+                        />
                       </>
                     )}
                   </div>

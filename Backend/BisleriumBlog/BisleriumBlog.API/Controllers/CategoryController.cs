@@ -15,7 +15,7 @@ namespace BisleriumBlog.API.Controllers
 {
     [Route("api/Category")]
     [ApiController]
-    [Authorize(Roles = SD.RoleBlogger)]
+    [Authorize(Roles = SD.RoleAdmin)]
     public class CategoryController : ControllerBase
     {
         private IMapper _mapper;

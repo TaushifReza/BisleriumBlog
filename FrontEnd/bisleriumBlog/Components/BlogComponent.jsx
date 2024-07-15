@@ -16,9 +16,7 @@ const BlogComponent = () => {
       .then((data) => {
         setBlogs(data.result);
       });
-      
   });
-  
 
   return (
     <section id="demo" className="py-28">
@@ -36,7 +34,7 @@ const BlogGrid = ({ blogs }) => {
         {blogs.map((blog) => (
           <BlogCard
             key={blog.id}
-            id= {blog.id}
+            id={blog.id}
             title={blog.title}
             viewcount={blog.viewcount}
             date={new Date(blog.createdAt).toLocaleDateString()}
@@ -75,7 +73,7 @@ const BlogCard = ({
     <div className="group sm:flex rounded-xl">
       <div className="flex-shrink-0 relative rounded-xl overflow-hidden h-[200px] sm:w-[500px] sm:h-[300px] group">
         <img
-          className="w-full h-full transition-all duration-500 group-hover:shadow-sm group-hover:scale-110"
+          className="transition-all duration-500 group-hover:shadow-sm group-hover:scale-110"
           src={image}
           alt="Image Description"
         />
@@ -94,7 +92,7 @@ const BlogCard = ({
           >
             {title}
           </a>
-          <p className=" line-clamp-3 mt-4 mb-6 text-gray-500 text-base leading-7 font-medium ">
+          <p className="line-clamp-3 mt-4 mb-6 text-gray-500 text-base leading-7 font-medium h-[3px]">
             {description}
           </p>
 
@@ -109,7 +107,9 @@ const BlogCard = ({
             <span className="ml-2 text-gray-600">{viewcount}</span>
           </div>
           <a
-            onClick={()=>{individual(id)}}
+            onClick={() => {
+              individual(id);
+            }}
             className="read-more-btn flex mt-7 hover:text-primary transition-all duration-500 "
           >
             Read More<i data-lucide="arrow-up-right"></i>
